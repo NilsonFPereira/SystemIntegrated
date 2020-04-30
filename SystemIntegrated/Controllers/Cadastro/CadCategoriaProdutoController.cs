@@ -8,7 +8,7 @@ using SystemIntegrated.Repositorio;
 
 namespace SystemIntegrated.Controllers.Cadastro
 {
-    [Authorize(Roles = "ADMINISTRADOR,OPERADOR,GERENTE")]
+    [Authorize(Roles = "ADMINISTRADOR")]
     public class CadCategoriaProdutoController : Controller
     {
         CategoriaProdutoRepositorio categoriaProdutoRepositorio;
