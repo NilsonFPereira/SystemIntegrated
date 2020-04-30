@@ -11,7 +11,7 @@ namespace SystemIntegrated.Models.Cadastro
     {
         public int Id { get; set; }
                 
-        [Required(ErrorMessage="Informe o codigo.")]
+        [Required(ErrorMessage="Informe o código.")]
         
         public string Codigo { get; set; }
 

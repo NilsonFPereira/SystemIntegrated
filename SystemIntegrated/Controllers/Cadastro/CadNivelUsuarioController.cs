@@ -8,6 +8,7 @@ using SystemIntegrated.Repositorio;
 
 namespace SystemIntegrated.Controllers.Cadastro
 {
+    [Authorize(Roles = "ADMINISTRADOR")]
     public class CadNivelUsuarioController : Controller
     {
         private NivelUsuarioRepositorio nivelUsuarioRepositorio;
@@ -15,7 +16,6 @@ namespace SystemIntegrated.Controllers.Cadastro
         private const int _quantMaxLinhasPorPagina = 5;
         private const int _paginaAtual = 1;
 
-        [Authorize]
         public ActionResult Index()
         {
             nivelUsuarioRepositorio = new NivelUsuarioRepositorio();
@@ -36,7 +36,6 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public JsonResult RecuperarNivelUsuario(int id)
         {
@@ -52,7 +51,6 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public JsonResult NivelUsuarioPagina(int pagina, int tamPag, string filtro)
         {
@@ -64,17 +62,6 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public JsonResult ExcluirNivelUsuario(int id)
-        {
-            nivelUsuarioRepositorio = new NivelUsuarioRepositorio();
-            return Json(nivelUsuarioRepositorio.ExcluirPeloId(id));
-
-        }
-
-        [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public JsonResult SalvarNivelUsuario(NivelUsuarioModel nivelUsuarioModel, List<int> idUsuarios)
         {
@@ -129,6 +116,15 @@ namespace SystemIntegrated.Controllers.Cadastro
             }
 
             return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult ExcluirNivelUsuario(int id)
+        {
+            nivelUsuarioRepositorio = new NivelUsuarioRepositorio();
+            return Json(nivelUsuarioRepositorio.ExcluirPeloId(id));
+
         }
     }
 }

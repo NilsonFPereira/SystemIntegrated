@@ -8,13 +8,13 @@ using SystemIntegrated.Repositorio;
 
 namespace SystemIntegrated.Controllers.Cadastro
 {
+    [Authorize(Roles = "ADMINISTRADOR")]
     public class CadCorProdutoController : Controller
     {
         private CorProdutoRepositorio corProdutoRepositorio;
         private const int _quantMaxLinhasPorPagina = 5;
         private const int _paginaAtual = 1;
-
-        [Authorize]
+     
         public ActionResult Index()
         {
             corProdutoRepositorio = new CorProdutoRepositorio();
@@ -33,19 +33,6 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public JsonResult CorProdutoPagina(int pagina, int tamPag, string filtro)
-        {
-            corProdutoRepositorio = new CorProdutoRepositorio();
-            var lista = corProdutoRepositorio.RecuperarLista(pagina, tamPag, filtro);
-
-            return Json(lista);
-
-        }
-
-        [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public JsonResult RecuperarCorProduto(int id)
         {
@@ -58,17 +45,17 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
-        public JsonResult ExcluirCorProduto(int id)
+        public JsonResult CorProdutoPagina(int pagina, int tamPag, string filtro)
         {
             corProdutoRepositorio = new CorProdutoRepositorio();
-            return Json(corProdutoRepositorio.ExcluirPeloId(id));
-           
+            var lista = corProdutoRepositorio.RecuperarLista(pagina, tamPag, filtro);
+
+            return Json(lista);
+
         }
 
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public JsonResult SalvarCorProduto(CorProdutoModel corProdutoModel)
         {
@@ -109,6 +96,15 @@ namespace SystemIntegrated.Controllers.Cadastro
             }
 
             return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult ExcluirCorProduto(int id)
+        {
+            corProdutoRepositorio = new CorProdutoRepositorio();
+            return Json(corProdutoRepositorio.ExcluirPeloId(id));
+
         }
     }
 }

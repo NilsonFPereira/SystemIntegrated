@@ -48,18 +48,6 @@ namespace SystemIntegrated.Controllers.Cadastro
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public JsonResult ClientePagina(int pagina, int tamPag, string filtro)
-        {
-            clienteRepositorio = new ClienteRepositorio();
-            var lista = clienteRepositorio.RecuperarLista(pagina, tamPag, filtro);
-
-            return Json(lista);
-
-        }
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
         public JsonResult RecuperarCliente(int id)
         {
             clienteRepositorio = new ClienteRepositorio();
@@ -68,16 +56,14 @@ namespace SystemIntegrated.Controllers.Cadastro
 
         }
 
-
-        [HttpPost]        
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public JsonResult ExcluirCliente(int id)
+        public JsonResult ClientePagina(int pagina, int tamPag, string filtro)
         {
-
             clienteRepositorio = new ClienteRepositorio();
+            var lista = clienteRepositorio.RecuperarLista(pagina, tamPag, filtro);
 
-            return Json(clienteRepositorio.ExcluirPeloId(id));
-
+            return Json(lista);
 
         }
 
@@ -126,6 +112,18 @@ namespace SystemIntegrated.Controllers.Cadastro
 
             }
             return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult ExcluirCliente(int id)
+        {
+
+            clienteRepositorio = new ClienteRepositorio();
+
+            return Json(clienteRepositorio.ExcluirPeloId(id));
+
+
         }
 
         [HttpPost]        

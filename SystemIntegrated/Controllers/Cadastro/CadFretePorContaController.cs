@@ -8,14 +8,14 @@ using SystemIntegrated.Repositorio;
 
 namespace SystemIntegrated.Controllers.Cadastro
 {
+    [Authorize(Roles = "ADMINISTRADOR")]
     public class CadFretePorContaController : Controller
     {
         private const int _quantMaxLinhasPorPagina = 5;
         private const int _paginaAtual = 1;
 
-        private FretePorContaRepositorio fretePorContaRepositorio;
+        private FretePorContaRepositorio fretePorContaRepositorio;        
         
-        [Authorize]
         public ActionResult Index()
         {
             fretePorContaRepositorio = new FretePorContaRepositorio();
@@ -34,7 +34,16 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
+        [ValidateAntiForgeryToken]
+        public JsonResult RecuperarFretePorConta(int id)
+        {
+            fretePorContaRepositorio = new FretePorContaRepositorio();
+
+            return Json(fretePorContaRepositorio.RecuperarPeloId(id));
+
+        }
+
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public JsonResult FretePorCOntaPagina(int pagina, int tamPag, string filtro)
         {
@@ -48,30 +57,6 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public JsonResult RecuperarFretePorConta(int id)
-        {
-            fretePorContaRepositorio = new FretePorContaRepositorio();
-
-            return Json(fretePorContaRepositorio.RecuperarPeloId(id));
-
-        }
-
-        [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public JsonResult ExcluirFretePorConta( int id)
-        {
-            fretePorContaRepositorio = new FretePorContaRepositorio();
-
-            return Json(fretePorContaRepositorio.ExcluirPeloId(id));
-
-
-        }
-
-        [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public JsonResult SalvarFretePorConta(FretePorContaModel fretePorContaModel)
         {
@@ -118,6 +103,17 @@ namespace SystemIntegrated.Controllers.Cadastro
 
             }
             return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult ExcluirFretePorConta(int id)
+        {
+            fretePorContaRepositorio = new FretePorContaRepositorio();
+
+            return Json(fretePorContaRepositorio.ExcluirPeloId(id));
+
+
         }
     }
 }

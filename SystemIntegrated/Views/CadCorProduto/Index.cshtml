@@ -81,13 +81,13 @@
 </div>
 @Html.Hidden("id_cadastro")
 <div id="modal_cadastro" class="form-horizontal invisivel" role="dialog">
-    <div id="msg_mensagem_aviso" class="text-danger invisivel"></div>
+    <div id="msg_mensagem_aviso" class="alert alert-danger invisivel"></div>
     <fieldset>
         @Html.AntiForgeryToken()
         <div class="form-group">
             @Html.Label("txt_nome", "Nome", new { @class = "control-label col-md-3 required" })
             <div class="col-md-9">
-                @Html.TextBox("txt_nome", null, new { @class = "form-control" })
+                @Html.TextBox("txt_nome", null, new { @class = "form-control", maxlength = 80})
             </div>
         </div>
         <div class="form-group">
@@ -169,7 +169,8 @@
 
             for (var i = 0; i < mensagens.length; i++) {
 
-                ret += '<li>' + mensagens[i]  + '</li>';
+                ret += '<li>' + mensagens[i] + '</li>';
+                break;
             }
 
             return '<ul>'+ ret +'</ul >';
@@ -220,17 +221,17 @@
                     param = { 'id': id };
 
                 bootbox.confirm({
-                    message: 'Deseja Realmente Excluir ?',
+                    message: 'Deseja Realmente Excluir?',
                     buttons: {
 
                         confirm: {
                             label: 'SIM',
-                            className: 'btn-success'
+                            className: 'btn-danger'
 
                         }, cancel: {
 
                             label: 'NÃO',
-                            className: 'btn-danger'
+                            className: 'btn-success'
                         }
                     }, callback: function (result) {
 
@@ -305,9 +306,18 @@
                     } else if (response.Resultado == "AVISO") {
 
                         $('#msg_mensagem_aviso').html(formatar_mensagem_aviso(response.Mensagens));
-                        $('#msg_erro').hide();
                         $('#msg_aviso').show();
                         $('#msg_mensagem_aviso').show();
+                        $('#msg_erro').hide();
+
+                        setInterval(function () {
+
+                            $('#msg_mensagem_aviso').val('');
+                            $('#msg_aviso').hide();
+                            $('#msg_mensagem_aviso').hide();
+
+
+                        }, 5000);
 
                     }
                 })

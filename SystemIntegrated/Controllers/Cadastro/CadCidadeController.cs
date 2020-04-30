@@ -8,7 +8,7 @@ using SystemIntegrated.Repositorio;
 
 namespace SystemIntegrated.Controllers.Cadastro
 {
-    [Authorize(Roles = "ADMINISTRADOR")]
+    [Authorize(Roles = "ADMINISTRADOR,OPERADOR")]
     public class CadCidadeController : Controller
     {
         
@@ -44,6 +44,16 @@ namespace SystemIntegrated.Controllers.Cadastro
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        public JsonResult RecuperarCidade(int id)
+        {
+
+            cidadeRepositorio = new CidadeRepositorio();
+            return Json(cidadeRepositorio.RecuperarPeloId(id));
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public JsonResult CidadePagina(int pagina, int tamPag, string filtro)
         {
             cidadeRepositorio = new CidadeRepositorio();
@@ -52,16 +62,6 @@ namespace SystemIntegrated.Controllers.Cadastro
             var lista = cidadeRepositorio.RecuperarLista(pagina, tamPag, filtro);
             
             return  Json(lista);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public JsonResult RecuperarCidade(int id)
-        {
-
-            cidadeRepositorio = new CidadeRepositorio();
-            return Json(cidadeRepositorio.RecuperarPeloId(id));
-
         }
 
         [HttpPost]

@@ -8,13 +8,13 @@ using SystemIntegrated.Repositorio;
 
 namespace SystemIntegrated.Controllers.Cadastro
 {
+    [Authorize(Roles = "ADMINISTRADOR")]
     public class CadGrupoProdutoController : Controller
     {
         private GrupoProdutoRepositorio grupoProdutoRepositorio;
         private const int _quantMaxLinhasPorPagina = 5;
         private const int _paginaAtual = 1;
-
-        [Authorize]
+    
         public ActionResult Index()
         {
             grupoProdutoRepositorio = new GrupoProdutoRepositorio();
@@ -33,7 +33,16 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
+        [ValidateAntiForgeryToken]
+        public JsonResult RecuperarGrupoProduto(int id)
+        {
+            grupoProdutoRepositorio = new GrupoProdutoRepositorio();
+            var lista = grupoProdutoRepositorio.RecuperarPeloId(id);
+
+            return Json(lista);
+        }
+
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public JsonResult GrupoProdutoPagina(int pagina, int tamPag, string filtro)
         {
@@ -45,28 +54,6 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public JsonResult RecuperarGrupoProduto(int id)
-        {
-            grupoProdutoRepositorio = new GrupoProdutoRepositorio();
-            var lista = grupoProdutoRepositorio.RecuperarPeloId(id);
-
-            return Json(lista);
-        }
-
-        [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public JsonResult ExcluirGrupoProduto(int id)
-        {
-            grupoProdutoRepositorio = new GrupoProdutoRepositorio();
-            return Json(grupoProdutoRepositorio.ExcluirPeloId(id));
-
-        }
-
-        [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public JsonResult SalvarGrupoProduto(GrupoProdutoModel grupoProdutoModel)
         {
@@ -107,6 +94,15 @@ namespace SystemIntegrated.Controllers.Cadastro
                 }
             }
             return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult ExcluirGrupoProduto(int id)
+        {
+            grupoProdutoRepositorio = new GrupoProdutoRepositorio();
+            return Json(grupoProdutoRepositorio.ExcluirPeloId(id));
+
         }
     }
 }

@@ -19,7 +19,6 @@ namespace SystemIntegrated.Controllers.Cadastro
 
         private const int _quantMaxLinhasPorPagina = 5;
         private const int _paginaAtual = 1;
-
         
         public ActionResult Index()
         {
@@ -46,8 +45,19 @@ namespace SystemIntegrated.Controllers.Cadastro
 
             return View(lista);
         }
-        
+
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult RecuperarFornecedor(int id)
+        {
+            fornecedorRepositorio = new FornecedorRepositorio();
+
+            return Json(fornecedorRepositorio.RecuperarPeloId(id));
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public JsonResult FornecedorPagina(int pagina, int tamPag, string filtro)
         {
             fornecedorRepositorio = new FornecedorRepositorio();
@@ -59,25 +69,7 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        public JsonResult RecuperarFornecedor(int id)
-        {
-            fornecedorRepositorio = new FornecedorRepositorio();
-
-            return Json(fornecedorRepositorio.RecuperarPeloId(id));
-
-        }
-
-        [HttpPost]
-        public JsonResult ExcluirFornecedor(int id)
-        {
-            fornecedorRepositorio = new FornecedorRepositorio();
-
-            return Json(fornecedorRepositorio.ExcluirPeloId(id));
-
-        }
-
-
-        [HttpPost]
+        [ValidateAntiForgeryToken]
         public JsonResult SalvarFornecedor(FornecedorModel fornecedorModel)
         {
             var resultado = "OK";
@@ -123,6 +115,15 @@ namespace SystemIntegrated.Controllers.Cadastro
 
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult ExcluirFornecedor(int id)
+        {
+            fornecedorRepositorio = new FornecedorRepositorio();
+
+            return Json(fornecedorRepositorio.ExcluirPeloId(id));
+
+        }
 
         [HttpPost]
         public JsonResult RemoteData(string query)

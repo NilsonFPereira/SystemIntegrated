@@ -8,14 +8,13 @@ using SystemIntegrated.Repositorio;
 
 namespace SystemIntegrated.Controllers.Cadastro
 {
+    [Authorize(Roles = "ADMINISTRADOR")]
     public class CadMarcaProdutoController : Controller
     {
         private MarcaProdutoRepositorio marcaProdutoRepositorio;
         private const int _quantMaxLinhasPorPagina = 5;
         private const int _paginaAtual = 1;
 
-
-        [Authorize]
         public ActionResult Index()
         {
             marcaProdutoRepositorio = new MarcaProdutoRepositorio();
@@ -36,19 +35,6 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public JsonResult MarcaProdutoPagina(int pagina, int tamPag, string filtro)
-        {
-            marcaProdutoRepositorio = new MarcaProdutoRepositorio();
-
-            var lista = marcaProdutoRepositorio.RecuperarLista(pagina, tamPag, filtro);
-
-            return Json(lista);
-        }
-
-        [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public JsonResult RecuperarMarcaProduto(int id)
         {
@@ -61,19 +47,17 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
-        public JsonResult ExcluirMarcaProduto(int id)
+        public JsonResult MarcaProdutoPagina(int pagina, int tamPag, string filtro)
         {
             marcaProdutoRepositorio = new MarcaProdutoRepositorio();
 
-            return Json(marcaProdutoRepositorio.ExcluirPeloId(id));
+            var lista = marcaProdutoRepositorio.RecuperarLista(pagina, tamPag, filtro);
 
-
+            return Json(lista);
         }
 
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public JsonResult SalvarMarcaProduto(MarcaProdutoModel marcaProdutoModel)
         {
@@ -114,6 +98,17 @@ namespace SystemIntegrated.Controllers.Cadastro
                 }
             }
             return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult ExcluirMarcaProduto(int id)
+        {
+            marcaProdutoRepositorio = new MarcaProdutoRepositorio();
+
+            return Json(marcaProdutoRepositorio.ExcluirPeloId(id));
+
+
         }
     }
 }

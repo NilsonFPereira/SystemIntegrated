@@ -8,13 +8,13 @@ using SystemIntegrated.Repositorio.Cadastro;
 
 namespace SystemIntegrated.Controllers.Cadastro
 {
+    [Authorize(Roles = "ADMINISTRADOR")]
     public class CadFormaPagamentoController : Controller
     {
         private const int _quantMaxLinhasPorPagina = 5;
         private const int _paginaAtual = 1;
         private FormaPagamentoRepositorio formaPagamentoRepositorio;
-
-        [Authorize]
+      
         public ActionResult Index()
         {
             formaPagamentoRepositorio = new FormaPagamentoRepositorio();
@@ -35,7 +35,6 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public JsonResult RecuperarFormaPagamento(int id)
         {
@@ -47,7 +46,18 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
+        [ValidateAntiForgeryToken]
+        public JsonResult FormaPagamentoPagina(int pagina, int tamPag, string filtro)
+        {
+            formaPagamentoRepositorio = new FormaPagamentoRepositorio();
+
+            var lista = formaPagamentoRepositorio.RecuperarLista(pagina, tamPag, filtro);
+
+            return Json(lista);
+
+        }
+
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public JsonResult SalvarFormaPagamento(FormaPagamentoModel formaPagamentoModel)
         {
@@ -89,7 +99,6 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public JsonResult ExcluirFormaPagamento(int id)
         {
@@ -100,17 +109,6 @@ namespace SystemIntegrated.Controllers.Cadastro
 
         }
 
-        [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public JsonResult FormaPagamentoPagina(int pagina, int tamPag, string filtro)
-        {
-            formaPagamentoRepositorio = new FormaPagamentoRepositorio();
 
-            var lista = formaPagamentoRepositorio.RecuperarLista(pagina, tamPag, filtro);
-
-            return Json(lista);
-
-        }
     }
 }

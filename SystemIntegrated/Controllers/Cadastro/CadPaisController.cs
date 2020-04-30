@@ -8,6 +8,7 @@ using SystemIntegrated.Repositorio;
 
 namespace SystemIntegrated.Controllers.Cadastro
 {
+    [Authorize(Roles = "ADMINISTRADOR")]
     public class CadPaisController : Controller
     {
         private const int _quantMaxLinhasPorPagina = 5;
@@ -15,7 +16,6 @@ namespace SystemIntegrated.Controllers.Cadastro
 
         private PaisRepositorio paisRepositorio;
 
-        [Authorize]
         public ActionResult Index()
         {
             paisRepositorio = new PaisRepositorio();
@@ -35,11 +35,17 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
+        [ValidateAntiForgeryToken]
+        public JsonResult RecuperarPais(int id)
+        {
+            paisRepositorio = new PaisRepositorio();
+            return Json(paisRepositorio.RecuperarPeloId(id));
+        }
+
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public JsonResult PaisPagina(int pagina, int tamPag, string filtro)
         {
-
             paisRepositorio = new PaisRepositorio();
 
             ViewBag.ListaTamPag = new SelectList(new int[] { tamPag, 10, 15, 20 }, _quantMaxLinhasPorPagina);
@@ -59,16 +65,6 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public JsonResult RecuperarPais(int id)
-        {
-            paisRepositorio = new PaisRepositorio();
-            return Json(paisRepositorio.RecuperarPeloId(id));
-        }
-
-        [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public JsonResult SalvarPais(PaisModel paisModel)
         {
@@ -109,7 +105,6 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public JsonResult ExcluirPais(int id)
         {

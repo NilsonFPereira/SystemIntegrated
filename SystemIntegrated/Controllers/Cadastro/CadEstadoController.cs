@@ -14,8 +14,7 @@ namespace SystemIntegrated.Controllers.Cadastro
         private EstadoRepositorio estadoRepositorio;
         private PaisRepositorio paisRepositorio;
         private const int _quantMaxLinhasPorPagina = 5;
-
-        
+      
         public ActionResult Index()
         {
             estadoRepositorio = new EstadoRepositorio();
@@ -39,17 +38,6 @@ namespace SystemIntegrated.Controllers.Cadastro
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public JsonResult EstadoPagina(int pagina, int tamPag, string filtro)
-        {
-
-            estadoRepositorio = new EstadoRepositorio();
-            var lista = estadoRepositorio.RecuperarLista(pagina, tamPag, filtro);
-            return Json(lista);
-
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
         public JsonResult RecuperarEstado(int id)
         {
             estadoRepositorio = new EstadoRepositorio();
@@ -60,10 +48,12 @@ namespace SystemIntegrated.Controllers.Cadastro
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public JsonResult ExcluirEstado(int id)
+        public JsonResult EstadoPagina(int pagina, int tamPag, string filtro)
         {
+
             estadoRepositorio = new EstadoRepositorio();
-            return Json(estadoRepositorio.ExcluirPeloId(id));
+            var lista = estadoRepositorio.RecuperarLista(pagina, tamPag, filtro);
+            return Json(lista);
 
         }
 
@@ -106,5 +96,15 @@ namespace SystemIntegrated.Controllers.Cadastro
 
             return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult ExcluirEstado(int id)
+        {
+            estadoRepositorio = new EstadoRepositorio();
+            return Json(estadoRepositorio.ExcluirPeloId(id));
+
+        }
+
     }
 }

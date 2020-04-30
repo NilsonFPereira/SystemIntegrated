@@ -8,13 +8,13 @@ using SystemIntegrated.Repositorio;
 
 namespace SystemIntegrated.Controllers.Cadastro
 {
+    [Authorize(Roles = "ADMINISTRADOR")]
     public class CadNaturezaController : Controller
     {
         private NaturezaRepositorio naturezaRepositorio;
         private const int _quantMaxLinhasPorPagina = 5;
         private const int _paginaAtual = 1;
 
-        [Authorize]
         public ActionResult Index()
         {
             naturezaRepositorio = new NaturezaRepositorio();
@@ -33,19 +33,6 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public JsonResult NaturezaPagina(int pagina, int tamPag, string filtro)
-        {
-            naturezaRepositorio = new NaturezaRepositorio();
-
-            var lista = naturezaRepositorio.RecuperarLista(pagina, tamPag, filtro);
-
-            return Json(lista);
-        }
-
-        [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public JsonResult RecuperarNatureza(int id)
         {
@@ -58,19 +45,17 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
-        public JsonResult ExcluirNatureza(int id)
+        public JsonResult NaturezaPagina(int pagina, int tamPag, string filtro)
         {
             naturezaRepositorio = new NaturezaRepositorio();
 
-            return Json(naturezaRepositorio.ExcluirPeloId(id));
+            var lista = naturezaRepositorio.RecuperarLista(pagina, tamPag, filtro);
 
-
+            return Json(lista);
         }
 
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public JsonResult SalvarNatureza(NaturezaModel naturezaModel)
         {
@@ -113,6 +98,17 @@ namespace SystemIntegrated.Controllers.Cadastro
                 }
             }
             return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult ExcluirNatureza(int id)
+        {
+            naturezaRepositorio = new NaturezaRepositorio();
+
+            return Json(naturezaRepositorio.ExcluirPeloId(id));
+
+
         }
 
     }

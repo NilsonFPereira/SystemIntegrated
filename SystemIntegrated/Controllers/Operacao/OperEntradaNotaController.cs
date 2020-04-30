@@ -53,7 +53,6 @@ namespace SystemIntegrated.Controllers.Operacao
         }
 
         [HttpPost]
-        [Authorize]
         public JsonResult RemoteData(string query)
         {
             List<FornecedorModel> listData = null;
@@ -70,7 +69,6 @@ namespace SystemIntegrated.Controllers.Operacao
         }
 
         [HttpPost]
-        [Authorize]
         public JsonResult SalvarEntradaNota(EntradaNotaModel entradaNotaModel)
         {
             var resultado = "OK";
@@ -114,7 +112,6 @@ namespace SystemIntegrated.Controllers.Operacao
         }
 
         [HttpPost]
-        [Authorize]
         public JsonResult RecuperarEntradaNota(int id)
         {
 

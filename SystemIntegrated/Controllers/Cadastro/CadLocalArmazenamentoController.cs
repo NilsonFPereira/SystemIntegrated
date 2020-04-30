@@ -8,14 +8,13 @@ using SystemIntegrated.Repositorio;
 
 namespace SystemIntegrated.Controllers.Cadastro
 {
+    [Authorize(Roles = "ADMINISTRADOR")]
     public class CadLocalArmazenamentoController : Controller
     {
         LocalArmazenamentoRepositorio localArmazenamentoRepositorio;
 
         private const int _quantMaxLinhasPorPagina = 5;
         private const int _paginaAtual = 1;
-
-        [Authorize]
         public ActionResult Index()
         {
             localArmazenamentoRepositorio = new LocalArmazenamentoRepositorio();
@@ -35,7 +34,14 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
+        [ValidateAntiForgeryToken]
+        public JsonResult RecuperarLocalArmazenamento(int id)
+        {
+            localArmazenamentoRepositorio = new LocalArmazenamentoRepositorio();
+            return Json(localArmazenamentoRepositorio.RecuperarPeloId(id));
+        }
+
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public JsonResult LocalArmazenamentoPagina(int pagina, int tamPag, string filtro)
         {
@@ -48,26 +54,6 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public JsonResult RecuperarLocalArmazenamento(int id)
-        {
-            localArmazenamentoRepositorio = new LocalArmazenamentoRepositorio();
-            return Json(localArmazenamentoRepositorio.RecuperarPeloId(id));
-        }
-
-        [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public JsonResult ExcluirLocalArmazenamento(int id)
-        {
-            localArmazenamentoRepositorio = new LocalArmazenamentoRepositorio();
-            return Json(localArmazenamentoRepositorio.ExcluirPeloId(id));
-
-        }
-
-        [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public JsonResult SalvarLocalArmazenamento(LocalArmazenamentoModel localArmazenamentoModel)
         {
@@ -110,6 +96,15 @@ namespace SystemIntegrated.Controllers.Cadastro
                 }
             }
             return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult ExcluirLocalArmazenamento(int id)
+        {
+            localArmazenamentoRepositorio = new LocalArmazenamentoRepositorio();
+            return Json(localArmazenamentoRepositorio.ExcluirPeloId(id));
+
         }
     }
 }

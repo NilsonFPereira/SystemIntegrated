@@ -16,7 +16,6 @@ namespace SystemIntegrated.Controllers.Cadastro
 
         private const int _quantMaxLinhasPorPagina = 5;
         private const int _paginaAtual = 1;
-
         
         public ActionResult Index()
         {
@@ -54,16 +53,6 @@ namespace SystemIntegrated.Controllers.Cadastro
             var lista = usuarioRepositorio.RecuperarLista(pagina, tamPag, filtro);
 
             return Json(lista);
-
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public JsonResult ExcluirUsuario(int id)
-        {
-            usuarioRepositorio = new UsuarioRepositorio();
-
-            return Json(usuarioRepositorio.ExcluirPeloId(id));
 
         }
 
@@ -109,6 +98,16 @@ namespace SystemIntegrated.Controllers.Cadastro
                 }
             }
             return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult ExcluirUsuario(int id)
+        {
+            usuarioRepositorio = new UsuarioRepositorio();
+
+            return Json(usuarioRepositorio.ExcluirPeloId(id));
+
         }
 
     }

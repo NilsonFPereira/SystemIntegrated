@@ -8,6 +8,7 @@ using SystemIntegrated.Repositorio;
 
 namespace SystemIntegrated.Controllers.Cadastro
 {
+    [Authorize(Roles = "ADMINISTRADOR")]
     public class CadProdutoController : Controller
     {
         private ProdutoRepositorio produtoRepositorio;
@@ -23,8 +24,6 @@ namespace SystemIntegrated.Controllers.Cadastro
         private const int _quantMaxLinhasPorPagina = 5;
         private const int _paginaAtual = 1;
 
-
-        [Authorize(Roles = "ADMINISTRADOR")]
         public ActionResult Index()
         {
             produtoRepositorio = new ProdutoRepositorio();
@@ -61,6 +60,7 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public JsonResult RecuperarProduto(int id)
         {
             produtoRepositorio = new ProdutoRepositorio();
@@ -72,6 +72,7 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public JsonResult ProdutoPagina(int pagina, int tamPag, string filtro)
         {
             produtoRepositorio = new ProdutoRepositorio();
@@ -82,16 +83,8 @@ namespace SystemIntegrated.Controllers.Cadastro
 
         }
 
-        [HttpPost]      
-        public JsonResult ExcluirProduto(int id)
-        {
-            produtoRepositorio = new ProdutoRepositorio();
-
-            return Json(produtoRepositorio.ExcluirPeloId(id));
-        
-        }
-
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public JsonResult SalvarProduto(ProdutoModel produtoModel)
         {
             var resultado = "OK";
@@ -134,7 +127,17 @@ namespace SystemIntegrated.Controllers.Cadastro
             return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
         }
 
-        [HttpPost]     
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult ExcluirProduto(int id)
+        {
+            produtoRepositorio = new ProdutoRepositorio();
+
+            return Json(produtoRepositorio.ExcluirPeloId(id));
+
+        }
+
+        [HttpPost]  
         public JsonResult RemoteData(string query)
         {
             List<ProdutoViewModel> listData = null;

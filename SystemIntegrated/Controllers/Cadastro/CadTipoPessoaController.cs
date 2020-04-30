@@ -8,6 +8,7 @@ using SystemIntegrated.Repositorio;
 
 namespace SystemIntegrated.Controllers.Cadastro
 {
+    [Authorize(Roles = "ADMINISTRADOR")]
     public class CadTipoPessoaController : Controller
     {
         private const int _quantMaxLinhasPorPagina = 5;
@@ -15,7 +16,6 @@ namespace SystemIntegrated.Controllers.Cadastro
 
         private TipoPessoaRepositorio tipoPessoaRepositorio;
 
-        [Authorize]
         public ActionResult Index()
         {
             tipoPessoaRepositorio = new TipoPessoaRepositorio();
@@ -35,7 +35,6 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public JsonResult RecuperarTipoPessoa(int id)
         {
@@ -46,7 +45,6 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public JsonResult TipoPessoaPagina(int pagina, int tamPag, string filtro)
         {
@@ -59,17 +57,6 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public JsonResult ExcluirTipoPessoa(int id)
-        {
-            tipoPessoaRepositorio = new TipoPessoaRepositorio();
-            return Json(tipoPessoaRepositorio.ExcluirPeloId(id));
-
-        }
-
-        [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public JsonResult SalvarTipoPessoa(TipoPessoaModel tipoPessoaModel)
         {
@@ -104,6 +91,15 @@ namespace SystemIntegrated.Controllers.Cadastro
                 }
             }
             return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult ExcluirTipoPessoa(int id)
+        {
+            tipoPessoaRepositorio = new TipoPessoaRepositorio();
+            return Json(tipoPessoaRepositorio.ExcluirPeloId(id));
+
         }
     }
 }

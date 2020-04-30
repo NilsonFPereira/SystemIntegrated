@@ -8,6 +8,7 @@ using SystemIntegrated.Repositorio;
 
 namespace SystemIntegrated.Controllers.Cadastro
 {
+    [Authorize(Roles = "ADMINISTRADOR")]
     public class CadSexoController : Controller
     {
 
@@ -16,7 +17,6 @@ namespace SystemIntegrated.Controllers.Cadastro
 
         private SexoRepositorio sexoRepositorio;
 
-        [Authorize]
         public ActionResult Index()
         {
 
@@ -38,7 +38,6 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public JsonResult RecuperarSexo(int id)
         {
@@ -48,18 +47,6 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public JsonResult ExcluirSexo(int id)
-        {
-            sexoRepositorio = new SexoRepositorio();
-
-            return Json(sexoRepositorio.ExcluirPeloId(id));
-
-        }
-
-        [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public JsonResult SexoPagina(int pagina, int tamPag, string filtro)
         {
@@ -71,7 +58,6 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public JsonResult SalvarSexo( SexoModel sexoModel)
         {
@@ -121,6 +107,16 @@ namespace SystemIntegrated.Controllers.Cadastro
 
             return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
 
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult ExcluirSexo(int id)
+        {
+            sexoRepositorio = new SexoRepositorio();
+
+            return Json(sexoRepositorio.ExcluirPeloId(id));
 
         }
     }

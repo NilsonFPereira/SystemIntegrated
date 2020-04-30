@@ -34,6 +34,13 @@ namespace SystemIntegrated.Controllers.Cadastro
             return View(lista);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult RecuperarCategoriaProduto(int id)
+        {
+            categoriaProdutoRepositorio = new CategoriaProdutoRepositorio();
+            return Json(categoriaProdutoRepositorio.RecuperarPeloId(id));
+        }
 
         [HttpPost]     
         [ValidateAntiForgeryToken]
@@ -45,25 +52,6 @@ namespace SystemIntegrated.Controllers.Cadastro
             var lista = categoriaProdutoRepositorio.RecuperarLista(pagina, tamPag, filtro);
 
             return Json(lista);
-        }
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public JsonResult RecuperarCategoriaProduto(int id)
-        {
-            categoriaProdutoRepositorio = new CategoriaProdutoRepositorio();
-            return Json(categoriaProdutoRepositorio.RecuperarPeloId(id));
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "ADMINISTRADOR,GERENTE")]
-        [ValidateAntiForgeryToken]
-        public JsonResult ExcluirCategoriaProduto(int id)
-        {
-            categoriaProdutoRepositorio = new CategoriaProdutoRepositorio();
-            return Json(categoriaProdutoRepositorio.ExcluirPeloId(id));
-
         }
 
         [HttpPost]
@@ -108,6 +96,15 @@ namespace SystemIntegrated.Controllers.Cadastro
                 }
             }
             return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult ExcluirCategoriaProduto(int id)
+        {
+            categoriaProdutoRepositorio = new CategoriaProdutoRepositorio();
+            return Json(categoriaProdutoRepositorio.ExcluirPeloId(id));
+
         }
     }
 }

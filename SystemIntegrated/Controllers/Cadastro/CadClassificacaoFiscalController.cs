@@ -8,13 +8,13 @@ using SystemIntegrated.Repositorio;
 
 namespace SystemIntegrated.Controllers.Cadastro
 {
+    [Authorize(Roles = "ADMINISTRADOR")]
     public class CadClassificacaoFiscalController : Controller
     {
         private ClassificacaoFiscalRepositorio classificacaoFiscalRepositorio;
         private const int _quantMaxLinhasPorPagina = 5;
         private const int _paginaAtual = 1;
-
-        [Authorize]
+        
         public ActionResult Index()
         {
             classificacaoFiscalRepositorio = new ClassificacaoFiscalRepositorio();
@@ -45,7 +45,6 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public JsonResult ClassificacaoFiscalPagina( int pagina, int tamPag, string filtro)
         {
@@ -58,7 +57,6 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public JsonResult SalvarClassificacaoFiscal(ClassificacaoFiscalModel classificacaoFiscalModel)
         {
@@ -107,7 +105,6 @@ namespace SystemIntegrated.Controllers.Cadastro
         }
 
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public JsonResult ExcluirClassificacaoFiscal(int id)
         {
