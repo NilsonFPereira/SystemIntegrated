@@ -1,0 +1,36 @@
+﻿#cadastro {
+    margin: 0 auto;
+    width: 1024px;
+}
+
+#cadastro_cabecalho {
+    margin-bottom: 15px;
+}
+#cabecalho_grid{
+
+    margin-bottom:15px;
+
+}
+
+#grid_cadastro > thead > tr > th:nth-child(2) {
+    width: 100px;
+}
+#grid_cadastro > thead > tr > th:nth-child(3) {
+    width: 120px;
+}
+#grid_cadastro > thead > tr > th:nth-child(4) {
+    width: 190px;
+}
+#grid_cadastro > thead > tr > th:nth-child(5) {
+    width: 110px;
+}
+#grid_cadastro > thead > tr > th:nth-child(6) {
+    width: 60px;
+}
+#grid_cadastro > thead > tr > th:nth-child(7) {
+    width: 105px;
+}
+
+
+
+

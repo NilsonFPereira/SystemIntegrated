@@ -1,0 +1,489 @@
+﻿@model List<SystemIntegrated.Models.EstadoViewModel>
+@{
+    var lista = Model;
+    ViewBag.Title = "Cadastro de Estados";
+    var titulo = ViewBag.Title;
+}
+<link href="~/Content/Cadastro/CadEstado.css" rel="stylesheet" />
+
+<div class="col-md-12" style="margin:0 auto">
+    <section id="cadastro_cabecalho">
+        <h2 style="color:#000">@ViewBag.Title</h2>
+    </section>
+
+    <div id="cadastro_conteudo">
+        <div id="cabecalho_grid">
+            <div class="form-group">
+                <div class="col-md-2">
+                    <a id="btn_incluir" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> Incluir</a>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-4">
+                    @Html.DropDownList("ddl_tam_pag", (SelectList)ViewBag.ListaTamPag, new { @class = "form-control selectpicker" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-6">
+                    <div class="form-group left-inner-addon">
+                        <i class="glyphicon glyphicon-search"></i>
+                        @Html.TextBox("txt_filtro", null, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <table id="grid_cadastro" class="table table-bordered table-striped table-hover @Html.Raw(lista == null || lista.Count == 0 ? "invisivel" : "")">
+            <thead>
+                <tr class="info">
+                    <th style="text-align:center">Codigo</th>
+                    <th style="text-align:center">Nome</th>
+                    <th style="text-align:center">Sigla</th>
+                    <th style="text-align:center">Ativo</th>
+                    <th style="text-align:center">Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var linha = 0;
+
+                    foreach (var item in Model)
+                    {
+                        linha++;
+
+                        if (linha <= ViewBag.QuantMaxLinhasPorPagina)
+                        {
+
+                            var ativo = (item.Ativo ? "SIM" : "NÃO");
+
+                            <tr data-id="@item.Id">
+                                <td class="text-center">@item.Codigo</td>
+                                <td>@item.Nome</td>
+                                <td class="text-center">@item.Sigla</td>
+                                <td class="text-center">@ativo</td>
+                                <td class="text-center">
+                                    <a class="btn-alterar btn btn-primary"><i class="glyphicon glyphicon-edit"></i> </a>
+                                    <a class="btn-excluir btn btn-danger"><i class="glyphicon glyphicon-trash"></i> </a>
+                                </td>
+
+                            </tr>
+
+                        }
+                        else
+                        {
+
+                            break;
+
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+        <div id="mensagem_grid" @Html.Raw(lista != null && lista.Count > 0 ? "class=\"invisivel\"" : "")>
+            Nenhum Registro em @titulo
+        </div>
+        @if (ViewBag.QuantPaginas > 1)
+        {
+            <div id="col-md-12">
+                <nav>
+                    <ul class="pagination">
+                        <li class="page-item active"><a class="page-link">1</a></li>
+                        @for (int i = 2; i <= ViewBag.QuantPaginas; i++)
+                        {
+                            <li class="page-item"><a class="page-link">@i</a></li>
+                        }
+                    </ul>
+                </nav>
+            </div>
+        }
+    </div>
+</div>
+
+@Html.Hidden("id_cadastro")
+
+<div id="modal_cadastro" class="form-horizontal invisivel" role="dialog">
+    <div id="msg_mensagem_aviso" class="alert alert-danger invisivel"></div>
+    <fieldset>
+        @Html.AntiForgeryToken()
+        <div class="form-group">
+            @Html.Label("txt_codigo", "Código", new { @class = "col-md-3 control-label required" })
+            <div class="col-md-3">
+                @Html.TextBox("txt_codigo", null, new { @class = "form-control", maxlength = 5 })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("txt_nome", "Nome", new { @class = "col-md-3 control-label required" })
+            <div class="col-md-9">
+                @Html.TextBox("txt_nome", null, new { @class = "form-control", maxlength = 80 })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("txt_sigla", "Sigla", new { @class = "col-md-3 control-label required" })
+            <div class="col-md-2">
+                @Html.TextBox("txt_sigla", null, new { @class = "form-control", maxlength = 2 })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("ddl_pais", "País", new { @class = "col-md-3 control-label required" })
+            <div class="col-md-6">
+                @Html.DropDownList("ddl_pais", new SelectList(ViewBag.Paises, "Id", "Nome"), new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("cbx_ativo", "Ativo", new { @class = "col-md-3 control-label" })
+            <div class="col-md-3">
+                @Html.CheckBox("cbx_ativo")
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div class="modal-footer">
+                        <a id="btn_sair" class="btn btn-default" role="button" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> Sair</a>
+                        <a id="btn_confirmar" class="btn btn-primary" role="button"><i class="glyphicon glyphicon-ok"></i> Salvar</a>
+                    </div>
+                    <div id="msg_aviso" class="btn btn-warning invisivel">Falta preencher os campos acima</div>
+                    <div id="msg_erro" class="btn btn-danger invisivel">Ocorreu um erro inesperado, tente novamente mais tarde</div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</div>
+@section Scripts{
+    <script>
+
+        function add_anti_forgery_token(data) {
+            data.__RequestVerificationToken = $('[name=__RequestVerificationToken]').val();
+            return data;
+        }
+
+        function abrir_form(dados) {
+
+            $('#msg_mensagem_aviso').val('');
+            $('#msg_aviso').hide();
+            $('#msg_mensagem_aviso').hide();
+            $('#msg_erro').hide();
+
+            $('#id_cadastro').val(dados.Id);
+            $('#txt_codigo').val(dados.Codigo);
+            $('#txt_nome').val(dados.Nome);
+            $('#txt_sigla').val(dados.Sigla);
+            $('#ddl_pais').val(dados.IdPais);
+            $('#cbx_ativo').prop('checked', dados.Ativo);
+
+            var modal_cadastro = $('#modal_cadastro').show();
+
+            bootbox.dialog({
+                title: '@ViewBag.Title',
+                message: modal_cadastro
+
+
+            }).on('shown.bs.modal', function () {
+
+                 modal_cadastro.show(0, function () {
+
+                    $('#txt_codigo').focus();
+
+                })
+
+            }).on("hidden.bs.modal", function () {
+
+                modal_cadastro.hide().appendTo('tbody');
+
+            })
+
+        }
+
+        function criar_linha_grid(dados) {
+
+            ret =
+                '<tr data-id=' + dados.Id + '>' +
+                    '<td class="text-center">' + dados.Codigo + '</td>' +
+                    '<td>' + dados.Nome + '</td>' +
+                    '<td class="text-center">' + dados.Sigla + '</td>' +
+                    '<td class="text-center">' + (dados.Ativo ? 'SIM' : 'NÃO') + '</td>' +
+                    '<td class="text-center">'+
+                        '<a class="btn-alterar btn btn-primary" style="margin-right: 3px;"><i class="glyphicon glyphicon-edit"></i> </a>'+
+                        '<a class="btn-excluir btn btn-danger"><i class="glyphicon glyphicon-trash"></i></a>'+
+                    '</td>'+
+                '</tr>';
+
+            return ret;
+
+        }
+
+        function formatar_mensagem_aviso(mensagens) {
+
+            var ret = '';
+
+            for (var i = 0; i < mensagens.length; i++) {
+
+                ret += '<li>' + mensagens[i] + '</li>';
+                break
+            }
+            return '<ul>' + ret + '</ul>';
+        }
+
+        $(document)
+            .ready(function () {
+
+                $('#txt_filtro').focus();
+
+            })
+
+            .on('click', '#btn_incluir', function () {
+
+                abrir_form({ Id: 0, Codigo: '', Nome: '', Sigla: '', IdPais: 0, NomePais: '', Ativo: 1, Metodo: 'Incluir' })
+
+            })
+
+            .on('click', '.btn-alterar', function () {
+
+                var btn = $(this),
+                    id = btn.closest("tr").attr("data-id"),
+                    url = '@Url.Action("RecuperarEstado","CadEstado")',
+                    param = { 'id': id };
+
+                $.post(url, add_anti_forgery_token(param), function (response) {
+
+                    if (response) {
+
+                        abrir_form(response);
+                    }
+                });
+            })
+
+            .on('click', '.btn-excluir', function () {
+
+
+                var btn = $(this),
+                    tr = btn.closest('tr'),
+                    id = tr.attr(('data-id')),
+                    url = '@Url.Action("ExcluirEstado","CadEstado")',
+                    param = ({ 'id': id });
+
+
+                bootbox.confirm({
+                    message: 'Deseja realmente Excluir?',
+
+                    buttons: {
+                        confirm: {
+
+                            label: 'Sim',
+                            className: 'btn-danger'
+                        },
+                        cancel: {
+
+                            label: 'Não',
+                            className: 'btn-success'
+                        }
+
+                    },
+                    callback: function (result) {
+
+                        if (result) {
+                            $.post(url, add_anti_forgery_token(param), function (response) {
+
+                            if (response) {
+
+                                tr.remove();
+
+                                var quant = $('#grid_cadastro > tbody > tr').length;
+
+                                if (quant == 0) {
+
+                                    $('#grid_cadastro').addClass('invisivel');
+                                    $('#mensagem_grid').removeClass('invisivel');
+                                }
+                            }
+                        });
+                            }
+                    }
+                })
+            })
+
+            .on('click', '#btn_confirmar', function () {
+
+                var btn = $(this),
+                    url = '@Url.Action("SalvarEstado", "CadEstado")',
+                    param = {
+
+                        Id: $('#id_cadastro').val(),
+                        Codigo: $('#txt_codigo').val(),
+                        Nome: $('#txt_nome').val(),
+                        Sigla: $('#txt_sigla').val(),
+                        IdPais: $('#ddl_pais').val(),
+                        Ativo: $('#cbx_ativo').prop('checked')
+
+                    };
+
+                $.post(url, add_anti_forgery_token(param), function (response) {
+
+                    if (response.Resultado == "OK") {
+
+                        if (param.Id == 0) {
+
+                            param.Id = response.IdSalvo;
+
+                            var table = $('#grid_cadastro').find('tbody'),
+                                linha = criar_linha_grid(param);
+
+                            table.append(linha);
+
+                            $('#grid_cadastro').removeClass('invisivel');
+                            $('#mensagem_grid').addClass('invisivel');
+
+                        } else {
+
+                            var linha = $('#grid_cadastro').find('tr[data-id=' + param.Id + ']').find('td');
+                            linha
+                                .eq(0).html(param.Codigo).end()
+                                .eq(1).html(param.Nome).end()
+                                .eq(2).html(param.Sigla).end()
+                                .eq(3).html(param.Ativo ? 'SIM' : 'NÃO');
+
+                        }
+                        $('#modal_cadastro').parents('.bootbox').modal('hide');
+
+                    } else if (response.Resultado == "ERRO") {
+
+                        $('#msg_aviso').hide();
+                        $('#msg_mensagem_aviso').hide();
+                        $('#msg_erro').show();
+
+                    } else if (response.Resultado == "AVISO") {
+
+                        $('#msg_mensagem_aviso').html(formatar_mensagem_aviso(response.Mensagens));
+                        $('#msg_aviso').show();
+                        $('#msg_mensagem_aviso').show();
+                        $('#msg_erro').hide();
+
+                        setInterval(function () {
+
+                            $('#msg_mensagem_aviso').val('');
+                            $('#msg_aviso').hide();
+                            $('#msg_mensagem_aviso').hide();
+
+
+                        }, 5000);
+                    }
+                });
+            })
+
+            .on('change', '#ddl_tam_pag', function () {
+
+                var ddl = $(this),
+                    tamPag = ddl.val(),
+                    pagina = 1,
+                    url = '@Url.Action("EstadoPagina", "CadEstado")',
+                    param = { 'pagina': pagina, 'tamPag': tamPag };
+
+                $.post(url, add_anti_forgery_token(param), function (response) {
+
+                    if (response) {
+
+                        var table = $('#grid_cadastro').find('tbody');
+                        table.empty();
+
+                        if (response.length > 0) {
+
+                            $('#grid_cadastro').removeClass('invisivel');
+                            $('#mensagem_grid').addClass('invisivel');
+
+                            for (var i = 0; i < response.length; i++) {
+
+                                table.append(criar_linha_grid(response[i]));
+
+                            }
+                        }
+                        else {
+
+                            $('#grid_cadastro').addClass('invisivel');
+                            $('#mensagem_grid').removeClass('invisivel');
+
+                        }
+                    }
+                });
+            })
+
+            .on('click', '.page-item', function () {
+
+            var btn = $(this),
+                tamPag = $('#ddl_tam_pag').val(),
+                pagina = btn.text(),
+                url = '@Url.Action("EstadoPagina", "CadEstado")',
+                param = { 'pagina': pagina, 'tamPag': tamPag };
+
+                $.post(url, add_anti_forgery_token(param), function (response) {
+
+                    if (response) {
+
+                        var table = $('#grid_cadastro').find('tbody');
+                        table.empty();
+
+                        if (response.length > 0) {
+
+                            $('#grid_cadastro').removeClass('invisivel');
+                            $('#mensagem_grid').addClass('invisivel');
+
+                            for (var i = 0; i < response.length; i++) {
+
+                                table.append(criar_linha_grid(response[i]));
+
+                            }
+                        }
+                        else {
+
+                            $('#grid_cadastro').addClass('invisivel');
+                            $('#mensagem_grid').removeClass('invisivel');
+
+                        }
+
+                        btn.siblings().removeClass('active');
+                        btn.addClass('active');
+                    }
+                });
+
+            })
+
+            .on('keyup', '#txt_filtro', function () {
+
+                var filtro = $(this),
+                    ddl = $('#ddl_tam_pag'),
+                    tamPag = ddl.val(),
+                    pagina = 1,
+                    url = '@Url.Action("EstadoPagina", "CadEstado")',
+                    param = ({ 'pagina': pagina, 'tamPag': tamPag, 'filtro': filtro.val() });
+
+                $.post(url, add_anti_forgery_token(param), function (response) {
+
+                    if (response) {
+
+                        var table = $('#grid_cadastro').find('tbody');
+                        table.empty();
+
+                        if (response.length > 0) {
+
+                            $('#grid_cadastro').removeClass('invisivel');
+                            $('#mensagem_grid').addClass('invisivel');
+
+                            for (var i = 0; i < response.length; i++) {
+
+                                table.append(criar_linha_grid(response[i]));
+
+                            }
+                        }
+                        else {
+
+                            $('#grid_cadastro').addClass('invisivel');
+                            $('#mensagem_grid').removeClass('invisivel');
+
+                        }
+                    }
+                });
+            });
+
+    </script>
+
+}

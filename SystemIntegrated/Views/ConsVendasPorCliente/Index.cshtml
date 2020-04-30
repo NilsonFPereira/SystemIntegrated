@@ -1,0 +1,184 @@
+﻿
+@{
+    ViewBag.Title = "Consulta Vendas Por Cliente";
+}
+
+<link href="~/Content/Consulta/ConsVendasPorCliente.css" rel="stylesheet" />
+
+<div class="col-md-12" style="margin:0 auto">
+    <section id="cadastro_cabecalho">
+        <h4 style="color:#000">@ViewBag.Title</h4>
+    </section>
+    <section id="cadastro-conteudo">
+        <div id="cabecalho_grid">
+
+            <div class="form-group row">
+                <div class="col-md-4"></div>
+                @Html.Label("txt_cnpjcpf", "Cnpj/CPF", new { @class = "control-label col-md-1" })
+                <div class="col-md-4">
+                    @Html.TextBox("txt_cnpjcpf", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-10 col-md-offset-5">
+                    <input type="submit" id="btn_pesquisar" class="btn btn-success" value="Pesquisar">
+                </div>
+            </div>
+
+            <div id="div_info" class="alert alert-info">
+
+                <label id="cnpjcpf"></label>
+
+            </div>
+            </div>
+        <div id="cabecalho_accordion">
+        </div>
+    </section>
+</div>
+
+@section Scripts{
+
+<script src="~/Scripts/jquery.mask.min.js"></script>
+
+    <script>
+        function criar_linha_grid(dados) {
+
+            var ret =
+                '<div class="panel-group data-id=' + dados.NumeroVenda + ' id="accordion">' +
+                    '<div class="panel panel-primary">' +
+                        '<div class="panel-heading">' +
+                            '<h4 class="panel-title">' +
+                                '<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">' +
+                                    '<span class="glyphicon glyphicon-flag text-success"></span>'+
+                                    ' Número Venda: ' + dados.NumeroVenda +
+                                    '<span class="glyphicon glyphicon-chevron-up pull-right"></span>'+
+                                '</a>' +
+                            '</h4>' +
+                        '</div>'+
+                        '<div id="collapseOne class="panel-collapse collapse in">' +
+                        '<div class="panel-body">' +
+                            '<table id="grid_cadastro_parcela" class="table table-bordered table-striped table-hover">' +
+                                '<thead>'+
+                                    '<tr data-id="">'+
+                                        '<th>Codigo</th>'+
+                                        '<th>Nome</th>'+
+                                        '<th>Sigla</th>'+
+                                        '<th>Ativo</th>'+
+                                        '<th>Ação</th>'+
+                                    '</tr>'+
+                                '</thead>'+
+                                '<tbody>' +
+                                '</tbody>'+
+                            '</table>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
+
+
+            return ret;
+
+        }
+
+          (function($) {
+            'use strict';
+            $('#collapseOne, #collapseTwo, #collapseThree').on({
+
+                'show.bs.collapse': function () {
+                $('a[href="#' + this.id + '"] span.glyphicons-chevron-down')
+                  .removeClass('glyphicons-chevron-down')
+                  .addClass('glyphicons-chevron-up');
+              },
+
+                'hide.bs.collapse': function () {
+                $('a[href="#' + this.id + '"] span.glyphicon-chevron-up')
+                  .removeClass('glyphicons-chevron-up')
+                  .addClass('glyphicons-chevron-down');
+              }
+            });
+          })
+
+                        /*Função criar linha grid*/
+        function criar_linha_grid_parcela(dados) {
+
+            var ret =
+                '<tr>' +
+                        '<td>'+dados.NumeroParcela +'</td>'+
+                        '<td>' + dados.DataVencimento  + '</td>'+
+                        '<td>' + dados.ValorParcela    + '</td>' +
+                        '<td>' + dados.DataPagamento   +'</td>'+
+                        '<td>' + dados.StatusPagamento +'</td>' +
+                    '</tr>';
+
+            return ret;
+
+        }
+
+
+        $(document).ready(function () {
+
+            var cnpjcpf = $('#txt_cnpjcpf');
+
+            cnpjcpf.focus();
+            cnpjcpf.mask('000.000.000-00', { reverse: true });
+            $('#div_info').hide();
+
+        }).on('click', '#btn_pesquisar', function () {
+            
+            var cnpjCpf = $('#txt_cnpjcpf').val(),
+                url = '@Url.Action("VendasPorCliente", "ConsVendasPorCliente")',
+                param = ({ 'cnpjcpf': cnpjCpf });
+
+            $.post(url, param, function (response) {
+
+                if (response) {
+
+
+
+                    for (var i = 0; i < response.length; i++) {
+
+
+                        if (i == 1) {
+
+                            $('#cnpjcpf').html("Cnpj/Cpf: " + response[0].CnpjCpf);
+                            $('#div_info').show();
+
+                        }
+
+                        var table_parcela = $("#grid_cadastro_parcela").find('tbody');
+                        $('#cabecalho_accordion').append(criar_linha_grid(response[i]));
+
+                         /*Select das parcelas*/
+                        var numeroNota = response[i].NumeroVenda,
+                        cnpjCpf = $('#cnpjcpf').text(),
+                        url = '@Url.Action("ConsultarParcelas", "ConsParcela")',
+                        param = ({ 'numeroNota': numeroNota, 'cnpjCpf': cnpjCpf });
+
+                        $.post(url, param, function (responseParcela) {
+
+
+                            if (responseParcela) {
+
+                                for (var j = 0; j < responseParcela.length; j++){
+
+
+                                    var linha = criar_linha_grid_parcela(responseParcela[j]);
+                                        table_parcela.append(linha);
+                                }
+
+
+                                $('#txt_cnpjcpf').val('');
+                                $('#txt_cnpjcpf').focus();
+                             }
+                        });
+
+                       
+
+                    }
+                }
+            });
+        });
+
+    </script>
+
+}
+

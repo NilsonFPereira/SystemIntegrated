@@ -1,0 +1,423 @@
+﻿@model List<SystemIntegrated.Models.CategoriaProdutoViewModel>
+@{
+    var lista = Model;
+    ViewBag.Title = "Cadastro de Categorias de Produtos";
+    var titulo = ViewBag.Title;
+}
+<link href="~/Content/Cadastro/CadCategoriaProduto.css" rel="stylesheet" />
+<div class="col-md-12">
+    <section id="cadastro_cabecalho">
+        <h2 style="color:#000">@ViewBag.Title</h2>
+    </section>
+    <div id="cadastro_conteudo">
+        <div id="cabecalho_grid">
+            <div class="form-group">
+                <div class="col-md-2">
+                    <a id="btn_incluir" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> Incluir</a>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-4">
+                    @Html.DropDownList("ddl_tam_pag", (SelectList)ViewBag.ListaTamPag, new { @class = "form-control seleckpicker" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-6">
+                    <div class="form-group left-inner-addon">
+                        <i class="glyphicon glyphicon-search"></i>
+                        @Html.TextBox("txt_filtro", null, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12" style="overflow:auto">
+        <table id="grid_cadastro" class="table table-bordered table-striped table-hover @Html.Raw(lista == null || lista.Count == 0 ? "invisivel" : "")">
+            <thead>
+                <tr class="info">
+                    <th class="text-center">Nome</th>
+                    <th class="text-center">Ativo</th>
+                    <th class="text-center">Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+
+                    foreach (var item in Model)
+                    {
+                        var ativo = (item.Ativo ? "SIM" : "NÃO");
+
+                        <tr data-id="@item.Id">
+                            <td>@item.Nome</td>
+                            <td class="text-center">@ativo</td>
+                            <td class="text-center">
+                                <a class="btn-alterar btn btn-primary"><i class="glyphicon glyphicon-edit"></i> </a>
+                                <a class="btn-excluir btn btn-danger"><i class="glyphicon glyphicon-trash"></i> </a>
+                            </td>
+
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+        <div id="mensagem_grid" @Html.Raw(lista != null && lista.Count > 0 ? "class=\"invisivel\"": "")>
+            Nenhum Registro em @titulo
+        </div>
+       
+        @if(ViewBag.QuantPaginas > 1) { 
+        <div id="row">
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item active"><a class="page-link">1</a></li>
+                    @for (var i = 2; i <= ViewBag.QuantPaginas; i++)
+                    {
+                        <li class="page-item"><a class="page-link">@i</a></li>
+                    }
+                </ul>
+            </nav>
+        </div>
+        }
+    </div>
+</div>
+
+@Html.Hidden("id_cadastro")
+<div id="modal_cadastro" class="form-horizontal invisivel" role="dialog">
+    <div id="msg_mensagem_aviso" class="text-danger invisivel"></div>
+    <fieldset>
+        @Html.AntiForgeryToken()
+        <div class="form-group">
+            @Html.Label("txt_nome", "Nome", new { @class = "control-label col-md-3 required" })
+            <div class="col-md-9">
+                @Html.TextBox("txt_nome", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("cbx_ativo", "Ativo", new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
+                @Html.CheckBox("cbx_ativo")
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="modal-footer">
+                <a id="btn_sair" class="btn btn-default" role="button" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> Cancelar</a>
+                <a id="btn_confirmar" class="btn btn-primary" role="button"><i class="glyphicon glyphicon-ok"></i> Salvar</a>
+            </div>
+            <div id="msg_aviso" class="btn btn-warning invisivel">Falta preencher os campos acima</div>
+            <div id="msg_erro" class="btn btn-danger invisivel">Ocorreu um erro inesperado, tente novamente mais tarde</div>
+        </div>
+    </fieldset>
+</div>
+@section Scripts{
+    <script>
+
+        function add_anti_forgery_token(data) {
+            data.__RequestVerificationToken = $('[name=__RequestVerificationToken]').val();
+            return data;
+        }
+
+        function abrir_form(dados) {
+
+            $('#msg_mensagem_aviso').val('');
+            $('#msg_aviso').hide();
+            $('#msg_erro').hide();
+            $('#msg_mensagem_aviso').hide();
+
+            $('#id_cadastro').val(dados.Id);
+            $('#txt_nome').val(dados.Nome);
+            $('#cbx_ativo').prop('checked', dados.Ativo);
+
+            var modal_cadastro = $('#modal_cadastro');
+            bootbox.dialog({
+                title: '@ViewBag.Title',
+                message: modal_cadastro
+
+            }).on('shown.bs.modal', function () {
+
+                modal_cadastro.show(0, function () {
+
+                    $('#txt_nome').focus();
+
+                });
+            }).on('hidden.bs.modal', function () {
+
+                modal_cadastro.hide().appendTo('tbody');
+            })
+        }
+
+        function criar_linha_grid(dados) {
+
+            var ret =
+                '<tr data-id=' + dados.Id + '>' +
+                    '<td>' + dados.Nome + '</td>' +
+                    '<td class="text-center">' + (dados.Ativo ? 'SIM' : 'NÃO') + '</td >' +
+                    '<td class="text-center">' +
+                        '<a class="btn-alterar btn btn-primary" style="margin-right:5px"><i class="glyphicon glyphicon-edit"></i> </a>' +
+                        '<a class="btn-excluir btn btn-danger"><i class="glyphicon glyphicon-trash"></i> </a>' +
+                    '</td>'+
+                '</tr>';
+            return ret;
+
+        }
+
+        function formatar_mensagens_aviso(mensagens) {
+
+            var ret = '';
+
+            for (var i = 0; i < mensagens.length; i++) {
+
+                ret += '<li>'+ mensagens[i] +'</li>';
+
+            }
+            return '<ul>'+ ret +'</ul>';
+        }
+
+        $(document)
+            .ready(function () {
+
+                $('#txt_filtro').focus();
+
+            })
+
+            .on('click', '#btn_incluir', function () {
+
+                abrir_form({ Id: 0, Nome: '', Ativo: 1 });
+
+            })
+
+            .on('click', '.btn-alterar', function () {
+
+                var btn = $(this),
+                    id = btn.closest('tr').attr('data-id'),
+                    url = '@Url.Action("RecuperarCategoriaProduto", "CadCategoriaProduto")',
+                    param = { 'id': id };
+
+                $.post(url, add_anti_forgery_token(param), function (response) {
+
+                    if (response) {
+
+                        abrir_form(response);
+                    }
+                });
+
+            })
+
+            .on('click', '.btn-excluir', function () {
+
+                var btn = $(this),
+                    tr = btn.closest('tr'),
+                    id = tr.attr('data-id'),
+                    url = '@Url.Action("ExcluirCategoriaProduto", "CadCategoriaProduto")',
+                    param = { 'id': id };
+
+                bootbox.confirm({
+                    message: 'Deseja realmente excluir?',
+                    buttons: {
+                        confirm: {
+
+                            label: 'SIM',
+                            className: 'btn-success'
+
+                        }, cancel: {
+
+                            label: 'NÃO',
+                            className: 'btn-danger'
+
+                        }
+
+                    }, callback: function (result) {
+
+                        if (result) {
+
+                            $.post(url, add_anti_forgery_token(param), function (response) {
+
+                                if (response) {
+
+                                    tr.remove();
+
+                                    var quant = $('#grid_cadastro > tbody > tr').length;
+
+                                    if (quant == 0) {
+
+                                        $('#grid_cadastro').addClass('invisivel');
+                                        $('#mensagem_grid').removeClass('invisivel');
+
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            })
+
+            .on('click', '#btn_confirmar', function () {
+
+                var btn = $(this),
+                    url = '@Url.Action("SalvarCategoriaProduto", "CadCategoriaProduto")',
+                    param = {
+
+                        Id: $('#id_cadastro').val(),
+                        Nome: $('#txt_nome').val(),
+                        Ativo: $('#cbx_ativo').prop('checked')
+
+                    };
+                $.post(url, add_anti_forgery_token(param), function (response) {
+
+                    if (response.Resultado == "OK") {
+
+                        if (param.Id == 0) {
+
+                            param.Id = response.IdSalvo;
+
+                            var table = $('#grid_cadastro').find('tbody'),
+                                linha = criar_linha_grid(param);
+
+                            table.append(linha);
+
+                            $('#grid_cadastro').removeClass('invisivel');
+                            $('#mensagem_grid').addClass('invisivel');
+
+
+                        } else {
+
+                            var linha = $('#grid_cadastro').find('tr[data-id=' + param.Id + ']').find('td');
+
+                            linha
+                                .eq(0).html(param.Nome).end()
+                                .eq(1).html(param.Ativo ? "SIM" : "NÃO").end();
+
+                        }
+                        $('#modal_cadastro').parents('.bootbox').modal('hide');
+
+                    }
+                    else if (response.Resultado == "ERRO") {
+
+                        $('#msg_erro').show();
+                        $('#msg_aviso').hide();
+                        $('#msg_mensagem_aviso').hide();
+
+
+                    }
+                    else if (response.Resultado == "AVISO") {
+
+                        $('#msg_mensagem_aviso').html(formatar_mensagens_aviso(response.Mensagens));
+                        $('#msg_mensagem_aviso').show();
+                        $('#msg_erro').hide();
+                        $('#msg_aviso').show();
+
+                    }
+                });
+            })
+
+            .on('change', '#ddl_tam_pag', function () {
+
+                var btn = $(this),
+                    tamPag = btn.val(),
+                    pagina = 1,
+                    url = '@Url.Action("CategoriaProdutoPagina", "CadCategoriaProduto")',
+                    param = { 'pagina': pagina, 'tamPag': tamPag };
+
+                $.post(url, add_anti_forgery_token(param), function (response) {
+
+                    if (response) {
+
+                        var table = $('#grid_cadastro').find('tbody');
+                        table.empty();
+
+                        if (response.length > 0) {
+
+                            $('#grid_cadastro').removeClass('invisivel');
+                            $('#mensagem_grid').addClass('invisivel');
+
+                            for (var i = 0; i < response.length; i++) {
+
+                                table.append(criar_linha_grid(response[i]));
+
+                            }
+                        }
+                        else {
+
+                            $('#grid_cadastro').addClass('invisivel');
+                            $('#mensagem_grid').removeClass('invisivel');
+
+                        }
+                    }
+                });        
+            })
+
+            .on('click', '.page-item', function () {
+
+                var btn = $(this),
+                    tamPag = $('#ddl_tam_pag').val(),
+                    pagina = btn.text(),
+                    url = '@Url.Action("CategoriaProdutoPagina", "CadCategoriaProduto")',
+                    param = { 'pagina': pagina, 'tamPag': tamPag };
+
+                $.post(url, add_anti_forgery_token(param), function (response) {
+
+                    if (response) {
+
+                        var table = $('#grid_cadastro').find('tbody');
+                        table.empty();
+
+                        if (response.length > 0) {
+
+                            $('#grid_cadastro').removeClass('invisivel');
+                            $('#mensagem_grid').addClass('invisivel');
+
+                            for (var i = 0; i < response.length; i++) {
+
+                                table.append(criar_linha_grid(response[i]));
+
+                            }
+                        }
+                        else {
+
+                            $('#grid_cadastro').addClass('invisivel');
+                            $('#mensagem_grid').removeClass('invisivel');
+
+                        }
+
+                        btn.siblings().removeClass('active');
+                        btn.addClass('active');
+                    }
+                });        
+            })
+
+            .on('keyup', '#txt_filtro', function () {
+
+                var filtro = $(this),
+                    tamPag = $('#ddl_tam_pag').val(),
+                    pagina = 1,
+                    url = '@Url.Action("CategoriaProdutoPagina", "CadCategoriaProduto")',
+                    param = { 'pagina': pagina, 'tamPag': tamPag, 'filtro': filtro.val() };
+
+                $.post(url, add_anti_forgery_token(param), function (response) {
+
+                    if (response) {
+
+                        var table = $('#grid_cadastro').find('tbody');
+                        table.empty();
+
+                        if (response.length > 0) {
+
+                            $('#grid_cadastro').removeClass('invisivel');
+                            $('#mensagem_grid').addClass('invisivel');
+
+                            for (var i = 0; i < response.length; i++) {
+
+                                table.append(criar_linha_grid(response[i]));
+
+                            }
+                        }
+                        else {
+
+                            $('#grid_cadastro').addClass('invisivel');
+                            $('#mensagem_grid').removeClass('invisivel');
+
+                        }
+                    }
+                });        
+            });
+    </script>
+
+}

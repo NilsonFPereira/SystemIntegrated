@@ -1,0 +1,125 @@
+﻿@{
+    ViewBag.Title = "Consulta de Parcelas";
+}
+<link href="~/Content/Cadastro/CadPais.css" rel="stylesheet" />
+<div class="col-md-12" style="margin:0 auto">
+    <section id="cadastro_cabecalho">
+        <h4 style="color:#000">@ViewBag.Title</h4>
+    </section>
+    <section id="cadastro_conteudo">
+        <div id="cabecalho_grid">
+            <div class="form-group row">
+                <div class="col-md-4"></div>
+                @Html.Label("txt_numero_nota", "Informe o número", new { @class = "control-label col-md-2" })
+                <div class="col-md-3">
+                    @Html.TextBox("txt_numero_nota", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4"></div>
+                @Html.Label("txt_cnpjcpf", "Cnpj/Cpf", new { @class = "control-label col-md-1" })
+                <div class="col-md-4">
+                    @Html.TextBox("txt_cnpjcpf", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-10 col-md-offset-5">
+                    <a id="btn_pesquisar" class="btn btn-success"> Consultar Parcela</a>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-12" style="height:30px" id="nome"></div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-8" style="height: 30px" id="logradouro"></div>
+                <div class="col-md-4" style="height: 30px" id="numero"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <table id="grid_cadastro" class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Parcela</th>
+                        <th>Vencimento</th>
+                        <th>Valor</th>
+                        <th>Pagamento</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+@section Scripts{
+
+    <script src="~/Scripts/jquery.mask.min.js"></script>
+
+    <script>
+
+
+                /*Função criar linha grid*/
+        function criar_linha_grid(dados) {
+
+            var ret =
+                    '<tr>' +
+                        '<td>'+dados.NumeroParcela +'</td>'+
+                        '<td>' + dados.DataVencimento  + '</td>'+
+                        '<td>' + dados.ValorParcela    + '</td>' +
+                        '<td>' + dados.DataPagamento   +'</td>'+
+                        '<td>' + dados.StatusPagamento +'</td>' +
+                    '</tr>';
+
+            return ret;
+
+        }
+
+        $(document).ready(function () {
+
+            var cnpjcpf = $('#txt_cnpjcpf');
+
+            cnpjcpf.focus();
+            cnpjcpf.mask('000.000.000-00', { reverse: true });
+
+            $('#txt_numero_nota').focus();
+
+        }).on('click', '#btn_pesquisar', function () {
+
+            var numeroNota = $('#txt_numero_nota').val(),
+                cnpjCpf = $('#txt_cnpjcpf').val(),
+                url = '@Url.Action("ConsultarParcelas", "ConsParcela")',
+                param = ({ 'numeroNota': numeroNota, 'cnpjCpf': cnpjCpf });
+
+            $.post(url, param, function (response) {
+
+                if (response) {
+
+                    var table = $('#grid_cadastro').find('tbody');
+
+
+                    table.empty();
+
+                    $('#nome').html('Cliente: ' + response[0].Nome);
+                    $('#logradouro').html('Logradouro: ' + response[0].Logradouro);
+                    $('#numero').html('Número: ' + response[0].Numero);
+
+                    for (var i = 0; i < response.length; i++){
+
+
+                        linha = criar_linha_grid(response[i]);
+                        table.append(linha);
+                    }
+
+                    $('#txt_numero_nota').val('');
+                    $('#txt_cnpjcpf').val('');
+                    $('#txt_numero_nota').focus();
+                }
+            });
+        })
+
+    </script>
+
+}

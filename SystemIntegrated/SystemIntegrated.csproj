@@ -1,0 +1,438 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D3597B4A-9E08-4B11-9BE1-D0211702C200}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SystemIntegrated</RootNamespace>
+    <AssemblyName>SystemIntegrated</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <Use64BitIISExpress />
+    <IISExpressSSLPort>44302</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+    </Reference>
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.7\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.7\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease">
+      <Private>True</Private>
+      <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="Antlr3.Runtime">
+      <Private>True</Private>
+      <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\Cadastro\CadCategoriaProdutoController.cs" />
+    <Compile Include="Controllers\Cadastro\CadCidadeController.cs" />
+    <Compile Include="Controllers\Cadastro\CadClassificacaoFiscalController.cs" />
+    <Compile Include="Controllers\Cadastro\CadClienteController.cs" />
+    <Compile Include="Controllers\Cadastro\CadCorProdutoController.cs" />
+    <Compile Include="Controllers\Cadastro\CadEstadoController.cs" />
+    <Compile Include="Controllers\Cadastro\CadFormaPagamentoController.cs" />
+    <Compile Include="Controllers\Cadastro\CadFornecedorController.cs" />
+    <Compile Include="Controllers\Cadastro\CadFretePorContaController.cs" />
+    <Compile Include="Controllers\Cadastro\CadGrupoProdutoController.cs" />
+    <Compile Include="Controllers\Cadastro\CadLocalArmazenamentoController.cs" />
+    <Compile Include="Controllers\Cadastro\CadMarcaProdutoController.cs" />
+    <Compile Include="Controllers\Cadastro\CadNaturezaController.cs" />
+    <Compile Include="Controllers\Cadastro\CadNivelUsuarioController.cs" />
+    <Compile Include="Controllers\Cadastro\CadPaisController.cs" />
+    <Compile Include="Controllers\Cadastro\CadProdutoController.cs" />
+    <Compile Include="Controllers\Cadastro\CadSexoController.cs" />
+    <Compile Include="Controllers\Cadastro\CadTipoPessoaController.cs" />
+    <Compile Include="Controllers\Cadastro\CadUnidadeMedidaController.cs" />
+    <Compile Include="Controllers\Cadastro\CadUsuarioController.cs" />
+    <Compile Include="Controllers\Consulta\ConsParcelaController.cs" />
+    <Compile Include="Controllers\Consulta\ConsVendasPorClienteController.cs" />
+    <Compile Include="Controllers\ContaController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\Operacao\OperAcertoEstoqueController.cs" />
+    <Compile Include="Controllers\Operacao\OperEntradaNotaController.cs" />
+    <Compile Include="Controllers\Operacao\OperEntradaNotaItemController.cs" />
+    <Compile Include="Controllers\Operacao\OperEstornoNotaController.cs" />
+    <Compile Include="Controllers\Operacao\OperEstornoVendaController.cs" />
+    <Compile Include="Controllers\Operacao\OperRecebimentoController.cs" />
+    <Compile Include="Controllers\Operacao\OperVendaController.cs" />
+    <Compile Include="Controllers\Operacao\OperVendaItemController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\CriptoHelper.cs" />
+    <Compile Include="Models\Cadastro\CategoriaProdutoModel.cs" />
+    <Compile Include="Models\Cadastro\CategoriaProdutoViewModel.cs" />
+    <Compile Include="Models\Cadastro\CidadeModel.cs" />
+    <Compile Include="Models\Cadastro\ClassificacaoFiscalModel.cs" />
+    <Compile Include="Models\Cadastro\ClassificacaoFiscalViewModel.cs" />
+    <Compile Include="Models\Cadastro\ClienteModel.cs" />
+    <Compile Include="Models\Cadastro\ClienteViewModel.cs" />
+    <Compile Include="Models\Cadastro\CidadeViewModel.cs" />
+    <Compile Include="Models\Cadastro\CorProdutoModel.cs" />
+    <Compile Include="Models\Cadastro\CorProdutoViewModel.cs" />
+    <Compile Include="Models\Cadastro\EstadoModel.cs" />
+    <Compile Include="Models\Cadastro\EstadoViewModel.cs" />
+    <Compile Include="Models\Cadastro\FormaPagamentoModel.cs" />
+    <Compile Include="Models\Cadastro\FormaPagamentoViewModel.cs" />
+    <Compile Include="Models\Cadastro\FornecedorModel.cs" />
+    <Compile Include="Models\Cadastro\FornecedorViewModel.cs" />
+    <Compile Include="Models\Cadastro\FretePorContaModel.cs" />
+    <Compile Include="Models\Cadastro\FretePorContaViewModel.cs" />
+    <Compile Include="Models\Cadastro\GrupoProdutoModel.cs" />
+    <Compile Include="Models\Cadastro\GrupoProdutoViewModel.cs" />
+    <Compile Include="Models\Cadastro\LocalArmazenamentoModel.cs" />
+    <Compile Include="Models\Cadastro\LocalArmazenamentoViewModel.cs" />
+    <Compile Include="Models\Cadastro\MarcaProdutoModel.cs" />
+    <Compile Include="Models\Cadastro\NaturezaModel.cs" />
+    <Compile Include="Models\Cadastro\NivelUsuarioModel.cs" />
+    <Compile Include="Models\Cadastro\ParcelaModel.cs" />
+    <Compile Include="Models\Cadastro\ProdutoModel.cs" />
+    <Compile Include="Models\Cadastro\UnidadeMedidaModel.cs" />
+    <Compile Include="Models\Cadastro\UsuarioModel.cs" />
+    <Compile Include="Models\LoginViewModel.cs" />
+    <Compile Include="Models\Cadastro\MarcaProdutoViewModel.cs" />
+    <Compile Include="Models\Cadastro\NaturezaViewModel.cs" />
+    <Compile Include="Models\Cadastro\NivelUsuarioViewModel.cs" />
+    <Compile Include="Models\Cadastro\PaisModel.cs" />
+    <Compile Include="Models\Cadastro\PaisViewModel.cs" />
+    <Compile Include="Models\Cadastro\ProdutoViewModel.cs" />
+    <Compile Include="Models\Cadastro\SexoModel.cs" />
+    <Compile Include="Models\Cadastro\SexoViewModel.cs" />
+    <Compile Include="Models\Cadastro\TipoPessoaModel.cs" />
+    <Compile Include="Models\Cadastro\TipoPessoaViewModel.cs" />
+    <Compile Include="Models\Cadastro\UnidadeMedidaViewModel.cs" />
+    <Compile Include="Models\Cadastro\UsuarioViewModel.cs" />
+    <Compile Include="Models\Operacao\EntradaNotaItemModel.cs" />
+    <Compile Include="Models\Operacao\EntradaNotaItemViewModel.cs" />
+    <Compile Include="Models\Operacao\EntradaNotaModel.cs" />
+    <Compile Include="Models\Operacao\EntradaNotaViewModel.cs" />
+    <Compile Include="Models\Operacao\VendaItemModel.cs" />
+    <Compile Include="Models\Operacao\VendaItemViewModel.cs" />
+    <Compile Include="Models\Operacao\VendaModel.cs" />
+    <Compile Include="Models\Operacao\VendaViewModel.cs" />
+    <Compile Include="Models\VendasPorClienteModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositorio\Cadastro\CategoriaProdutoRepositorio.cs" />
+    <Compile Include="Repositorio\Cadastro\CidadeRepositorio.cs" />
+    <Compile Include="Repositorio\Cadastro\ClassificacaoFiscalRepositorio.cs" />
+    <Compile Include="Repositorio\Cadastro\ClienteRepositorio.cs" />
+    <Compile Include="Repositorio\Cadastro\ConsultaParcelaRepositorio.cs" />
+    <Compile Include="Repositorio\Cadastro\ConsultaVendaPorClienteRepositorio.cs" />
+    <Compile Include="Repositorio\Cadastro\CorProdutoRepositorio.cs" />
+    <Compile Include="Repositorio\Cadastro\EstadoRepositorio.cs" />
+    <Compile Include="Repositorio\Cadastro\FormaPagamentoRepositorio.cs" />
+    <Compile Include="Repositorio\Cadastro\FornecedorRepositorio.cs" />
+    <Compile Include="Repositorio\Cadastro\FretePorContaRepositorio.cs" />
+    <Compile Include="Repositorio\Cadastro\GrupoProdutoRepositorio.cs" />
+    <Compile Include="Repositorio\Cadastro\LocalArmazenamentoRepositorio.cs" />
+    <Compile Include="Repositorio\Cadastro\MarcaProdutoRepositorio.cs" />
+    <Compile Include="Repositorio\Cadastro\NaturezaRepositorio.cs" />
+    <Compile Include="Repositorio\Cadastro\NivelUsuarioRepositorio.cs" />
+    <Compile Include="Repositorio\Cadastro\PaisRepositorio.cs" />
+    <Compile Include="Repositorio\Cadastro\ProdutoRepositorio.cs" />
+    <Compile Include="Repositorio\Cadastro\SexoRepositorio.cs" />
+    <Compile Include="Repositorio\Cadastro\TipoPessoaRepositorio.cs" />
+    <Compile Include="Repositorio\Cadastro\UnidadeMedidaRepositorio.cs" />
+    <Compile Include="Repositorio\Cadastro\UsuarioRepositorio.cs" />
+    <Compile Include="Repositorio\Operacao\EntradaNotaItemRepositorio.cs" />
+    <Compile Include="Repositorio\Operacao\EntradaNotaRepositorio.cs" />
+    <Compile Include="Repositorio\Operacao\VendaItemRepositorio.cs" />
+    <Compile Include="Repositorio\Operacao\VendaRepositorio.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\bootstrap-theme.css" />
+    <Content Include="Content\bootstrap-theme.min.css" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Cadastro\CadCategoriaProduto.css" />
+    <Content Include="Content\Cadastro\CadCidade.css" />
+    <Content Include="Content\Cadastro\CadClassificacaoFiscal.css" />
+    <Content Include="Content\Cadastro\CadCliente.css" />
+    <Content Include="Content\Cadastro\CadCorProduto.css" />
+    <Content Include="Content\Cadastro\CadEstado.css" />
+    <Content Include="Content\Cadastro\CadFornecedor.css" />
+    <Content Include="Content\Cadastro\CadFretePorConta.css" />
+    <Content Include="Content\Cadastro\CadGrupoProduto.css" />
+    <Content Include="Content\Cadastro\CadLocalArmazenamento.css" />
+    <Content Include="Content\Cadastro\CadMarcaProduto.css" />
+    <Content Include="Content\Cadastro\CadNatureza.css" />
+    <Content Include="Content\Cadastro\CadNivelUsuario.css" />
+    <Content Include="Content\Cadastro\CadPais.css" />
+    <Content Include="Content\Cadastro\CadProduto.css" />
+    <Content Include="Content\Cadastro\CadSexo.css" />
+    <Content Include="Content\Cadastro\CadTipoPessoa.css" />
+    <Content Include="Content\Cadastro\CadUnidadeMedida.css" />
+    <Content Include="Content\Cadastro\CadUsuario.css" />
+    <Content Include="Content\Consulta\ConsVendasPorCliente.css" />
+    <Content Include="Content\font-awesome.css" />
+    <Content Include="Content\font-awesome.min.css" />
+    <Content Include="Content\Jquery-ui\jquery-ui.css" />
+    <Content Include="Content\Jquery-ui\jquery-ui.min.css" />
+    <Content Include="Content\Jquery-ui\jquery-ui.structure.css" />
+    <Content Include="Content\Jquery-ui\jquery-ui.structure.min.css" />
+    <Content Include="Content\Jquery-ui\jquery-ui.theme.css" />
+    <Content Include="Content\Jquery-ui\jquery-ui.theme.min.css" />
+    <Content Include="Content\Operacao\OperEntradaNota.css" />
+    <Content Include="favicon.ico" />
+    <Content Include="fonts\fontawesome-webfont.svg" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Global.asax" />
+    <Content Include="Content\Site.css" />
+    <Content Include="Imagens\Banner_Principal.png" />
+    <Content Include="Scripts\bootbox.all.js" />
+    <Content Include="Scripts\bootbox.all.min.js" />
+    <Content Include="Scripts\bootbox.js" />
+    <Content Include="Scripts\bootbox.locales.js" />
+    <Content Include="Scripts\bootbox.locales.min.js" />
+    <Content Include="Scripts\bootbox.min.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="fonts\fontawesome-webfont.eot" />
+    <Content Include="fonts\fontawesome-webfont.ttf" />
+    <Content Include="fonts\fontawesome-webfont.woff" />
+    <Content Include="fonts\fontawesome-webfont.woff2" />
+    <Content Include="fonts\FontAwesome.otf" />
+    <Content Include="less\animated.less" />
+    <Content Include="less\bordered-pulled.less" />
+    <Content Include="less\core.less" />
+    <Content Include="less\fixed-width.less" />
+    <Content Include="less\font-awesome.less" />
+    <Content Include="less\icons.less" />
+    <Content Include="less\larger.less" />
+    <Content Include="less\list.less" />
+    <Content Include="less\mixins.less" />
+    <Content Include="less\path.less" />
+    <Content Include="less\rotated-flipped.less" />
+    <Content Include="less\screen-reader.less" />
+    <Content Include="less\stacked.less" />
+    <Content Include="less\variables.less" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Scripts\jquery-3.4.1.intellisense.js" />
+    <Content Include="Scripts\CadBase.js" />
+    <Content Include="Scripts\jquery-1.9.1.min.js" />
+    <Content Include="Scripts\jquery-3.4.1.js" />
+    <Content Include="Scripts\jquery-3.4.1.min.js" />
+    <Content Include="Scripts\jquery-3.4.1.slim.js" />
+    <Content Include="Scripts\jquery-3.4.1.slim.min.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\Jquery-ui\jquery-ui.js" />
+    <Content Include="Scripts\Jquery-ui\jquery-ui.min.js" />
+    <Content Include="Scripts\jquery.mask.js" />
+    <Content Include="Scripts\jquery.mask.min.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\methods_pt.js" />
+    <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Web.config" />
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Views\Web.config" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\CadCidade\Index.cshtml" />
+    <Content Include="Views\CadEstado\Index.cshtml" />
+    <Content Include="Views\CadPais\Index.cshtml" />
+    <Content Include="Views\CadSexo\Index.cshtml" />
+    <Content Include="Views\CadTipoPessoa\Index.cshtml" />
+    <Content Include="Views\CadCliente\Index.cshtml" />
+    <Content Include="Views\CadFornecedor\Index.cshtml" />
+    <Content Include="Views\CadCategoriaProduto\Index.cshtml" />
+    <Content Include="Views\CadClassificacaoFiscal\Index.cshtml" />
+    <Content Include="Views\CadCorProduto\Index.cshtml" />
+    <Content Include="Views\CadGrupoProduto\Index.cshtml" />
+    <Content Include="Views\CadMarcaProduto\Index.cshtml" />
+    <Content Include="Views\CadUnidadeMedida\Index.cshtml" />
+    <Content Include="Views\CadProduto\Index.cshtml" />
+    <Content Include="Views\CadFretePorConta\Index.cshtml" />
+    <Content Include="Views\CadNatureza\Index.cshtml" />
+    <Content Include="Views\CadNivelUsuario\Index.cshtml" />
+    <Content Include="Views\CadUsuario\Index.cshtml" />
+    <Content Include="Views\Conta\Login.cshtml" />
+    <Content Include="Views\ConsParcela\Index.cshtml" />
+    <Content Include="Views\ConsVendasPorCliente\Index.cshtml" />
+    <Content Include="Views\CadLocalArmazenamento\Index.cshtml" />
+    <Content Include="Views\OperEntradaNota\Index.cshtml" />
+    <Content Include="Views\OperEstornoNota\Index.cshtml" />
+    <Content Include="Views\OperVenda\Index.cshtml" />
+    <Content Include="Views\OperRecebimento\Index.cshtml" />
+    <Content Include="Views\OperAcertoEstoque\Index.cshtml" />
+    <Content Include="Views\OperEstornoVenda\Index.cshtml" />
+    <Content Include="scss\font-awesome.scss" />
+    <Content Include="scss\_animated.scss" />
+    <Content Include="scss\_bordered-pulled.scss" />
+    <Content Include="scss\_core.scss" />
+    <Content Include="scss\_fixed-width.scss" />
+    <Content Include="scss\_icons.scss" />
+    <Content Include="scss\_larger.scss" />
+    <Content Include="scss\_list.scss" />
+    <Content Include="scss\_mixins.scss" />
+    <Content Include="scss\_path.scss" />
+    <Content Include="scss\_rotated-flipped.scss" />
+    <Content Include="scss\_screen-reader.scss" />
+    <Content Include="scss\_stacked.scss" />
+    <Content Include="scss\_variables.scss" />
+    <Content Include="Views\CadFormaPagamento\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Views\OperEntradaNotaItem\" />
+    <Folder Include="Views\OperVendaItem\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\bootstrap.min.css.map" />
+    <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Content\bootstrap-theme.min.css.map" />
+    <Content Include="Content\bootstrap-theme.css.map" />
+    <None Include="packages.config" />
+    <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
+    <Content Include="Scripts\jquery-3.4.1.min.map" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>60518</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>https://localhost:44302/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

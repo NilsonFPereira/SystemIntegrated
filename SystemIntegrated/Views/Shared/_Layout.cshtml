@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Sistema Integrado</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Sistema Integrado", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                @if (Request.IsAuthenticated)
+                {
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="#" class="dropdown" data-toggle="dropdown">
+                                Cadastro
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("País", "Index", "CadPais")</li>
+                                <li>@Html.ActionLink("Estados", "Index", "CadEstado")</li>
+                                <li>@Html.ActionLink("Cidade", "Index", "CadCidade")</li>
+                                <li class="divider"></li>
+                                <li>@Html.ActionLink("Tipo Pessoas", "Index", "CadTipoPessoa")</li>
+                                <li>@Html.ActionLink("Sexo", "Index", "CadSexo")</li>
+                                <li>@Html.ActionLink("Frete Por Conta", "Index", "CadFretePorConta")</li>
+                                <li>@Html.ActionLink("Clientes", "Index", "CadCliente")</li>
+                                <li>@Html.ActionLink("Fornecedores", "Index", "CadFornecedor")</li>
+                                <li>@Html.ActionLink("Formas Pagamento", "Index", "CadFormaPagamento")</li>
+                                <li class="divider"></li>
+                                <li>@Html.ActionLink("Categoria Produto", "Index", "CadCategoriaProduto")</li>
+                                <li>@Html.ActionLink("Classificação Fiscal", "Index", "CadClassificacaoFiscal")</li>
+                                <li>@Html.ActionLink("Cor Produto", "Index", "CadCorProduto")</li>
+                                <li>@Html.ActionLink("Grupo Produto", "Index", "CadGrupoProduto")</li>
+                                <li>@Html.ActionLink("Locais de Armazenamento", "Index", "CadLocalArmazenamento")</li>
+                                <li>@Html.ActionLink("Marca Produto", "Index", "CadMarcaProduto")</li>
+                                <li>@Html.ActionLink("Natureza", "Index", "CadNatureza")</li>
+                                <li>@Html.ActionLink("Unidade Medidas", "Index", "CadUnidadeMedida")</li>
+                                <li>@Html.ActionLink("Produto", "Index", "CadProduto")</li>
+                                <li class="divider"></li>
+                                <li>@Html.ActionLink("Nível do Usuário", "Index", "CadNivelUsuario")</li>
+                                <li>@Html.ActionLink("Usuários", "Index", "CadUsuario")</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#" class="dropdown" data-toggle="dropdown">
+                                Operação
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("(+) Entrada Nota", "Index", "OperEntradaNota")</li>
+                                <li>@Html.ActionLink("( - ) Estorno Nota", "Index", "OperEstornoNota")</li>
+                                <li class="divider"></li>
+                                <li>@Html.ActionLink("(+) Vendas", "Index", "OperVenda")</li>
+                                <li>@Html.ActionLink("( - ) Estorno Vendas", "Index", "OperEstornoVenda")</li>
+                                <li class="divider"></li>
+                                <li>@Html.ActionLink("Recebimento", "Index", "OperRecebimento")</li>
+                                <li class="divider"></li>
+                                <li>@Html.ActionLink("Acerto Estoque", "Index", "OperAcertoEstoque")</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#" class="dropdown" data-toggle="dropdown">
+                                Consultas
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("Consulta Parcelas", "Index", "ConsParcela")</li>
+                                <li>@Html.ActionLink("Consulta Vendas por Cliente", "Index", "ConsVendasPorCliente")</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    using (Html.BeginForm("LogOff", "Conta", FormMethod.Post, new { id = "logoffForm" }))
+                    {
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>@Html.ActionLink("Sobre", "Sobre", "Home")</li>
+                            <li><a href="#"> Olá @User.Identity.Name</a></li>
+                            <li><a href="javascript:document.getElementById('logoffForm').submit()">Sair</a></li>
+                        </ul>
+                    }
+                }
+                else
+                {
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>@Html.ActionLink("Login", "Login", "Conta")</li>
+                    </ul>
+
+                }
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Sistema Integrado</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

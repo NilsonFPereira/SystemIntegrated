@@ -1,0 +1,72 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+/*
+.banner {
+    background-image: url('../Imagens/Banner_Principal.png');
+    width:1140px;
+    height:329px;
+}
+    */
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+.required:after {
+    content: " *";
+    color: red;
+}
+
+.invisivel{
+
+    display:none;
+}
+.container-login{
+    margin: 0 auto;
+
+}
+.titulo{
+    text-align:center;
+    margin-bottom:30px;
+    text-transform: uppercase;
+    color:#000;
+
+}
+.left-inner-addon {
+    position: relative;
+}
+
+.left-inner-addon i {
+    position: absolute;
+    padding: 10px 12px;
+    pointer-events: none;
+    color: #666;
+}
+
+.left-inner-addon input.form-control {
+    padding-left: 30px;
+}
+
+#mensagem_grid {
+    height: 100px;
+    text-align: center;
+    border: 1px solid #dddddd;
+    line-height: 100px;
+    margin-bottom:20px;
+}
+#msg_mensagem_aviso ul li {
+
+    list-style:none;
+
+
+}
