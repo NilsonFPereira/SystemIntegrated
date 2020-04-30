@@ -234,6 +234,7 @@
     <Compile Include="Repositorio\Operacao\EntradaNotaRepositorio.cs" />
     <Compile Include="Repositorio\Operacao\VendaItemRepositorio.cs" />
     <Compile Include="Repositorio\Operacao\VendaRepositorio.cs" />
+    <Compile Include="Teste\Conexao.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -379,7 +380,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Teste\" />
     <Folder Include="Views\OperEntradaNotaItem\" />
     <Folder Include="Views\OperVendaItem\" />
   </ItemGroup>
