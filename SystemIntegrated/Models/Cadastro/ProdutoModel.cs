@@ -17,10 +17,10 @@ namespace SystemIntegrated.Models
         public string Nome { get; set; }
 
         [Required(ErrorMessage = "Preencha o preço de custo.")]
-        public decimal PrecoCusto { get; set; }
+        public string PrecoCusto { get; set; }
 
         [Required(ErrorMessage = "Preencha o preço de venda.")]
-        public decimal PrecoVenda { get; set; }
+        public string PrecoVenda { get; set; }
 
         [Required(ErrorMessage = "Preencha a quantidade em estoque.")]
         public int QuantEstoque { get; set; }

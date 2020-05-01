@@ -4,135 +4,149 @@
     ViewBag.Title = "Cadastro de Entradas";
     var titulo = ViewBag.Title;
 }
+<link href="~/Content/Operacao/OperEntradaNota.css" rel="stylesheet" type="text/css" />
 <link href="~/Content/Jquery-ui/jquery-ui.css" rel="stylesheet" />
-<link href="~/Content/Operacao/OperEntradaNota.css" rel="stylesheet" />
 <link href="~/Content/Jquery-ui/jquery-ui.theme.min.css" rel="stylesheet" />
 <style>
-
     .modal-dialog {
         width: 1000px !important;
     }
 </style>
-<div class="col-md-12" style="margin:0 auto">
-    <!--Cabeçalho Titulo-->
+<div class="col-md-12" style="margin: 0 auto">
     <section id="cadastro_cabecalho">
         <h2 style="color:#000">@ViewBag.Title</h2>
     </section>
     <div id="cadastro_conteudo">
-        <!--Cabeçalho_Grid-->
         <div id="cabecalho_grid">
             <div class="form-group">
                 <div class="col-md-2">
-                    <a id="btn_incluir" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> Incluir</a>
+                    <a id="btn_incluir" class="btn btn-success">
+                        <i class="glyphicon glyphicon-plus"></i> Incluir
+                    </a>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-md-4">
-                    @Html.DropDownList("ddl_tam_pag", (SelectList)ViewBag.ListaTamPag, new { @class = "selectpicker form-control" })
+                    @Html.DropDownList("ddl_tam_pag",
+                                        (SelectList)ViewBag.ListaTamPag,
+                                        new { @class = "selectpicker form-control" }
+                                      )
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-md-6">
                     <div class="form-group left-inner-addon">
                         <i class="glyphicon glyphicon-search"></i>
-                        @Html.TextBox("txt_filtro", null, new { @class = "form-control" })
+                        @Html.TextBox("txt_filtro",
+                                       null,
+                                       new { @class = "form-control" }
+                                     )
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-12" style="overflow:auto">
-        <!--Grid Cadastro-->
-        <table id="grid_cadastro" class="table table-bordered table-striped table-hover @Html.Raw(lista == null || lista.Count == 0 ? "invisivel" : "")">
-            <thead>
-                <tr class="info">
-                    <th style="text-align:center">#</th>
-                    <th style="text-align:left">Dt. Emissão</th>
-                    <th style="text-align:center">Nº Nota</th>
-                    <th style="text-align:center">Chave Acesso</th>
-                    <th style="text-align:center">VL. T. Prod.</th>
-                    <th style="text-align:center">VL. T. Nota</th>
-                    <th style="text-align:center">Desconto</th>
-                    <th style="text-align:center">Frete</th>
-                    <th style="text-align:center">ICMS</th>
-                    <th style="text-align:center">IPI</th>
-                </tr>
-            </thead>
-            <tbody>
-                @{
-                    foreach (var itens in Model)
-                    {
-
-                        <tr data-id="@itens.Id">
-                            <td><a id="detalhamento" class="btn btn-primary"><i class="fa fa-bars"></i> </a></td>
-                            <td>@itens.DataEmissao</td>
-                            <td class="text-right">@itens.NumeroNota</td>
-                            <td>@itens.ChaveAcesso</td>
-                            <td class="text-right">@itens.ValorTotalProdutos</td>
-                            <td class="text-right">@itens.ValorTotalNota</td>
-                            <td class="text-right">@itens.ValorDesconto</td>
-                            <td class="text-right">@itens.ValorFrete</td>
-                            <td class="text-right">@itens.ValorIcms</td>
-                            <td class="text-right">@itens.ValorIpi</td>
-                        </tr>
-                    }
-                }
-            </tbody>
-        </table>
-        <div id="mensagem_grid" @Html.Raw(lista != null && lista.Count > 0 ? "class=\"invisivel\"" : "")>
-            Nenhum Registro em @titulo
-        </div>
-        <!--PAGINAÇÃO-->
-        @if (ViewBag.QuantPaginas > 1)
-        {
-            <div id="row">
-                <nav>
-                    <ul class="pagination">
-                        <li class="page-item active"><a class="page-link">1</a></li>
-                        @for (var i = 2; i < ViewBag.QuantPaginas; i++)
+        <div class="col-md-12" style="overflow:auto">
+            <table id="grid_cadastro"
+                   class="table
+                          table-bordered
+                          table-striped
+                          table-hover
+                          @Html.Raw(lista == null || lista.Count == 0 ? "invisivel" : "")">
+                <thead>
+                    <tr class="info">
+                        <th>#</th>
+                        <th>Dt. Emissão</th>
+                        <th>Nº Nota</th>
+                        <th>Chave Acesso</th>
+                        <th>Total Produto</th>
+                        <th>Total Nota</th>
+                        <th>Desconto</th>
+                        <th>Frete</th>
+                        <th>ICMS</th>
+                        <th>IPI</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        foreach (var item in Model)
                         {
-                            <li class="page-item"><a class="page-link">@i</a></li>
+                            <tr data-id="@item.Id">
+                                <td>
+                                    <a id="detalhamento" class="btn btn-primary">
+                                        <i class="fa fa-bars"></i>
+                                    </a>
+                                </td>
+                                <td>@item.DataEmissao</td>
+                                <td>@item.NumeroNota</td>
+                                <td>@item.ChaveAcesso</td>
+                                <td>@item.ValorTotalProdutos</td>
+                                <td>@item.ValorTotalNota</td>
+                                <td>@item.ValorDesconto</td>
+                                <td>@item.ValorFrete</td>
+                                <td>@item.ValorIcms</td>
+                                <td>@item.ValorIpi</td>
+                            </tr>
                         }
-                    </ul>
-                </nav>
+                    }
+                </tbody>
+            </table>
+            <div id="mensagem_grid" @Html.Raw(lista != null && lista.Count > 0 ? "class=\"invisivel\"" : "")>
+                Nenhum registro em @titulo
             </div>
-        }
+            @if (ViewBag.QuantPaginas > 1)
+            {
+                <div class="row">
+                    <nav>
+                        <ul class="pagination">
+                            <li class="page-item active">
+                                <a class="page-link">1</a>
+                            </li>
+                            @for (var i = 2; i < ViewBag.QuantPaginas; i++)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link">@i</a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            }
+        </div>
     </div>
 </div>
-
-
 @Html.Hidden("id_cadastro")
 
+<!--modal cadastro -->
 <div id="modal_cadastro" class="form-horizontal invisivel" role="dialog">
-    <div id="msg_mensagem_aviso" class="text-danger invisivel"></div>
+    <div id="msg_mensagem_aviso" class="alert alert-danger invisivel"></div>
     <fieldset>
         <div class="row">
             <div class="col-md-12">
-                <h1 class="page-header" style="color:#000">Dados da Nota</h1>
+                <h3 class="page-header" style="color:#000">Dados da Nota</h3>
             </div>
         </div>
         <div class="row">
             <div class="col-md-3">
                 @Html.Label("txt_dataemissao", "Data Emissão", new { @class = "control-label required" })
-                @Html.TextBox("txt_dataemissao", null, new { @class = "form-control" })
+                @Html.TextBox("txt_dataemissao", null, new { @class = "form-control", tabindex = 1 })
             </div>
             <div class="col-md-3">
                 @Html.Label("txt_numeronota", "Número Nota", new { @class = "control-label required" })
-                @Html.TextBox("txt_numeronota", null, new { @class = "form-control" })
+                @Html.TextBox("txt_numeronota", null, new { @class = "form-control", tabindex = 2 })
             </div>
             <div class="col-md-6">
                 @Html.Label("ddl_idnatureza", "Natureza", new { @class = "control-label required" })
-                @Html.DropDownList("ddl_idnatureza", new SelectList(ViewBag.Natureza, "Id", "Nome"), new { @class = "form-control" })
+                @Html.DropDownList("ddl_idnatureza", new SelectList(ViewBag.Natureza, "Id", "Nome"), new { @class = "form-control", tabindex = 3 })
             </div>
         </div>
         <div class="row">
             <div class="col-md-8">
                 @Html.Label("txt_chaveacesso", "Chave de Acesso", new { @class = "control-label required" })
-                @Html.TextBox("txt_chaveacesso", null, new { @class = "form-control" })
+                @Html.TextBox("txt_chaveacesso", null, new { @class = "form-control", tabindex = 4 })
             </div>
             <div class="col-md-4">
                 @Html.Label("txt_valortotalprodutos", "Valor Total Produtos", new { @class = "control-label required" })
-                @Html.TextBox("txt_valortotalprodutos", null, new { @class = "form-control" })
+                @Html.TextBox("txt_valortotalprodutos", null, new { @class = "form-control", tabindex = 5 })
             </div>
         </div>
         <div class="row">
@@ -142,35 +156,35 @@
             </div>
             <div class="col-md-10">
                 @Html.Label("suggest_fornecedor", "Fornecedor", new { @class = "control-label required" })
-                @Html.TextBox("suggest_fornecedor", null, new { @class = "form-control", type = "text" })
+                @Html.TextBox("suggest_fornecedor", null, new { @class = "form-control", type = "text", tabindex = 6 })
             </div>
         </div>
         <div class="row">
             <div class="col-md-4">
                 @Html.Label("ddl_idfreteporconta", "Frete por Conta", new { @class = "control-label required" })
-                @Html.DropDownList("ddl_idfreteporconta", new SelectList(ViewBag.FretePorConta, "Id", "Nome"), new { @class = "form-control" })
+                @Html.DropDownList("ddl_idfreteporconta", new SelectList(ViewBag.FretePorConta, "Id", "Nome"), new { @class = "form-control", tabindex = 7 })
             </div>
             <div class="col-md-4">
                 @Html.Label("txt_valorfrete", "Valor Frete", new { @class = "control-label required" })
-                @Html.TextBox("txt_valorfrete", null, new { @class = "form-control" })
+                @Html.TextBox("txt_valorfrete", null, new { @class = "form-control", tabindex = 8 })
             </div>
             <div class="col-md-4">
                 @Html.Label("txt_valordesconto", "Valor Desconto", new { @class = "control-label required" })
-                @Html.TextBox("txt_valordesconto", null, new { @class = "form-control" })
+                @Html.TextBox("txt_valordesconto", null, new { @class = "form-control", tabindex = 9 })
             </div>
         </div>
         <div class="row">
             <div class="col-md-4">
                 @Html.Label("txt_valoricms", "Valor ICMS", new { @class = "control-label required" })
-                @Html.TextBox("txt_valoricms", null, new { @class = "form-control" })
+                @Html.TextBox("txt_valoricms", null, new { @class = "form-control", tabindex = 10 })
             </div>
             <div class="col-md-4">
                 @Html.Label("txt_valoripi", "Valor IPI", new { @class = "control-label required" })
-                @Html.TextBox("txt_valoripi", null, new { @class = "form-control" })
+                @Html.TextBox("txt_valoripi", null, new { @class = "form-control", tabindex = 11 })
             </div>
             <div class="col-md-4">
                 @Html.Label("txt_valortotalnota", "Valor Total Nota", new { @class = "control-label required" })
-                @Html.TextBox("txt_valortotalnota", null, new { @class = "form-control" })
+                @Html.TextBox("txt_valortotalnota", null, new { @class = "form-control", tabindex = 12 })
             </div>
         </div>
         <div class="row">
@@ -187,11 +201,11 @@
         </div>
         <div id="botao_continuar" class="form-group" style="margin-top:15px">
             <div class="modal-footer">
-                <a id="btn_continuar" class="btn btn-warning" role="button"><i class="glyphicon glyphicon-ok"></i> Continuar</a>
+                <a id="btn_continuar" class="btn btn-warning" tabindex="13" role="button"><i class="glyphicon glyphicon-ok"></i> Continuar</a>
             </div>
         </div>
 
-
+        <!-- div itens -->
         <div id="divitens" class="invisivel">
             <div class="row">
                 <div class="col-md-12">
@@ -199,7 +213,7 @@
                 </div>
             </div>
             <div class="row">
-                <div id="msg_mensagem_aviso_produto" class="text-danger invisivel"></div>
+                <div id="msg_mensagem_aviso_produto" class="alert alert-warning invisivel"></div>
                 <div class="col-md-2">
                     @Html.Label("txt_idproduto", "Código Produto", new { @class = "control-label required" })
                     @Html.TextBox("txt_idproduto", null, new { @class = "form-control" })
@@ -271,6 +285,7 @@
     </fieldset>
 </div>
 
+<!--modal detalhamento -->
 <div id="detalhamento_nota" class="form-horizontal invisivel" role="dialog">
     <fieldset>
         <div class="row">
@@ -380,12 +395,13 @@
     </fieldset>
 </div>
 
-
 @section Scripts{
-
     <script src="~/Scripts/Jquery-ui/jquery-ui.js"></script>
-
     <script>
+        function add_anti_forgery_token(data) {
+            data.__RequestVerificationToken = $('[name=__RequestVerificationToken]').val();
+            return data;
+        }
 
         function abrir_form(dados) {
 
@@ -439,20 +455,17 @@
 
             $('#cbx_ehcancelada').prop('checked', dados.EhCancelada);
 
-
-            /*ABERTURA DO MODAL */
-            var modal_cadastro = $('#modal_cadastro')
+            var modal_cadastro = $('#modal_cadastro');
 
             bootbox.dialog({
+
                 title: '@ViewBag.Title',
                 message: modal_cadastro
 
             }).on('shown.bs.modal', function () {
 
                 modal_cadastro.show(0, function () {
-
                     $('#txt_dataemissao').focus();
-
                 });
 
             }).on('hidden.bs.modal', function () {
@@ -460,13 +473,146 @@
                 modal_cadastro.hide().appendTo('tbody');
 
             });
+        }
 
+        function abrir_form_produtos(dados) {
+
+            $('#botao_continuar').addClass('invisivel');
+            $('#divitens').removeClass('invisivel');
+
+            $('#suggest_produto').focus();
+            $('#suggest_produto').val(dados.NomeProduto);
+
+            $('#txt_idproduto').val(dados.IdProduto);
+            $('#txt_idproduto').attr('disabled', true);
+
+            $('#txt_unidademedida').val(dados.UnidadeMedida);
+            $('#txt_unidademedida').attr('disabled', true);
+
+            $('#txt_quantidadeproduto').val(dados.QuantidadeProduto);
+
+            $('#txt_valorunitarioproduto').val(dados.ValorUnitarioProduto);
+            $('#txt_valorunitarioproduto').mask('###0,00', { reverse: true });
+
+            $('#txt_valortotalproduto').val(dados.ValorTotalProduto);
+            $('#txt_valortotalproduto').mask('###0,00', { reverse: true });
+            $('#txt_valortotalproduto').attr('disabled', true);
+        }
+
+        function criar_linha_itens(dados) {
+            var ret =
+                '<tr data_idproduto=' + dados.Id + '>' +
+                '<td>' + dados.IdProduto + '</td>' +
+                '<td>' + dados.NomeProduto + '</td>' +
+                '<td>' + dados.UnidadeMedida + '</td>' +
+                '<td>' + dados.QuantidadeProduto + '</td>' +
+                '<td>' + dados.ValorUnitarioProduto + '</td>' +
+                '<td>' + dados.ValorTotalProduto + '</td>' +
+                '<td>' +
+                '<a id="btn_excluir_item" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i> </a>' +
+                '</td>' +
+                '</tr>';
+
+            return ret;
+        }
+
+        function criar_linha_grid(dados) {
+
+            var ret =
+                '<tr data-id=' + dados.Id + '>' +
+                '<td><a id="detalhamento" class="btn btn-primary"><i class="fa fa-bars"></i> </a></td>' +
+                '<td>' + dados.DataEmissao + '</td>' +
+                '<td class="text-right">' + dados.NumeroNota + '</td> ' +
+                '<td>' + dados.ChaveAcesso + '</td>' +
+                '<td class="text-right">' + dados.ValorTotalProdutos + '</td>' +
+                '<td class="text-right">' + dados.ValorTotalNota + '</td>' +
+                '<td class="text-right">' + dados.ValorDesconto + '</td>' +
+                '<td class="text-right">' + dados.ValorFrete + '</td>' +
+                '<td class="text-right">' + dados.ValorIcms + '</td>' +
+                '<td class="text-right">' + dados.ValorIpi + '</td>' +
+                '</tr>';
+
+            return ret;
+
+        }
+
+        function habilitar_campos_nota() {
+
+            $('#txt_dataemissao').removeAttr('disabled');
+            $('#txt_numeronota').removeAttr('disabled');
+            $('#ddl_idnatureza').removeAttr('disabled');
+            $('#txt_chaveacesso').removeAttr('disabled');
+            $('#txt_valortotalprodutos').removeAttr('disabled');
+            $('#suggest_fornecedor').removeAttr('disabled');
+            $('#ddl_idfreteporconta').removeAttr('disabled');
+            $('#txt_valorfrete').removeAttr('disabled');
+            $('#txt_valordesconto').removeAttr('disabled');
+            $('#txt_valoricms').removeAttr('disabled');
+            $('#txt_valoripi').removeAttr('disabled');
+            $('#txt_valortotalnota').removeAttr('disabled');
+        }
+
+        function limpar_campos_produtos() {
+
+            $('#txt_idproduto').val('');
+            $('#suggest_produto').val('');
+            $('#txt_unidademedida').val('');
+            $('#txt_quantidadeproduto').val('');
+            $('#txt_valorunitarioproduto').val('0,00');
+            $('#txt_valortotalproduto').val('0,00');
+
+            $('#suggest_produto').focus();
+        }
+
+        function desabilitar_campos_nota() {
+
+            $('#txt_dataemissao').attr('disabled', true);
+            $('#txt_numeronota').attr('disabled', true);
+            $('#ddl_idnatureza').attr('disabled', true);
+            $('#txt_chaveacesso').attr('disabled', true);
+            $('#txt_valortotalprodutos').attr('disabled', true);
+            $('#suggest_fornecedor').attr('disabled', true);
+            $('#ddl_idfreteporconta').attr('disabled', true);
+            $('#txt_valorfrete').attr('disabled', true);
+            $('#txt_valordesconto').attr('disabled', true);
+            $('#txt_valoricms').attr('disabled', true);
+            $('#txt_valoripi').attr('disabled', true);
+            $('#txt_valortotalnota').attr('disabled', true);
+
+        }
+
+        function formatar_mensagens_aviso(mensagens) {
+
+            var ret = '';
+
+            for (var i = 0; i < mensagens.length; i++) {
+
+                ret += '<li>' + mensagens[i] + '</li>';
+                break;
+
+            }
+            return '<ul>' + ret + '</ul>';
+        }
+
+        function criar_linha_grid_itens(dados) {
+
+            var ret =
+                '<tr data_idproduto=' + dados.Id + '>' +
+                '<td>' + dados.IdProduto + '</td>' +
+                '<td>' + dados.NomeProduto + '</td>' +
+                '<td>' + dados.UnidadeMedida + '</td>' +
+                '<td>' + dados.QuantidadeProduto + '</td>' +
+                '<td>' + dados.ValorUnitarioProduto + '</td>' +
+                '<td>' + dados.ValorTotalProduto + '</td>' +
+                '</tr>';
+
+            return ret;
 
         }
 
         function abrir_detalhamento(dados) {
 
-            var tituloDetalhamento = 'Detalhamento Nota Fiscal: Nº '+ dados.NumeroNota;
+            var tituloDetalhamento = 'Detalhamento Nota Fiscal: Nº ' + dados.NumeroNota;
 
             $('#id_cadastro').val(dados.Id);
 
@@ -537,142 +683,7 @@
 
         }
 
-        function abrir_form_produtos(dados) {
-
-            $('#botao_continuar').addClass('invisivel');
-            $('#divitens').removeClass('invisivel');
-
-            $('#suggest_produto').focus();
-            $('#suggest_produto').val(dados.NomeProduto);
-
-            $('#txt_idproduto').val(dados.IdProduto);
-            $('#txt_idproduto').attr('disabled', true);
-
-            $('#txt_unidademedida').val(dados.UnidadeMedida);
-            $('#txt_unidademedida').attr('disabled', true);
-
-            $('#txt_quantidadeproduto').val(dados.QuantidadeProduto);
-
-            $('#txt_valorunitarioproduto').val(dados.ValorUnitarioProduto);
-            $('#txt_valorunitarioproduto').mask('###0,00', { reverse: true });
-
-            $('#txt_valortotalproduto').val(dados.ValorTotalProduto);
-            $('#txt_valortotalproduto').mask('###0,00', { reverse: true });
-            $('#txt_valortotalproduto').attr('disabled', true);
-        }
-
-        function criar_linha_grid(dados) {
-
-            var ret =
-                '<tr data-id=' + dados.Id + '>' +
-                    '<td><a id="detalhamento" class="btn btn-primary"><i class="fa fa-bars"></i> </a></td>'+
-                    '<td>' + dados.DataEmissao + '</td>' +
-                    '<td class="text-right">' + dados.NumeroNota +'</td> '+
-                    '<td>'+ dados.ChaveAcesso +'</td>'+
-                    '<td class="text-right">' + dados.ValorTotalProdutos +'</td>'+
-                    '<td class="text-right">'+ dados.ValorTotalNota +'</td>'+
-                    '<td class="text-right">'+ dados.ValorDesconto +'</td>'+
-                    '<td class="text-right">'+ dados.ValorFrete +'</td>'+
-                    '<td class="text-right">'+ dados.ValorIcms +'</td>'+
-                    '<td class="text-right">'+ dados.ValorIpi +'</td>'+
-                '</tr>';
-
-            return ret;
-
-        }
-
-        function criar_linha_itens(dados) {
-            var ret =
-                '<tr data_idproduto='+dados.IdNotaItens +'>' +
-                    '<td>'+ dados.IdProduto +'</td>' +
-                    '<td>' + dados.NomeProduto + '</td>' +
-                    '<td>' + dados.UnidadeMedida + '</td>' +
-                    '<td>'+ dados.QuantidadeProduto +'</td>' +
-                    '<td>'+ dados.ValorUnitarioProduto +'</td>' +
-                    '<td>'+ dados.ValorTotalProduto +'</td>' +
-                    '<td>' +
-                        '<a id="btn_excluir_item" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i> </a>'+
-                    '</td>' +
-                '</tr>';
-
-            return ret;
-        }
-
-        function limpar_campos_produtos() {
-
-            $('#txt_idproduto').val('');
-            $('#suggest_produto').val('');
-            $('#txt_unidademedida').val('');
-            $('#txt_quantidadeproduto').val('');
-            $('#txt_valorunitarioproduto').val('0,00');
-            $('#txt_valortotalproduto').val('0,00');
-
-            $('#suggest_produto').focus();
-        }
-
-        function desabilitar_campos_nota() {
-
-            $('#txt_dataemissao').attr('disabled', true);
-            $('#txt_numeronota').attr('disabled', true);
-            $('#ddl_idnatureza').attr('disabled', true);
-            $('#txt_chaveacesso').attr('disabled', true);
-            $('#txt_valortotalprodutos').attr('disabled', true);
-            $('#suggest_fornecedor').attr('disabled', true);
-            $('#ddl_idfreteporconta').attr('disabled', true);
-            $('#txt_valorfrete').attr('disabled', true);
-            $('#txt_valordesconto').attr('disabled', true);
-            $('#txt_valoricms').attr('disabled', true);
-            $('#txt_valoripi').attr('disabled', true);
-            $('#txt_valortotalnota').attr('disabled', true);
-
-        }
-
-        function habilitar_campos_nota() {
-
-            $('#txt_dataemissao').removeAttr('disabled');
-            $('#txt_numeronota').removeAttr('disabled');
-            $('#ddl_idnatureza').removeAttr('disabled');
-            $('#txt_chaveacesso').removeAttr('disabled');
-            $('#txt_valortotalprodutos').removeAttr('disabled');
-            $('#suggest_fornecedor').removeAttr('disabled');
-            $('#ddl_idfreteporconta').removeAttr('disabled');
-            $('#txt_valorfrete').removeAttr('disabled');
-            $('#txt_valordesconto').removeAttr('disabled');
-            $('#txt_valoricms').removeAttr('disabled');
-            $('#txt_valoripi').removeAttr('disabled');
-            $('#txt_valortotalnota').removeAttr('disabled');
-        }
-
-        function formatar_mensagens_aviso(mensagens) {
-
-            var ret = '';
-
-            for (var i = 0; i < mensagens.length; i++) {
-
-                ret += '<li>' + mensagens[i] + '</li>';
-
-            }
-            return '<ul>' + ret + '</ul>';
-        }
-
-        function criar_linha_grid_itens(dados){
-
-            var ret =
-                '<tr data_idproduto=' + dados.IdNotaItem + '>' +
-                '<td>' + dados.IdProduto + '</td>' +
-                '<td>' + dados.NomeProduto + '</td>' +
-                '<td>' + dados.UnidadeMedida + '</td>' +
-                '<td>' + dados.QuantidadeProduto + '</td>' +
-                '<td>' + dados.ValorUnitarioProduto + '</td>' +
-                '<td>' + dados.ValorTotalProduto + '</td>' +
-                '</tr>';
-
-            return ret;
-
-        }
-
         $(document)
-
             .on('click', '#btn_incluir', function () {
 
                 var hoje = new Date(),
@@ -698,6 +709,37 @@
                     DataEntrada: dataEntrada,
                     EhCancelada: 0
                 });
+
+            })
+
+            .keyup(function (e) {
+
+                if (e.which == 116 || e.keyCode == 116) {
+
+                    var hoje = new Date(),
+                        dataEntrada = formatar_data_atual(hoje);
+
+                    habilitar_campos_nota();
+
+                    abrir_form({
+                        Id: 0,
+                        DataEmissao: '',
+                        NumeroNota: '',
+                        ChaveAcesso: '',
+                        IdNatureza: 0,
+                        ValorTotalProdutos: '0,00',
+                        IdFornecedor: '',
+                        Fornecedor: '',
+                        IdFretePorConta: 0,
+                        ValorFrete: '0,00',
+                        ValorDesconto: '0,00',
+                        ValorIcms: '0,00',
+                        ValorIpi: '0,00',
+                        ValorTotalNota: '0,00',
+                        DataEntrada: dataEntrada,
+                        EhCancelada: 0
+                    });
+                }
             })
 
             .on('keyup', '#suggest_fornecedor', function () {
@@ -713,7 +755,7 @@
                             url: "@Url.Action("RemoteData", "CadFornecedor")",
                             dataType: "json",
                             data: {
-                                query:  query
+                                query: query
                             },
                             success: function (data) {
 
@@ -737,27 +779,71 @@
 
                         $('#suggest_fornecedor').val(ui.item.Nome)
                         $('#txt_idfornecedor').val(ui.item.Id);
-                        
+
                     }
                 });
             })
 
             .on('click', '#btn_continuar', function () {
 
-                desabilitar_campos_nota();
+                var btn = $(this),
+                    url = '@Url.Action("VerificarCampos", "OperEntradaNota")',
+                    param = {
 
-                abrir_form_produtos({
+                        Id: $('#id_cadastro').val(),
+                        DataEmissao: $('#txt_dataemissao').val(),
+                        NumeroNota: $('#txt_numeronota').val(),
+                        ChaveAcesso: $('#txt_chaveacesso').val(),
+                        IdNatureza: $('#ddl_idnatureza').val(),
+                        ValorTotalProdutos: $('#txt_valortotalprodutos').val(),
+                        IdFornecedor: $('#txt_idfornecedor').val(),
+                        IdFretePorConta: $('#ddl_idfreteporconta').val(),
+                        ValorFrete: $('#txt_valorfrete').val(),
+                        ValorDesconto: $('#txt_valordesconto').val(),
+                        ValorIcms: $('#txt_valoricms').val(),
+                        ValorIpi: $('#txt_valoripi').val(),
+                        ValorTotalNota: $('#txt_valortotalnota').val(),
+                        DataEntrada: $('#txt_dataentrada').val(),
+                        EhCancelada: $('#cbx_ehcancelada').prop('checked')
 
-                    IdNotaItens: 0,
-                    IdProduto: '',
-                    NomeProduto: '',
-                    UnidadeMedida: '',
-                    QuantidadeProduto: '',
-                    ValorUnitarioProduto: '0,00',
-                    ValorTotalProduto: '0,00'
+                    };
 
-                });
+                $.post(url, param, function (response) {
 
+                    if (response.Resultado == "OK") {
+
+                        desabilitar_campos_nota();
+
+                        abrir_form_produtos({
+
+                            IdNotaItens: 0,
+                            IdProduto: '',
+                            NomeProduto: '',
+                            UnidadeMedida: '',
+                            QuantidadeProduto: '',
+                            ValorUnitarioProduto: '0,00',
+                            ValorTotalProduto: '0,00'
+
+                        });
+
+                    } else if (response.Resultado == "AVISO") {
+
+                        $('#msg_mensagem_aviso').html(formatar_mensagens_aviso(response.Mensagens));
+                        $('#msg_mensagem_aviso').show();
+                        $('#msg_aviso').show();
+                        $('#msg_erro').hide();
+
+                        setInterval(function () {
+
+                            $('#msg_mensagem_aviso').val('');
+                            $('#msg_mensagem_aviso').hide();
+                            $('#msg_aviso').hide();
+
+
+                        }, 5000);
+
+                    }
+                })
             })
 
             .on('keyup', '#suggest_produto', function () {
@@ -773,7 +859,7 @@
                             url: "@Url.Action("RemoteData", "CadProduto")",
                             dataType: "json",
                             data: {
-                                query:  query
+                                query: query
                             },
                             success: function (data) {
 
@@ -871,7 +957,7 @@
                         UnidadeMedida: $('#txt_unidademedida').val(),
                         QuantidadeProduto: $('#txt_quantidadeproduto').val(),
                         ValorUnitarioProduto: formatar_decimal($('#txt_valorunitarioproduto').val()),
-                        ValorTotalProduto: remove_ponto(formatar_decimal( $('#txt_valortotalproduto').val() ) )
+                        ValorTotalProduto: formatar_decimal($('#txt_valortotalproduto').val())
                     }
 
                 $.post(url, param, function (response) {
@@ -902,13 +988,57 @@
 
                         $('#msg_mensagem_aviso_produto').html(formatar_mensagens_aviso(response.Mensagens));
                         $('#msg_mensagem_aviso_produto').show();
-                        $('#msg_aviso').show();
-                        $('#msg_erro').hide();
+
+                        setInterval(function () {
+                            $('#msg_mensagem_aviso_produto').val('');
+                            $('#msg_mensagem_aviso_produto').hide();
+                        }, 5000);
                     }
                 });
             })
 
+            .on('click', '#btn_excluir_item', function () {
+                var btn = $(this),
+                    tr = btn.closest('tr'),
+                    id = tr.attr('data_idproduto'),
+                    url = '@Url.Action("DeleteItemSession", "OperEntradaNotaItem")',
+                    param = { 'id' : id };
+
+                bootbox.confirm({
+                    message: 'Deseja realmente excluir?';
+                    buttons: {
+                        confirm: {
+
+                            label: 'SIM',
+                            className: 'btn-danger'
+
+                        }, cancel: {
+
+                            label: 'NÃO',
+                            className: 'btn-success'
+
+                        }
+
+                    },
+                    callback: (function (result) {
+
+                        if (result) {
+
+                            $.post(url, param, function (response) {
+
+                                if (response) {
+
+                                    tr.remove;
+                                }
+
+                            })
+                        }
+                    })
+                })
+            });
+
             .on('click', '#btn_confirmar', function () {
+
                 var dataEmissao = '';
 
                 if ($('#txt_dataemissao').val() != "") {
@@ -916,74 +1046,123 @@
                     dataEmissao = formatar_data($('#txt_dataemissao').val());
                 }
 
-                var btn = $(this),
-                    url = '@Url.Action("SalvarEntradaNota", "OperEntradaNota")',
-                    param = {
+                var quant = $('#grid_itens >tbody > tr').length;
 
-                        Id: $('#id_cadastro').val(),
-                        DataEmissao: dataEmissao,
-                        NumeroNota: $('#txt_numeronota').val(),
-                        ChaveAcesso: $('#txt_chaveacesso').val(),
-                        IdNatureza: $('#ddl_idnatureza').val(),
-                        ValorTotalProdutos: formatar_decimal( $('#txt_valortotalprodutos').val() ),
-                        IdFornecedor: $('#txt_idfornecedor').val(),
-                        IdFretePorConta: $('#ddl_idfreteporconta').val(),
-                        ValorFrete: formatar_decimal( $('#txt_valorfrete').val() ),
-                        ValorDesconto: formatar_decimal( $('#txt_valordesconto').val() ),
-                        ValorIcms:  formatar_decimal( $('#txt_valoricms').val() ),
-                        ValorIpi: formatar_decimal($('#txt_valoripi').val()),
-                        ValorTotalNota: formatar_decimal( $('#txt_valortotalnota').val()),
-                        DataEntrada: formatar_data( $('#txt_dataentrada').val() ),
-                        EhCancelada: $('#cbx_ehcancelada').prop('checked')
-                    };
+                if (quant == 0) {
 
-                $.post(url, param, function (response) {
+                    $('#msg_mensagem_aviso').html('Nenhum produto foi informado');
+                    $('#msg_aviso').show();
+                    $('#msg_mensagem_aviso').show();
 
-                    if (response.Resultado == "OK") {
+                    setInterval(function () {
 
-                        if (param.Id == 0) {
-
-                            param.Id = response.IdSalvo;
-                            param.DataEmissao = $('#txt_dataemissao').val();
-
-                            var table = $('#grid_cadastro').find('tbody'),
-                                linha = criar_linha_grid(param);
-
-                            table.append(linha);
-
-                            $('#grid_cadastro').removeClass('invisivel');
-                            $('#mensagem_grid').addClass('invisivel');
-
-                            var url = '@Url.Action("InserirItem", "OperEntradaNotaItem")',
-                                paramItens = { 'idEntradaNota': param.Id };
-
-                            $.post(url, paramItens, function (responseItem) {
-
-                                if (responseItem) {
-
-
-                                    $('#modal_cadastro').parents('.bootbox').modal('hide');
-
-                                }
-                            });
-                        }
-
-
-                    } else if (response.Resultado == "ERRO") {
-
-                        $('#msg_erro').show();
                         $('#msg_mensagem_aviso').val('');
                         $('#msg_mensagem_aviso').hide();
                         $('#msg_aviso').hide();
 
-                    } else if (response.Resultado == "AVISO") {
 
-                        $('#msg_mensagem_aviso').html(formatar_mensagens_aviso(response.Mensagens));
-                        $('#msg_mensagem_aviso').show();
-                        $('#msg_aviso').show();
-                        $('#msg_erro').hide();
-                    }
-                })
+                    }, 5000);
+
+                }
+                else {
+
+                    var btn = $(this),
+                        url = '@Url.Action("SalvarEntradaNota", "OperEntradaNota")',
+                        param = {
+
+                            Id: $('#id_cadastro').val(),
+                            DataEmissao: dataEmissao,
+                            NumeroNota: $('#txt_numeronota').val(),
+                            ChaveAcesso: $('#txt_chaveacesso').val(),
+                            IdNatureza: $('#ddl_idnatureza').val(),
+                            ValorTotalProdutos: formatar_decimal($('#txt_valortotalprodutos').val()),
+                            IdFornecedor: $('#txt_idfornecedor').val(),
+                            IdFretePorConta: $('#ddl_idfreteporconta').val(),
+                            ValorFrete: formatar_decimal($('#txt_valorfrete').val()),
+                            ValorDesconto: formatar_decimal($('#txt_valordesconto').val()),
+                            ValorIcms: formatar_decimal($('#txt_valoricms').val()),
+                            ValorIpi: formatar_decimal($('#txt_valoripi').val()),
+                            ValorTotalNota: formatar_decimal($('#txt_valortotalnota').val()),
+                            DataEntrada: formatar_data($('#txt_dataentrada').val()),
+                            EhCancelada: $('#cbx_ehcancelada').prop('checked')
+                        };
+
+                    $.post(url, param, function (response) {
+
+                        var loading = bootbox.dialog({
+                            message: '<div class="text-center" style="color:#0000FF; font-size:14px"><i class= "fa fa-spinner fa-spin fa-2x fa-fw" ></i> Aguarde, as informações estão sendo carregadas...</div>',
+                            closeButton: false
+
+                        });
+
+                        if (response.Resultado == "OK") {
+
+                            if (param.Id == 0) {
+
+                                param.Id = response.IdSalvo;
+                                param.DataEmissao = $('#txt_dataemissao').val();
+
+                                var url = '@Url.Action("InserirItem", "OperEntradaNotaItem")',
+                                    paramItens = { 'idEntradaNota': param.Id };
+
+                                $.post(url, paramItens, function (responseItem) {
+
+                                    if (responseItem.Resultado == "OK") {
+
+
+                                        var table = $('#grid_cadastro').find('tbody'),
+                                            linha = '';
+
+                                        setTimeout(function () {
+                                            loading.modal('hide'),
+
+                                                $('#grid_cadastro').removeClass('invisivel');
+                                            $('#mensagem_grid').addClass('invisivel');
+                                            linha = criar_linha_grid(param);
+                                            table.append(linha)
+
+                                        }, 3000);
+
+                                        $('#modal_cadastro').parents('.bootbox').modal('hide');
+
+                                    } else if (responseItem.Resultado == "AVISO") {
+
+                                        $('#msg_mensagem_aviso').html(formatar_mensagens_aviso(response.Mensagens));
+                                        $('#msg_mensagem_aviso').show();
+                                        $('#msg_aviso').show();
+                                        $('#msg_erro').hide();
+
+                                    }
+                                });
+                            }
+
+
+                        } else if (response.Resultado == "ERRO") {
+
+                            $('#msg_erro').show();
+                            $('#msg_mensagem_aviso').val('');
+                            $('#msg_mensagem_aviso').hide();
+                            $('#msg_aviso').hide();
+
+                        } else if (response.Resultado == "AVISO") {
+
+                            $('#msg_mensagem_aviso').html(formatar_mensagens_aviso(response.Mensagens));
+                            $('#msg_mensagem_aviso').show();
+                            $('#msg_aviso').show();
+                            $('#msg_erro').hide();
+
+                            setInterval(function () {
+
+                                $('#msg_mensagem_aviso').val('');
+                                $('#msg_mensagem_aviso').hide();
+                                $('#msg_aviso').hide();
+
+
+                            }, 5000);
+                        }
+                    })
+
+                }
             })
 
             .on('click', '#detalhamento', function () {
@@ -1030,9 +1209,122 @@
                         }
                     }
                 });
+            })
+
+            .on('change', '#ddl_tam_pag', function () {
+
+                var btn = $(this),
+                    tamPag = btn.val(),
+                    pagina = 1,
+                    url = '@Url.Action("EntradaNotaPagina", "OperEntradaNota")',
+                    param = { 'pagina': pagina, 'tamPag': tamPag };
+
+                $.post(url, add_anti_forgery_token(param), function (response) {
+
+                    if (response) {
+
+                        var table = $('#grid_cadastro').find('tbody');
+                        table.empty();
+
+                        if (response.length > 0) {
+
+                            $('#grid_cadastro').removeClass('invisivel');
+                            $('#mensagem_grid').addClass('invisivel');
+
+                            for (var i = 0; i < response.length; i++) {
+
+                                table.append(criar_linha_grid(response[i]));
+
+                            }
+                        }
+                        else {
+
+                            $('#grid_cadastro').addClass('invisivel');
+                            $('#mensagem_grid').removeClass('invisivel');
+
+                        }
+
+                    }
+                });
+            })
+
+            .on('click', '.page-item', function () {
+
+                var btn = $(this),
+                    tamPag = $('#ddl_tam_pag').val(),
+                    pagina = btn.text(),
+                    url = '@Url.Action("EntradaNotaPagina", "OperEntradaNota")',
+                    param = { 'pagina': pagina, 'tamPag': tamPag };
+
+                $.post(url, add_anti_forgery_token(param), function (response) {
+
+                    if (response) {
+
+                        var table = $('#grid_cadastro').find('tbody');
+                        table.empty();
+
+                        if (response.length > 0) {
+
+                            $('#grid_cadastro').removeClass('invisivel');
+                            $('#mensagem_grid').addClass('invisivel');
+
+                            for (var i = 0; i < response.length; i++) {
+
+                                table.append(criar_linha_grid(response[i]));
+
+                            }
+                        }
+                        else {
+
+                            $('#grid_cadastro').addClass('invisivel');
+                            $('#mensagem_grid').removeClass('invisivel');
+
+                        }
+
+                        btn.siblings().removeClass('active');
+                        btn.addClass('active');
+                    }
+                });
+            })
+
+            .on('keyup', '#txt_filtro', function () {
+
+                var filtro = $(this),
+                    tamPag = $('#ddl_tam_pag').val(),
+                    pagina = 1,
+                    url = '@Url.Action("EntradaNotaPagina", "OperEntradaNota")',
+                    param = { 'pagina': pagina, 'tamPag': tamPag, 'filtro': filtro.val() };
+
+                $.post(url, param, function (response) {
+
+                    if (response) {
+
+                        var table = $('#grid_cadastro').find('tbody');
+                        table.empty();
+
+                        if (response.length > 0) {
+
+                            $('#grid_cadastro').removeClass('invisivel');
+                            $('#mensagem_grid').addClass('invisivel');
+
+                            for (var i = 0; i < response.length; i++) {
+
+                                table.append(criar_linha_grid(response[i]));
+
+                            }
+                        }
+                        else {
+
+                            $('#grid_cadastro').addClass('invisivel');
+                            $('#mensagem_grid').removeClass('invisivel');
+
+                        }
+                    }
+                });
+
+
             });
 
     </script>
 
 }
-

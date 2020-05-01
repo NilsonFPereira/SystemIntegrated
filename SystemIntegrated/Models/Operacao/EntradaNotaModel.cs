@@ -23,7 +23,7 @@ namespace SystemIntegrated.Models.Operacao
         public string ChaveAcesso {get; set;}
 
         [Required(ErrorMessage = "informe o valor da nota.")]
-        public decimal ValorTotalProdutos { get; set; }
+        public string ValorTotalProdutos { get; set; }
 
         [Required(ErrorMessage = "Informe o fornecedor.")]
         public int IdFornecedor {get; set;}
@@ -32,19 +32,19 @@ namespace SystemIntegrated.Models.Operacao
         public int IdFretePorConta {get; set;}
 
         [Required(ErrorMessage = "Informe o valor do frete.")]
-        public decimal ValorFrete { get; set; }
+        public string ValorFrete { get; set; }
 
         [Required(ErrorMessage = "Informe o valor do desconto.")]
-        public decimal ValorDesconto { get; set; }
+        public string ValorDesconto { get; set; }
 
         [Required(ErrorMessage = "Informe o valor do icms.")]
-        public decimal ValorIcms { get; set; }
+        public string ValorIcms { get; set; }
 
         [Required(ErrorMessage = "Informe o valor do ipi.")]
-        public decimal ValorIpi { get; set; }
+        public string ValorIpi { get; set; }
 
         [Required(ErrorMessage = "Informe o valor total.")]
-        public decimal ValorTotalNota {get; set;}
+        public string ValorTotalNota {get; set;}
         public string DataEntrada { get; set; }
         public bool EhCancelada {get; set;}
     

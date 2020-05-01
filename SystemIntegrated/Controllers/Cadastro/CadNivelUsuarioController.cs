@@ -84,8 +84,6 @@ namespace SystemIntegrated.Controllers.Cadastro
                 {
                     nivelUsuarioModel.Usuarios.Add(new UsuarioModel() { Id = id });
                 }
-
-
                 try
                 {
                     nivelUsuarioRepositorio = new NivelUsuarioRepositorio();

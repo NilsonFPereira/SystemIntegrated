@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
 using SystemIntegrated.Models.Operacao;
@@ -27,7 +28,7 @@ namespace SystemIntegrated.Controllers.Operacao
             var mensagens = new List<string>();
             var idItens = string.Empty;
 
-            if (!ModelState.IsValid)
+            if ( ! ModelState.IsValid)
             {
                 resultado = "AVISO";
                 mensagens = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
@@ -70,34 +71,52 @@ namespace SystemIntegrated.Controllers.Operacao
         [Authorize]
         public JsonResult InserirItem(EntradaNotaItemModel entradaNotaItemModel, int idEntradaNota)
         {
+            var resultado = "OK";
+            var mensagens = string.Empty;
 
-            var ret = "OK";
+            if(entradaNotaItemModel is null) {
 
-            entradaNotaItemRepositorio = new EntradaNotaItemRepositorio();
-
-            var lista = new List<EntradaNotaItemModel>();
-
-            lista = (List<EntradaNotaItemModel>)Session["itens"];
-
-            foreach (var itens in lista)
-            {
-                entradaNotaItemModel = new EntradaNotaItemModel()
-                {
-                    IdEntradaNota = itens.IdEntradaNota,
-                    IdProduto = itens.IdProduto,
-                    QuantidadeProduto = itens.QuantidadeProduto,
-                    ValorTotalProduto = itens.ValorTotalProduto,
-                    ValorUnitarioProduto = itens.ValorUnitarioProduto
-                };
-
-                entradaNotaItemRepositorio.SalvarItens(entradaNotaItemModel, idEntradaNota);
-                entradaNotaItemRepositorio.AtualizarQuantidadeProduto(entradaNotaItemModel);
+                resultado = "AVISO";
+                mensagens = "Nenhum produto foi informado.";
             }
+            else
+            {
 
-            Session.Remove("itens");
-            return Json(ret);
+                try
+                {
+                    entradaNotaItemRepositorio = new EntradaNotaItemRepositorio();
+
+                    var lista = (List<EntradaNotaItemModel>)Session["itens"];
+
+                    foreach (var itens in lista)
+                    {
+                        entradaNotaItemModel = new EntradaNotaItemModel()
+                        {
+                            IdEntradaNota = itens.IdEntradaNota,
+                            IdProduto = itens.IdProduto,
+                            QuantidadeProduto = itens.QuantidadeProduto,
+                            ValorTotalProduto = itens.ValorTotalProduto,
+                            ValorUnitarioProduto = itens.ValorUnitarioProduto
+                        };
+
+                        entradaNotaItemRepositorio.SalvarItens(entradaNotaItemModel, idEntradaNota);
+                        entradaNotaItemRepositorio.AtualizarQuantidadeProduto(entradaNotaItemModel);
+                    }
+
+                    Session.Remove("itens");
+
+
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Source);
+                }
+
+            }
+                
+            return Json(new { Resultado = resultado, Mensagens = mensagens });
+
         }
-
 
         [HttpPost]
         [Authorize]

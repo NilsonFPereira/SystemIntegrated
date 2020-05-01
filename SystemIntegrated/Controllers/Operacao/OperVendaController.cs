@@ -87,6 +87,7 @@ namespace SystemIntegrated.Controllers.Operacao
                 {
 
                     resultado = "ERRO";
+                    throw new Exception(ex.Source);
 
                 }
 

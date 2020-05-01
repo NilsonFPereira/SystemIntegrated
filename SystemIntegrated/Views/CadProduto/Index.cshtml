@@ -195,9 +195,6 @@
             $('#msg_mensagem_aviso').hide();
 
 
-            var pCusto = dados.PrecoCusto.toFixed(2).replace(".", ","),
-                pVenda = dados.PrecoVenda.toFixed(2).replace(".", ",");
-
 
             $('#txt_preco_custo').mask("###0,00", { reverse: true });
             $('#txt_preco_venda').mask("###0,00", {reverse: true});
@@ -205,8 +202,8 @@
             $('#id_cadastro').val(dados.Id);
             $('#txt_codigo').val(dados.Codigo);
             $('#txt_nome').val(dados.Nome);
-            $('#txt_preco_custo').val(pCusto);
-            $('#txt_preco_venda').val(pVenda);
+            $('#txt_preco_custo').val(dados.PrecoCusto);
+            $('#txt_preco_venda').val(dados.PrecoVenda);
             $('#txt_quant_estoque').val(dados.QuantEstoque);
             $('#ddl_unidade_medida').val(dados.IdUnidadeMedida);
             $('#ddl_grupo').val(dados.IdGrupoProduto);
@@ -405,6 +402,8 @@
                         if (param.Id == 0) {
 
                             param.Id = response.IdSalvo;
+                            param.PrecoCusto = $('#txt_preco_custo').val();
+                            param.PrecoVenda = $('#txt_preco_venda').val();
 
                             var table = $('#grid_cadastro').find('tbody'),
                                 linha = criar_linha_grid(param);

@@ -18,23 +18,47 @@ namespace SystemIntegrated.Repositorio.Operacao
             con = new SqlConnection(constr);
         }
 
-        public List<EntradaNotaViewModel> RecuperarLista()
+        public List<EntradaNotaViewModel> RecuperarLista(int pagina = 0, int tamPag = 0, string filtro = "")
         {
-            var ret = new List<EntradaNotaViewModel>();
+            var ret = new List<EntradaNotaViewModel>();            
 
             Connection();
 
-            using(SqlCommand command = new SqlCommand(" SELECT Id, " +
-                                                      "        DataEmissao = CONVERT(VARCHAR(10), DataEmissao, 103 ), " +
-                                                      "        NumeroNota,                                            " +
-                                                      "        ChaveAcesso,                                           " +
-                                                      "        ValorTotalProdutos = CONVERT(VARCHAR, REPLACE(ValorTotalProdutos,'.',',')), " +
-                                                      "        ValorTotalNota = CONVERT(VARCHAR, REPLACE(ValorTotalNota,'.',',')),                                        " +
-                                                      "        ValorDesconto = CONVERT(VARCHAR, REPLACE(ValorDesconto,'.',',')),                                         " +
-                                                      "        ValorFrete = CONVERT(VARCHAR, REPLACE(ValorFrete,'.',',')),                                            " +
-                                                      "        ValorIcms = CONVERT(VARCHAR, REPLACE(ValorIcms,'.',',')),                                             " +
-                                                      "        ValorIpi = CONVERT(VARCHAR, REPLACE(ValorIpi,'.',','))                                               " +
-                                                      "   FROM EntradaNota ", con ) ) 
+            var filtroWhere = "";
+
+            if (!string.IsNullOrEmpty(filtro))
+            {
+
+                filtroWhere = string.Format(" WHERE LOWER(NumeroNota) LIKE '%{0}%'", filtro.ToLower());
+
+            }
+
+            var paginacao = "";
+
+            var pos = (pagina - 1) * tamPag;
+
+            if (pagina > 0 && tamPag > 0)
+            {
+
+                paginacao = string.Format(" OFFSET {0} ROWS FETCH NEXT {1} ROWS ONLY", pos, tamPag);
+
+            }
+
+            using (SqlCommand command = new SqlCommand(String.Format("   SELECT Id,                                                                         " +
+                                                                     "          DataEmissao = CONVERT(VARCHAR(10), DataEmissao, 103 ),                      " +
+                                                                     "          NumeroNota,                                                                 " +
+                                                                     "          ChaveAcesso,                                                                " +
+                                                                     "          ValorTotalProdutos = CONVERT(VARCHAR, REPLACE(ValorTotalProdutos,'.',',')), " +
+                                                                     "          ValorTotalNota = CONVERT(VARCHAR, REPLACE(ValorTotalNota,'.',',')),         " +
+                                                                     "          ValorDesconto = CONVERT(VARCHAR, REPLACE(ValorDesconto,'.',',')),           " +
+                                                                     "          ValorFrete = CONVERT(VARCHAR, REPLACE(ValorFrete,'.',',')),                 " +
+                                                                     "          ValorIcms = CONVERT(VARCHAR, REPLACE(ValorIcms,'.',',')),                   " +
+                                                                     "          ValorIpi = CONVERT(VARCHAR, REPLACE(ValorIpi,'.',','))                      " +
+                                                                     "     FROM EntradaNota                                                                 " +
+                                                                                filtroWhere                                                                   +
+                                                                     " ORDER BY Id DESC                                                                     " +
+                                                                                paginacao 
+                                                                    ), con ) ) 
             {
                 con.Open();
                 var reader = command.ExecuteReader();
@@ -43,16 +67,16 @@ namespace SystemIntegrated.Repositorio.Operacao
                 {
                     ret.Add(new EntradaNotaViewModel()
                     {
-                        Id             = (int)     reader["Id"],
-                        DataEmissao    = (string)  reader["DataEmissao"],
-                        NumeroNota     = (string)  reader["NumeroNota"],
-                        ChaveAcesso    = (string)  reader["ChaveAcesso"],
+                        Id                 = (int)    reader["Id"],
+                        DataEmissao        = (string) reader["DataEmissao"],
+                        NumeroNota         = (string) reader["NumeroNota"],
+                        ChaveAcesso        = (string) reader["ChaveAcesso"],
                         ValorTotalProdutos = (string) reader["ValorTotalProdutos"],
                         ValorTotalNota     = (string) reader["ValorTotalNota"],
-                        ValorDesconto  = (string) reader["ValorDesconto"],
-                        ValorFrete     = (string) reader["ValorFrete"],
-                        ValorIcms      = (string) reader["ValorIcms"],
-                        ValorIpi       = (string) reader["ValorIpi"]                        
+                        ValorDesconto      = (string) reader["ValorDesconto"],
+                        ValorFrete         = (string) reader["ValorFrete"],
+                        ValorIcms          = (string) reader["ValorIcms"],
+                        ValorIpi           = (string) reader["ValorIpi"]                        
                     });
                 }
             }
@@ -133,8 +157,6 @@ namespace SystemIntegrated.Repositorio.Operacao
             }
             return ret;
         }
-
-
 
         public int Salvar(EntradaNotaModel entradaNotaModel)
         {

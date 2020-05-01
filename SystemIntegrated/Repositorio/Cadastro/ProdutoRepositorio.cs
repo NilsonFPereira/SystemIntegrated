@@ -88,9 +88,23 @@ namespace SystemIntegrated.Repositorio
 
             Connection();
 
-            using(SqlCommand command = new SqlCommand(" SELECT *       " +
-                                                      "   FROM Produto " +
-                                                      "  WHERE Id=@Id  ", con))
+            using(SqlCommand command = new SqlCommand(" SELECT Id,                                       " +
+                                                      "        Nome,                                     " +
+                                                      "        IdFornecedor,                             " +
+                                                      "        IdGrupoProduto,                           " +
+                                                      "        IdCategoriaProduto,                       " +
+                                                      "        IdUnidadeMedida,                          " +
+                                                      "        IdClassificacaoFiscal,                    " +
+                                                      "        IdCor,                                    " +
+                                                      "        Ativo,                                    " +
+                                                      "        Codigo,                                   " +
+                                                      "        PrecoCusto = Replace(PrecoCusto,'.',','), " +
+                                                      "        PrecoVenda = Replace(PrecoVenda,'.',','), " +
+                                                      "        QuantEstoque,                             " +
+                                                      "        IdLocalArmazenamento,                     " +
+                                                      "        IdMarcaProduto                            " +
+                                                      "   FROM Produto                                   " +
+                                                      "  WHERE Id=@Id                                    ", con))
             {
 
                 con.Open();
@@ -113,8 +127,8 @@ namespace SystemIntegrated.Repositorio
                         IdCor = (int)reader["IdCor"],
                         IdMarcaProduto = (int) reader["IdMarcaProduto"],
                         Ativo = (bool)reader["Ativo"],
-                        PrecoCusto = (decimal)reader["PrecoCusto"],
-                        PrecoVenda = (decimal)reader["PrecoVenda"],
+                        PrecoCusto = (string)reader["PrecoCusto"],
+                        PrecoVenda = (string)reader["PrecoVenda"],
                         QuantEstoque = (int)reader["QuantEstoque"],
                         IdLocalArmazenamento = (int)reader["IdLocalArmazenamento"]
                     };

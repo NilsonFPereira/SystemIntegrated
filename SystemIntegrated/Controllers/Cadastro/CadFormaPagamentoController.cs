@@ -91,6 +91,7 @@ namespace SystemIntegrated.Controllers.Cadastro
                 {
 
                     resultado = "ERRO";
+                    throw new Exception(ex.Source);
 
                 }
             }

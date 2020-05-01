@@ -24,6 +24,11 @@ namespace SystemIntegrated.Controllers.Operacao
 
         public ActionResult Index()
         {
+            if(Session["itens"] != null)
+            {
+                Session.Remove("itens");
+
+            }
             entradaNotaRepositorio = new EntradaNotaRepositorio();
             naturezaRepositorio = new NaturezaRepositorio();
             fretePorContaRepositorio = new FretePorContaRepositorio();
@@ -67,6 +72,27 @@ namespace SystemIntegrated.Controllers.Operacao
 
             return Json(listData);
         }
+
+        [HttpPost]
+        public JsonResult VerificarCampos(EntradaNotaModel entradaNotaModel)
+        {
+            var resultado = "OK";
+            var mensagens = new List<string>();
+            var idSalvo = string.Empty;
+
+            if ( ! ModelState.IsValid)
+            {
+                resultado = "AVISO";
+                mensagens = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
+
+            } else
+            {
+                idSalvo = entradaNotaModel.Id.ToString();
+            }
+
+            return Json(new { Resultado = resultado, Mensagens = mensagens });
+        }
+
 
         [HttpPost]
         public JsonResult SalvarEntradaNota(EntradaNotaModel entradaNotaModel)
@@ -119,6 +145,17 @@ namespace SystemIntegrated.Controllers.Operacao
             var lista = entradaNotaRepositorio.RecuperarPeloId(id);
 
             return Json(lista);
+        }
+
+
+        public JsonResult EntradaNotaPagina(int pagina, int tamPag, string filtro)
+        {
+            entradaNotaRepositorio = new EntradaNotaRepositorio();
+
+            var lista = entradaNotaRepositorio.RecuperarLista(pagina, tamPag, filtro);
+
+            return Json(lista);
+
         }
 
 

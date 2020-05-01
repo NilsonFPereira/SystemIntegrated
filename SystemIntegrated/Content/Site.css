@@ -64,9 +64,8 @@
     line-height: 100px;
     margin-bottom:20px;
 }
-#msg_mensagem_aviso ul li {
+#msg_mensagem_aviso ul li, #msg_mensagem_aviso_produto ul li {
 
-    list-style:none;
-
-
+    list-style: none;
 }
+
