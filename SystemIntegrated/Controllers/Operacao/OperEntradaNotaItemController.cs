@@ -88,7 +88,7 @@ namespace SystemIntegrated.Controllers.Operacao
 
                     var lista = (List<EntradaNotaItemModel>)Session["itens"];
 
-                    foreach (var itens in lista)
+                    foreach (var itens in lista.ToList())
                     {
                         entradaNotaItemModel = new EntradaNotaItemModel()
                         {
@@ -126,6 +126,43 @@ namespace SystemIntegrated.Controllers.Operacao
             var lista = entradaNotaItemRepositorio.RecuperarPeloId(id);
 
             return Json(lista);
+
+        }
+
+        public JsonResult DeleteItemSession(int id)
+        {
+            var resultado = "OK";
+
+            List<EntradaNotaItemModel> lista = (List<EntradaNotaItemModel>)Session["itens"];
+
+            Session.Remove("itens");
+
+            foreach (var itens in lista.ToList())
+            {
+                if( itens.Id == id)
+                {
+
+                    lista.Remove(itens);
+
+                }else
+                {
+
+                    if (Session["itens"] == null)
+                    {
+                        lista = new List<EntradaNotaItemModel>();
+                        lista.Add(itens);
+                        Session["itens"] = lista;
+
+                    }
+                    else
+                    {
+                        lista.Add(itens);
+                        Session["itens"] = lista;
+                    }
+                }
+            }
+
+            return Json(new { Resultado = resultado });
 
         }
     }

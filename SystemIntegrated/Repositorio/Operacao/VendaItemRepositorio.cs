@@ -22,10 +22,8 @@ namespace SystemIntegrated.Repositorio.Operacao
 
         }
 
-        public int SalvarItens(VendaItemModel vendaItemModel, int idVendaItem)
+        public void SalvarItens(VendaItemModel vendaItemModel)
         {
-
-            var ret = 0;
 
             Connection();
 
@@ -33,33 +31,36 @@ namespace SystemIntegrated.Repositorio.Operacao
             using (SqlCommand command = new SqlCommand("INSERT INTO VendaProdutoItem ( IdVendaProduto,        " +
                                                       "                                IdProduto,             " +
                                                       "                                QuantidadeProduto,     " +
-                                                      "                                ValorTotalProduto,     " +
+                                                      "                                ValorUnitarioProduto,  " +
                                                       "                                ValorDescontoProduto,  " +
-                                                      "                                ValorUnitarioProduto   " +
+                                                      "                                ValorAcrescimoProduto, " +
+                                                      "                                ValorTotalProduto      " +
                                                       "                             )                         " +
                                                       "                      VALUES( @IdVendaProduto,         " +
                                                       "                              @IdProduto,              " +
                                                       "                              @QuantidadeProduto,      " +
-                                                      "                              @ValorTotalProduto,      " +
+                                                      "                              @ValorUnitarioProduto,   " +
                                                       "                              @ValorDescontoProduto,   " +
-                                                      "                              @ValorUnitarioProduto    " +
+                                                      "                              @ValorAcrescimoProduto,  " +
+                                                      "                              @ValorTotalProduto       " +
                                                       "                            )                          ", con))
             {
                 con.Open();
 
 
-                command.Parameters.AddWithValue("@IdVendaProduto", SqlDbType.Int).Value = idVendaItem;
+                command.Parameters.AddWithValue("@IdVendaProduto", SqlDbType.Int).Value = vendaItemModel.IdVendaProduto;
                 command.Parameters.AddWithValue("@IdProduto", SqlDbType.Int).Value = vendaItemModel.IdProduto;
                 command.Parameters.AddWithValue("@QuantidadeProduto", SqlDbType.VarChar).Value = vendaItemModel.QuantidadeProduto;
-                command.Parameters.AddWithValue("#ValorDescontoProduto", SqlDbType.VarChar).Value = vendaItemModel.ValorDescontoProduto;
-                command.Parameters.AddWithValue("@ValorTotalProduto", SqlDbType.VarChar).Value = vendaItemModel.ValorTotalProduto;
+                command.Parameters.AddWithValue("@ValorUnitarioProduto", SqlDbType.VarChar).Value = vendaItemModel.ValorUnitarioProduto;
                 command.Parameters.AddWithValue("@ValorDescontoProduto", SqlDbType.VarChar).Value = vendaItemModel.ValorDescontoProduto;
-                command.Parameters.AddWithValue("@ValorUnitarioProduto", SqlDbType.Int).Value = vendaItemModel.ValorUnitarioProduto;
+                command.Parameters.AddWithValue("@ValorAcrescimoProduto", SqlDbType.VarChar).Value = vendaItemModel.ValorAcrescimoProduto;
+                command.Parameters.AddWithValue("@ValorTotalProduto", SqlDbType.VarChar).Value = vendaItemModel.ValorTotalProduto;
+      
+                
 
                 command.ExecuteScalar();
 
             }
-            return ret;
         }
 
         public int AtualizarQuantidadeProduto(VendaItemModel vendaItemModel)
@@ -69,7 +70,7 @@ namespace SystemIntegrated.Repositorio.Operacao
             Connection();
 
             using (SqlCommand command = new SqlCommand(" UPDATE Produto                                     " +
-                                                       "    SET QuantEstoque = QuantEstoque + @QuantEstoque " +
+                                                       "    SET QuantEstoque = QuantEstoque - @QuantEstoque " +
                                                        "  WHERE Id = @Id                                    ", con))
             {
 
@@ -81,7 +82,6 @@ namespace SystemIntegrated.Repositorio.Operacao
                 command.ExecuteNonQuery();
             }
 
-
             return ret;
         }
 
@@ -91,16 +91,17 @@ namespace SystemIntegrated.Repositorio.Operacao
 
             Connection();
 
-            using (SqlCommand command = new SqlCommand("     SELECT VP.Id,                                                              " +
+            using (SqlCommand command = new SqlCommand("     SELECT IdVendaItem = VP.Id,                                                " +
                                                        "            IdProduto = VP.IdProduto,                                           " +
                                                        "            NomeProduto = PR.Nome,                                              " +
                                                        "            UnidadeMedida = UM.Sigla,                                           " +
                                                        "            QuantidadeProduto = VP.QuantidadeProduto,                           " +
                                                        "            ValorUnitarioProduto = REPLACE(VP.ValorUnitarioProduto, '.', ','),  " +
                                                        "            ValorDescontoProduto = REPLACE(VP.ValorDescontoProduto, '.',','),   " +
+                                                       "            ValorAcrescimoProduto = REPLACE(VP.ValorAcrescimoProduto,'.',','),  " +
                                                        "            ValorTotalProduto = REPLACE(VP.ValorTotalProduto, '.', ',')         " +
                                                        "       FROM VendaProdutoItem VP                                                 " +
-                                                       " INNER JOIN Produto PR ON PR.Id = EI.IdProduto                                  " +
+                                                       " INNER JOIN Produto PR ON PR.Id = VP.IdProduto                                  " +
                                                        " INNER JOIN UnidadeMedida UM ON UM.Id = PR.IdUnidadeMedida                      " +
                                                        "      WHERE VP.IdVendaProduto = @IdVendaProduto                                 ", con))
             {
@@ -123,6 +124,8 @@ namespace SystemIntegrated.Repositorio.Operacao
                         NomeProduto = (string)reader["NomeProduto"],
                         UnidadeMedida = (string)reader["UnidadeMedida"],
                         ValorUnitarioProduto = (string)reader["ValorUnitarioProduto"],
+                        ValorDescontoProduto = (string) reader["ValorDescontoProduto"],
+                        ValorAcrescimoProduto = (string) reader["ValorAcrescimoProduto"],
                         ValorTotalProduto = (string)reader["ValorTotalProduto"]
 
                     });

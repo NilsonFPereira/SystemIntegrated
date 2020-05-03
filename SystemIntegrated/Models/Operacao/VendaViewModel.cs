@@ -10,6 +10,8 @@ namespace SystemIntegrated.Models.Operacao
         public int Id { get; set; }
         public string DataVenda { get; set; }
         public int IdCliente { get; set; }
+
+        public string NomeCliente { get; set; }
         public string NumeroVenda { get; set; }
         public string ValorTotalNota { get; set; }
         public string ValorDesconto { get; set; }
@@ -18,6 +20,7 @@ namespace SystemIntegrated.Models.Operacao
         public string ValorFrete { get; set; }
         public int IdFretePorConta { get; set; }
         public string ValorProduto { get; set; }
+        public string ValorAcrescimo { get; set; }
         public string DataCadastro { get; set; }
     }
 }

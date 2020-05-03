@@ -152,6 +152,7 @@
     <Compile Include="Controllers\Operacao\OperRecebimentoController.cs" />
     <Compile Include="Controllers\Operacao\OperVendaController.cs" />
     <Compile Include="Controllers\Operacao\OperVendaItemController.cs" />
+    <Compile Include="Controllers\Operacao\OperVendaParcelaController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -205,6 +206,7 @@
     <Compile Include="Models\Operacao\VendaItemModel.cs" />
     <Compile Include="Models\Operacao\VendaItemViewModel.cs" />
     <Compile Include="Models\Operacao\VendaModel.cs" />
+    <Compile Include="Models\Operacao\VendaParcelaViewModel.cs" />
     <Compile Include="Models\Operacao\VendaViewModel.cs" />
     <Compile Include="Models\VendasPorClienteModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -233,6 +235,7 @@
     <Compile Include="Repositorio\Operacao\EntradaNotaItemRepositorio.cs" />
     <Compile Include="Repositorio\Operacao\EntradaNotaRepositorio.cs" />
     <Compile Include="Repositorio\Operacao\VendaItemRepositorio.cs" />
+    <Compile Include="Repositorio\Operacao\VendaParcelaRepositorio.cs" />
     <Compile Include="Repositorio\Operacao\VendaRepositorio.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -288,20 +291,6 @@
     <Content Include="fonts\fontawesome-webfont.woff" />
     <Content Include="fonts\fontawesome-webfont.woff2" />
     <Content Include="fonts\FontAwesome.otf" />
-    <Content Include="less\animated.less" />
-    <Content Include="less\bordered-pulled.less" />
-    <Content Include="less\core.less" />
-    <Content Include="less\fixed-width.less" />
-    <Content Include="less\font-awesome.less" />
-    <Content Include="less\icons.less" />
-    <Content Include="less\larger.less" />
-    <Content Include="less\list.less" />
-    <Content Include="less\mixins.less" />
-    <Content Include="less\path.less" />
-    <Content Include="less\rotated-flipped.less" />
-    <Content Include="less\screen-reader.less" />
-    <Content Include="less\stacked.less" />
-    <Content Include="less\variables.less" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\CadBase.js" />
@@ -381,6 +370,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Views\OperEntradaNotaItem\" />
     <Folder Include="Views\OperVendaItem\" />
+    <Folder Include="Views\OperVendaParcela\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

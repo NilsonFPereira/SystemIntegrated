@@ -48,7 +48,6 @@ namespace SystemIntegrated.Controllers.Operacao
 
         [HttpPost]
         [Authorize]
-        [ValidateAntiForgeryToken]
         public JsonResult SalvarVendaProduto(VendaModel vendaModel)
         {
             var resultado = "OK";
@@ -94,6 +93,49 @@ namespace SystemIntegrated.Controllers.Operacao
             }
 
             return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
+        }
+
+        public JsonResult RecuperarUltimoNumero()
+        {
+            var resultado = "OK";
+            var numeroNota = string.Empty;
+
+            vendaRepositorio = new VendaRepositorio();
+            numeroNota = vendaRepositorio.RecuperarNovoNumero().ToString();
+
+            return Json(new { Resultado = resultado, NumeroNota = numeroNota });
+
+        }
+
+        public JsonResult VerificarCampos(VendaModel vendaModel)
+        {
+            var resultado = "OK";
+            var mensagens = new List<string>();
+            var idSalvo = string.Empty;
+
+            if (!ModelState.IsValid)
+            {
+                resultado = "AVISO";
+                mensagens = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
+
+            }
+            else
+            {
+                idSalvo = vendaModel.Id.ToString();
+            }
+
+            return Json(new { Resultado = resultado, Mensagens = mensagens });
+
+        }
+
+        public JsonResult RecuperarVendaProduto(int id)
+        {
+            vendaRepositorio = new VendaRepositorio();
+
+            var lista = vendaRepositorio.RecuperarPeloId(id);
+
+            return Json(lista);
+
         }
     }
 }

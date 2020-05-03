@@ -18,13 +18,16 @@ namespace SystemIntegrated.Models.Operacao
         public decimal QuantidadeProduto { get; set; }
 
         [Required(ErrorMessage = "Informe o valor unitário.")]
-        public decimal ValorUnitarioProduto { get; set; }
+        public string ValorUnitarioProduto { get; set; }
 
         [Required(ErrorMessage = "Informe o valor total dos produtos.")]
-        public decimal ValorTotalProduto { get; set; }
+        public string ValorTotalProduto { get; set; }
 
         [Required(ErrorMessage = "Informe o valor de desconto.")]
-        public decimal ValorDescontoProduto { get; set; }
+        public string ValorDescontoProduto { get; set; }
+
+        [Required(ErrorMessage = "Informe o valor de acréscimo.")]
+        public string ValorAcrescimoProduto { get; set; }
 
     }
 }

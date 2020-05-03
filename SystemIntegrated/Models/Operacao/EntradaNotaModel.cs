@@ -22,7 +22,7 @@ namespace SystemIntegrated.Models.Operacao
         [Required(ErrorMessage = "Informe a chave de acesso.")]
         public string ChaveAcesso {get; set;}
 
-        [Required(ErrorMessage = "informe o valor da nota.")]
+        [Required(ErrorMessage = "informe o valor total dos produtos.")]
         public string ValorTotalProdutos { get; set; }
 
         [Required(ErrorMessage = "Informe o fornecedor.")]

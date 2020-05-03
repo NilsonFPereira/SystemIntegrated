@@ -20,7 +20,6 @@ namespace SystemIntegrated.Controllers.Operacao
 
         [HttpPost]
         [Authorize]
-        [ValidateAntiForgeryToken]
         public JsonResult InsertItemSession(VendaItemModel vendaItemModel)
         {
             var resultado = "OK";
@@ -68,41 +67,54 @@ namespace SystemIntegrated.Controllers.Operacao
 
         [HttpPost]
         [Authorize]
-        [ValidateAntiForgeryToken]
         public JsonResult InserirItem(VendaItemModel vendaItemModel, int idVenda)
         {
 
-            var ret = "OK";
+            var resultado = "OK";
+            var mensagens = string.Empty;
 
-            vendaItemRepositorio = new VendaItemRepositorio();
-
-            var lista = new List<VendaItemModel>();
-
-            lista = (List<VendaItemModel>)Session["itensSession"];
-
-            foreach (var itens in lista)
+            if (vendaItemModel is null)
             {
-                vendaItemModel = new VendaItemModel()
-                {
-                    IdVendaProduto = itens.IdVendaProduto,
-                    IdProduto = itens.IdProduto,
-                    QuantidadeProduto = itens.QuantidadeProduto,
-                    ValorTotalProduto = itens.ValorTotalProduto,
-                    ValorUnitarioProduto = itens.ValorUnitarioProduto,
-                    ValorDescontoProduto = itens.ValorDescontoProduto
-                };
 
-                vendaItemRepositorio.SalvarItens(vendaItemModel, idVenda);
-                vendaItemRepositorio.AtualizarQuantidadeProduto(vendaItemModel);
+                resultado = "AVISO";
+                mensagens = "Nenhum produto foi informado.";
+            }
+            else
+            {
+
+                    vendaItemRepositorio = new VendaItemRepositorio();
+
+                    var lista = new List<VendaItemModel>();
+
+                    lista = (List<VendaItemModel>)Session["itensSession"];
+
+
+                    foreach (var itens in lista)
+                    {
+                        vendaItemModel = new VendaItemModel()
+                        {
+                            IdVendaProduto = idVenda,
+                            IdProduto = itens.IdProduto,
+                            QuantidadeProduto = itens.QuantidadeProduto,
+                            ValorUnitarioProduto = itens.ValorUnitarioProduto,
+                            ValorDescontoProduto = itens.ValorDescontoProduto,
+                            ValorAcrescimoProduto = itens.ValorAcrescimoProduto,
+                            ValorTotalProduto = itens.ValorTotalProduto
+                        };
+
+                        vendaItemRepositorio.SalvarItens(vendaItemModel);
+                        vendaItemRepositorio.AtualizarQuantidadeProduto(vendaItemModel);
+                    }
+
+                    Session.Remove("itensSession");
+
             }
 
-            Session.Remove("itensSession");
-            return Json(ret);
+            return Json(new { Resultado = resultado, Mensagens = mensagens });
         }
 
         [HttpPost]
         [Authorize]
-        [ValidateAntiForgeryToken]
         public JsonResult RecuperarVendaItem(int id)
         {
             vendaItemRepositorio = new VendaItemRepositorio();

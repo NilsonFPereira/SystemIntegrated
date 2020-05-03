@@ -10,6 +10,7 @@
 <style>
     .modal-dialog {
         width: 1000px !important;
+
     }
 </style>
 <div class="col-md-12" style="margin: 0 auto">
@@ -77,14 +78,14 @@
                                     </a>
                                 </td>
                                 <td>@item.DataEmissao</td>
-                                <td>@item.NumeroNota</td>
+                                <td class="text-right">@item.NumeroNota</td>
                                 <td>@item.ChaveAcesso</td>
-                                <td>@item.ValorTotalProdutos</td>
-                                <td>@item.ValorTotalNota</td>
-                                <td>@item.ValorDesconto</td>
-                                <td>@item.ValorFrete</td>
-                                <td>@item.ValorIcms</td>
-                                <td>@item.ValorIpi</td>
+                                <td class="text-right">@item.ValorTotalProdutos</td>
+                                <td class="text-right">@item.ValorTotalNota</td>
+                                <td class="text-right">@item.ValorDesconto</td>
+                                <td class="text-right">@item.ValorFrete</td>
+                                <td class="text-right">@item.ValorIcms</td>
+                                <td class="text-right">@item.ValorIpi</td>
                             </tr>
                         }
                     }
@@ -891,51 +892,44 @@
 
             .on('blur', '#txt_quantidadeproduto', function () {
 
-                var quantidade = $('#txt_quantidadeproduto').val();
-                var valorunitario = $('#txt_valorunitarioproduto').val();
-
-                if (quantidade != "" && valorunitario != "") {
-
-                    var vl_unitario = "";
+                var quantidadeproduto = $('#txt_quantidadeproduto').val(),
+                    valorunitarioproduto = $('#txt_valorunitarioproduto').val(),
+                    vl_unitarioproduto = parseFloat(valorunitarioproduto.replace(",", "."))
 
 
+                if (quantidadeproduto > 0 && quantidadeproduto != "" && valorunitarioproduto != "") {
 
-                    vl_unitario = getMoney(valorunitario);
+                    var somaValor = '';
 
-                    var valortotal = (quantidade * vl_unitario);
+                    somaValor = (quantidadeproduto * vl_unitarioproduto).toFixed(2);
 
-                    var vl_total = formatReal(valortotal);
-
-                    $('#txt_valortotalproduto').val(vl_total);
+                    $('#txt_valortotalproduto').val(somaValor.replace(".", ","));
 
                 }
                 else {
-                    $('#txt_valortotalproduto').val('');
+                    $('#txt_valortotalproduto').val('0,00');
 
                 }
             })
 
             .on('blur', '#txt_valorunitarioproduto', function () {
 
-                var quantidade = $('#txt_quantidadeproduto').val();
-                var valorunitario = $('#txt_valorunitarioproduto').val();
+                var quantidadeproduto = $('#txt_quantidadeproduto').val(),
+                    valorunitarioproduto = $('#txt_valorunitarioproduto').val(),
+                    vl_unitarioproduto = parseFloat(valorunitarioproduto.replace(",", "."))
 
-                if (quantidade != "" && valorunitario != "") {
 
-                    var vl_unitario = "";
+                if (quantidadeproduto > 0 && quantidadeproduto != "" && valorunitarioproduto != "") {
 
-                    vl_unitario = getMoney(valorunitario);
+                    var somaValor = '';
 
-                    var valortotal = (quantidade * vl_unitario);
+                    somaValor = (quantidadeproduto * vl_unitarioproduto).toFixed(2);
 
-                    var vl_total = formatReal(valortotal);
-
-                    $('#txt_valortotalproduto').val(vl_total);
+                    $('#txt_valortotalproduto').val(somaValor.replace(".", ","));
 
                 }
                 else {
-
-                    $('#txt_valortotalproduto').val('');
+                    $('#txt_valortotalproduto').val('0,00');
 
                 }
             })
@@ -1002,10 +996,10 @@
                     tr = btn.closest('tr'),
                     id = tr.attr('data_idproduto'),
                     url = '@Url.Action("DeleteItemSession", "OperEntradaNotaItem")',
-                    param = { 'id' : id };
+                    param = { 'id': id };
 
                 bootbox.confirm({
-                    message: 'Deseja realmente excluir?';
+                    message: 'Deseja realmente excluir?',
                     buttons: {
                         confirm: {
 
@@ -1026,16 +1020,16 @@
 
                             $.post(url, param, function (response) {
 
-                                if (response) {
+                                if (response.Resultado == "OK") {
 
-                                    tr.remove;
+                                    tr.remove();
+
                                 }
-
                             })
                         }
                     })
                 })
-            });
+            })
 
             .on('click', '#btn_confirmar', function () {
 
@@ -1089,13 +1083,13 @@
 
                     $.post(url, param, function (response) {
 
-                        var loading = bootbox.dialog({
-                            message: '<div class="text-center" style="color:#0000FF; font-size:14px"><i class= "fa fa-spinner fa-spin fa-2x fa-fw" ></i> Aguarde, as informações estão sendo carregadas...</div>',
-                            closeButton: false
-
-                        });
-
                         if (response.Resultado == "OK") {
+
+                            var loading = bootbox.dialog({
+                                message: '<div class="text-center" style="color:#0000FF; font-size:14px"><i class= "fa fa-spinner fa-spin fa-2x fa-fw" ></i> Aguarde, inserindo os dados da nota...</div>',
+                                closeButton: false
+
+                            });
 
                             if (param.Id == 0) {
 
@@ -1107,6 +1101,7 @@
 
                                 $.post(url, paramItens, function (responseItem) {
 
+
                                     if (responseItem.Resultado == "OK") {
 
 
@@ -1116,7 +1111,7 @@
                                         setTimeout(function () {
                                             loading.modal('hide'),
 
-                                                $('#grid_cadastro').removeClass('invisivel');
+                                            $('#grid_cadastro').removeClass('invisivel');
                                             $('#mensagem_grid').addClass('invisivel');
                                             linha = criar_linha_grid(param);
                                             table.append(linha)

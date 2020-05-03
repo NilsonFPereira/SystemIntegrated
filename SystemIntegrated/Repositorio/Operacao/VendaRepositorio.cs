@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+using System.Web.UI.WebControls;
 using SystemIntegrated.Models.Operacao;
 
 namespace SystemIntegrated.Repositorio.Operacao
@@ -34,8 +35,9 @@ namespace SystemIntegrated.Repositorio.Operacao
                                                       "        IdFormaPagamento,                                           " +
                                                       "        ValorPago = REPLACE(ValorPago,'.',','),                     " +
                                                       "        ValorFrete = REPLACE(ValorFrete,'.',','),                   " +
+                                                      "        ValorAcrescimo = REPLACE(ValorAcrescimo,'.',','),          " +
                                                       "        IdFretePorConta,                                            " +
-                                                      "        ValorProduto = ISNULL(REPLACE(ValorProduto,'.',','), ''),     " +
+                                                      "        ValorProduto = ISNULL(REPLACE(ValorProduto,'.',','), ''),   " +
                                                       "        DataCadastro = CONVERT(VARCHAR(10), DataCadastro, 103 )     " +
                                                       "   FROM VendaProduto                                                ", con))
             {
@@ -59,7 +61,8 @@ namespace SystemIntegrated.Repositorio.Operacao
                         ValorFrete = (string) reader["ValorFrete"],
                         IdFretePorConta = (int) reader["IdFretePorConta"],
                         ValorProduto = (string) reader["ValorProduto"],
-                        DataCadastro = (string) reader["DataCadastro"]
+                        DataCadastro = (string) reader["DataCadastro"],
+                        ValorAcrescimo = (string) reader["ValorAcrescimo"]
 
                     });
                 }
@@ -82,26 +85,54 @@ namespace SystemIntegrated.Repositorio.Operacao
 
             return ret;
         }
-        public VendaModel RecuperarPeloId(int id)
+
+
+        public int RecuperarNovoNumero()
         {
-            VendaModel ret = null;
+            var ret = 1;
 
             Connection();
 
-            using(SqlCommand command = new SqlCommand(" SELECT Id,                                                    " +
-                                                      "        DataVenda = CONVERT(VARCHAR(10), DataVenda, 103 ),     " +
-                                                      "        IdCliente,                                             " +
-                                                      "        NumeroVenda,                                           " +
-                                                      "        ValorTotalNota,                                        " +
-                                                      "        ValorDesconto,                                         " +
-                                                      "        IdFormaPagamento,                                      " +
-                                                      "        ValorPago,                                             " +
-                                                      "        ValorFrete,                                            " +
-                                                      "        IdFretePorConta,                                       " +
-                                                      "        ValorProduto,                                     " +
-                                                      "        DataCadastro = CONVERT(VARCHAR(10), DataCadastro, 103) " +
-                                                      "   FROM VendaProduto                                           " +
-                                                      "  WHERE Id=@Id                                                 ", con ) )
+            using(SqlCommand command = new SqlCommand(" SELECT TOP 1 NumeroVenda = NumeroVenda + 1" +
+                                                      "   FROM VendaProduto         " +
+                                                      " ORDER BY NumeroVenda DESC    ", con ))
+            {
+                con.Open();
+
+                var reader = command.ExecuteReader();
+
+                if (reader.Read())
+                {
+
+                    ret = (int)reader["NumeroVenda"];
+                }
+
+            }
+            return ret;
+        }
+        public VendaViewModel RecuperarPeloId(int id)
+        {
+            VendaViewModel ret = null;
+
+            Connection();
+
+            using(SqlCommand command = new SqlCommand("     SELECT VP.Id,                                                    " +
+                                                      "            DataVenda = CONVERT(VARCHAR(10), VP.DataVenda, 103 ),     " +
+                                                      "            VP.IdCliente,                                             " +
+                                                      "            NomeCliente = CL.Nome,                                    " +
+                                                      "            VP.NumeroVenda,                                           " +
+                                                      "            ValorTotalNota = REPLACE(VP.ValorTotalNota,'.',','),      " +
+                                                      "            ValorDesconto = REPLACE(VP.ValorDesconto,'.',','),        " +
+                                                      "            ValorAcrescimo = REPLACE(VP.ValorAcrescimo,'.',','),      " +
+                                                      "            VP.IdFormaPagamento,                                      " +
+                                                      "            ValorPago = REPLACE(VP.ValorPago,'.',','),                " +
+                                                      "            ValorFrete = REPLACE(VP.ValorFrete,'.',','),              " +
+                                                      "            VP.IdFretePorConta,                                       " +
+                                                      "            ValorProduto = REPLACE(VP.ValorProduto,'.',','),          " +
+                                                      "            DataCadastro = CONVERT(VARCHAR(10), VP.DataCadastro, 103) " +
+                                                      "       FROM VendaProduto VP                                           " +
+                                                      " INNER JOIN Cliente CL ON CL.Id = VP.IdCliente                        " +
+                                                      "      WHERE VP.Id=@Id                                                    ", con ) )
             {
                 con.Open();
 
@@ -111,11 +142,21 @@ namespace SystemIntegrated.Repositorio.Operacao
 
                 if (reader.Read())
                 {
-                    ret = new VendaModel()
+                    ret = new VendaViewModel()
                     {
                         Id = (int) reader["Id"],
                         DataVenda = (string) reader["DataVenda"],
+                        NumeroVenda = (string)reader["NumeroVenda"],
                         IdCliente = (int) reader["IdCliente"],
+                        NomeCliente = (string) reader["NomeCliente"],
+                        IdFretePorConta = (int) reader["IdFretePorConta"],
+                        ValorFrete = (string) reader["ValorFrete"],
+                        ValorProduto = (string) reader["ValorPago"],
+                        ValorDesconto = (string) reader["ValorDesconto"],
+                        ValorAcrescimo = (string) reader["ValorAcrescimo"],
+                        ValorTotalNota = (string) reader["ValorTotalNota"],
+                        ValorPago = (string) reader["ValorPago"],
+                        IdFormaPagamento = (int) reader["IdFormaPagamento"]
 
 
 
@@ -146,8 +187,9 @@ namespace SystemIntegrated.Repositorio.Operacao
                                                           "                           ValorPago,          " +
                                                           "                           ValorFrete,         " +
                                                           "                           IdFretePorConta,    " +
-                                                          "                           ValorProduto,  " +
-                                                          "                           DataCadastro        " +
+                                                          "                           ValorProduto,       " +
+                                                          "                           DataCadastro,       " +
+                                                          "                           ValorAcrescimo      " +
                                                           "                         )                     " +
                                                           "                  VALUES ( @DataVenda,         " +
                                                           "                           @IdCliente,         " +
@@ -158,8 +200,9 @@ namespace SystemIntegrated.Repositorio.Operacao
                                                           "                           @ValorPago,         " +
                                                           "                           @ValorFrete,        " +
                                                           "                           @IdFretePorConta,   " +
-                                                          "                           @ValorProduto, " +
-                                                          "                           @DataCadastro       " +
+                                                          "                           @ValorProduto,      " +
+                                                          "                           @DataCadastro,      " +
+                                                          "                           @ValorAcrescimo     " +
                                                           "                         );                    " +
                                                           " select convert(int, scope_identity())", con))
                 {
@@ -177,7 +220,7 @@ namespace SystemIntegrated.Repositorio.Operacao
                     command.Parameters.AddWithValue("@IdFretePorConta", SqlDbType.Int).Value = vendaModel.IdFretePorConta;
                     command.Parameters.AddWithValue("@ValorProduto", SqlDbType.Decimal).Value = vendaModel.ValorProduto;
                     command.Parameters.AddWithValue("@DataCadastro", SqlDbType.VarChar).Value = vendaModel.DataCadastro;
-
+                    command.Parameters.AddWithValue("@ValorAcrescimo", SqlDbType.Decimal).Value = vendaModel.ValorAcrescimo;
                     ret = (int)command.ExecuteScalar();
 
                 }
