@@ -289,7 +289,6 @@
 
 <div id="detalhamento_venda" class="form-horizontal invisivel" role="dialog">
     <fieldset>
-        <div id="msg_mensagem_aviso" class="alert alert-danger invisivel"></div>
         <div class="row">
             <div class="col-md-3">
                 @Html.Label("datavenda", "Data Venda", new { @class = "control-label required" })
@@ -355,7 +354,7 @@
         </div>
         <div id="div_detalhamentoparcelas" class="row invisivel" style="margin-top:15px">
             <div class="col-md-12">
-                <div class="col-md-12" style="border:1px solid #808080">
+                <div class="col-md-12" style="border:1px solid #ddd; border-radius:5px 5px 5px 5px">
                     <h3 style="color:#000">Parcelas</h3>
                         <div id="detalhes_parcelas">
                         </div>
@@ -687,14 +686,14 @@
         function criar_linha_grid_itens(dados) {
             var ret =
                 '<tr data_idproduto=' + dados.Id + '>' +
-                '<td>' + dados.IdProduto + '</td>' +
+                '<td class="text-center">' + dados.IdProduto + '</td>' +
                 '<td>' + dados.NomeProduto + '</td>' +
                 '<td>' + dados.UnidadeMedida + '</td>' +
-                '<td>' + dados.QuantidadeProduto + '</td>' +
-                '<td>' + dados.ValorUnitarioProduto + '</td>' +
-                '<td>' + dados.ValorDescontoProduto + '</td>' +
-                '<td>' + dados.ValorAcrescimoProduto + '</td>' +
-                '<td>' + dados.ValorTotalProduto + '</td>' +
+                '<td class="text-center">' + dados.QuantidadeProduto + '</td>' +
+                '<td class="text-right">' + dados.ValorUnitarioProduto + '</td>' +
+                '<td class="text-right">' + dados.ValorDescontoProduto + '</td>' +
+                '<td class="text-right">' + dados.ValorAcrescimoProduto + '</td>' +
+                '<td class="text-right">' + dados.ValorTotalProduto + '</td>' +
                 '</tr>';
 
             return ret;

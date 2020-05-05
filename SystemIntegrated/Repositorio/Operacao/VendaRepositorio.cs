@@ -151,7 +151,7 @@ namespace SystemIntegrated.Repositorio.Operacao
                         NomeCliente = (string) reader["NomeCliente"],
                         IdFretePorConta = (int) reader["IdFretePorConta"],
                         ValorFrete = (string) reader["ValorFrete"],
-                        ValorProduto = (string) reader["ValorPago"],
+                        ValorProduto = (string) reader["ValorProduto"],
                         ValorDesconto = (string) reader["ValorDesconto"],
                         ValorAcrescimo = (string) reader["ValorAcrescimo"],
                         ValorTotalNota = (string) reader["ValorTotalNota"],

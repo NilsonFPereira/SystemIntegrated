@@ -203,6 +203,7 @@
     <Compile Include="Models\Operacao\EntradaNotaItemViewModel.cs" />
     <Compile Include="Models\Operacao\EntradaNotaModel.cs" />
     <Compile Include="Models\Operacao\EntradaNotaViewModel.cs" />
+    <Compile Include="Models\Operacao\VendaClienteViewModel.cs" />
     <Compile Include="Models\Operacao\VendaItemModel.cs" />
     <Compile Include="Models\Operacao\VendaItemViewModel.cs" />
     <Compile Include="Models\Operacao\VendaModel.cs" />
@@ -234,6 +235,7 @@
     <Compile Include="Repositorio\Cadastro\UsuarioRepositorio.cs" />
     <Compile Include="Repositorio\Operacao\EntradaNotaItemRepositorio.cs" />
     <Compile Include="Repositorio\Operacao\EntradaNotaRepositorio.cs" />
+    <Compile Include="Repositorio\Operacao\RecebimentoRepositorio.cs" />
     <Compile Include="Repositorio\Operacao\VendaItemRepositorio.cs" />
     <Compile Include="Repositorio\Operacao\VendaParcelaRepositorio.cs" />
     <Compile Include="Repositorio\Operacao\VendaRepositorio.cs" />
@@ -272,6 +274,7 @@
     <Content Include="Content\Jquery-ui\jquery-ui.theme.css" />
     <Content Include="Content\Jquery-ui\jquery-ui.theme.min.css" />
     <Content Include="Content\Operacao\OperEntradaNota.css" />
+    <Content Include="Content\Operacao\OperRecebimento.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />

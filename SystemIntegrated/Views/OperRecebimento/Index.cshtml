@@ -1,7 +1,289 @@
 ﻿
 @{
-    ViewBag.Title = "Index";
-}
+    ViewBag.Title = "Recebimento";
 
-<h2>Index</h2>
+    var listBusca = new SelectList(new[] { "Cpf", "CNPJ", "Nome", "Email" });
+    ViewBag.ListBusca = listBusca;
+}
+<link href="~/Content/Operacao/OperRecebimento.css" rel="stylesheet" />
+
+<div class="col-md-12" style="margin:0 auto;">
+    <section id="cadastro_cabecalho">
+        <h2 style="color:#000">@ViewBag.Title</h2>
+    </section>
+    <div id="cadastro_conteudo">
+        <div id="msg_mensagem_aviso" class="alert alert-danger invisivel"></div>
+        <div id="cabecalho_grid">
+            <div class="form-group">
+                <div class="col-md-3">
+                    @Html.Label("ddl_busca", "Busca Por", new { @class = "control-label" })
+                    @Html.DropDownList("ddl_busca", (SelectList)ViewBag.ListBusca, new { @class = "form-control selectpicker" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-7">
+                    @Html.Label("txt_dadosbusca", "Dados da Busca", new { @class = "control-label" })
+                    @Html.TextBox("txt_dadosbusca", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-1" style="margin-top:25px">
+                    <a id="btn_buscar" class="btn btn-success"><i class="glyphicon glyphicon-arrow-right"></i> Buscar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12" style="margin-top:15px">
+        <div id="dados_cliente" class="panel panel-success invisivel">
+            <div class="panel-heading">
+                Dados do Cliente
+            </div>
+            <div class="panel-body">
+                <div class="col-md-12">
+                    <div class="col-md-9">
+                        @Html.Label("txt_nome", "Nome", new { @class = "control-label" })
+                        @Html.TextBox("txt_nome", null, new { @class = "form-control", disabled = true })
+                    </div>
+                    <div class="col-md-3">
+                        @Html.Label("txt_cnpjcpf", "CNPJ/CPF", new { @class = "control-label" })
+                        @Html.TextBox("txt_cnpjcpf", null, new { @class = "form-control", disabled = true })
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <table id="grid_cadastro" class="table table-bordered table-striped table-hover invisivel">
+                <thead>
+                    <tr class="info">
+                        <th class="text-center">Nº Venda</th>
+                        <th class="text-center">Data Venda</th>
+                        <th class="text-center">Valor Total</th>
+                        <th class="text-center">Valor Pago</th>
+                        <th class="text-center">Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <div id="mensagem_grid">
+                Nenhum registro
+            </div>
+        </div>
+    </div>
+
+<div id="modal_parcelas" class="form-horizontal invisivel" role="dialog">
+    <fieldset>
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="page-header" style="color:#000">Parcelas</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                @Html.Label("txt_dataemissao", "Data Emissão", new { @class = "control-label required" })
+                @Html.TextBox("txt_dataemissao", null, new { @class = "form-control", tabindex = 1 })
+            </div>
+            <div class="col-md-3">
+                @Html.Label("txt_numeronota", "Número Nota", new { @class = "control-label required" })
+                @Html.TextBox("txt_numeronota", null, new { @class = "form-control", tabindex = 2 })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                @Html.Label("txt_chaveacesso", "Chave de Acesso", new { @class = "control-label required" })
+                @Html.TextBox("txt_chaveacesso", null, new { @class = "form-control", tabindex = 4 })
+            </div>
+            <div class="col-md-4">
+                @Html.Label("txt_valortotalprodutos", "Valor Total Produtos", new { @class = "control-label required" })
+                @Html.TextBox("txt_valortotalprodutos", null, new { @class = "form-control", tabindex = 5 })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                @Html.Label("txt_idfornecedor", "Código", new { @class = "control-label required" })
+                @Html.TextBox("txt_idfornecedor", null, new { @class = "form-control" })
+            </div>
+            <div class="col-md-10">
+                @Html.Label("suggest_fornecedor", "Fornecedor", new { @class = "control-label required" })
+                @Html.TextBox("suggest_fornecedor", null, new { @class = "form-control", type = "text", tabindex = 6 })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                @Html.Label("txt_valorfrete", "Valor Frete", new { @class = "control-label required" })
+                @Html.TextBox("txt_valorfrete", null, new { @class = "form-control", tabindex = 8 })
+            </div>
+            <div class="col-md-4">
+                @Html.Label("txt_valordesconto", "Valor Desconto", new { @class = "control-label required" })
+                @Html.TextBox("txt_valordesconto", null, new { @class = "form-control", tabindex = 9 })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                @Html.Label("txt_valoricms", "Valor ICMS", new { @class = "control-label required" })
+                @Html.TextBox("txt_valoricms", null, new { @class = "form-control", tabindex = 10 })
+            </div>
+            <div class="col-md-4">
+                @Html.Label("txt_valoripi", "Valor IPI", new { @class = "control-label required" })
+                @Html.TextBox("txt_valoripi", null, new { @class = "form-control", tabindex = 11 })
+            </div>
+            <div class="col-md-4">
+                @Html.Label("txt_valortotalnota", "Valor Total Nota", new { @class = "control-label required" })
+                @Html.TextBox("txt_valortotalnota", null, new { @class = "form-control", tabindex = 12 })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 invisivel">
+                @Html.Label("txt_dataentrada", "Data Entrada", new { @class = "control-label required" })
+                @Html.TextBox("txt_dataentrada", null, new { @class = "form-control" })
+            </div>
+            <div class="col-md-2 invisivel">
+                <div class="form-group" style="margin-top:20px">
+                    @Html.Label("cbx_ehcancelada", "Cancelada", new { @class = "control-label required" })
+                    @Html.CheckBox("cbx_ehcancelada")
+                </div>
+            </div>
+        </div>
+        <div id="botao_continuar" class="form-group" style="margin-top:15px">
+            <div class="modal-footer">
+                <a id="btn-voltar" class="btn btn-primary" tabindex="13" role="button" data-dismiss="modal"><i class="glyphicon glyphicon-arrow-left"></i> Voltar</a>
+            </div>
+        </div>
+    </fieldset>
+</div>
+    @section Scripts{
+        <script>
+    function criar_linha_grid(dados) {
+
+        var ret = '<tr data-id='+ dados.Id +'>' +
+            '<td class="text-right">'+ dados.NumeroVenda +'</td>'+
+            '<td class="text-right">'+ dados.DataVenda +'</td>' +
+            '<td class="text-right">'+ dados.ValorTotalNota +'</td>' +
+            '<td class="text-right">'+ dados.ValorPago+'</td>' +
+            '<td class="text-center">' +
+            '<a id="SelecionaParcelas" class="btn btn-primary">Ver Parcelas</a>'+
+            '</td>' +
+            '</tr>';
+
+        return ret;
+    }
+
+
+            $(document)
+                .ready(function () {
+
+                    $('#txt_dadosbusca').mask('000.000.000-00');
+                    $('#txt_dadosbusca').focus();
+
+                })
+
+                .on('change', '#ddl_busca', function () {
+
+                    var btn = $(this),
+                        busca = btn.val();
+
+                    if (busca == "Cpf") {
+
+                        $('#txt_dadosbusca').mask('000.000.000-00');
+                        $('#txt_dadosbusca').val('');
+                    }
+                    else if (busca == "CNPJ") {
+
+                        $('#txt_dadosbusca').mask('00.000.000/0000-00');
+                        $('#txt_dadosbusca').val('');
+
+                    }
+                    else if (busca == "Nome") {
+
+                        $('#txt_dadosbusca').unmask();
+                        $('#txt_dadosbusca').val('');
+                    }
+                    else if (busca == "Email") {
+
+                        $('#txt_dadosbusca').unmask();
+                        $('#txt_dadosbusca').val('');
+                    }
+
+                })
+
+                .on('click', '#btn_buscar', function () {
+
+                    var btn = $(this),
+                        dadosBusca = $('#txt_dadosbusca').val(),
+                        tipoBusca = $('#ddl_busca').val(),
+                        url = '@Url.Action("BuscarVendaCliente", "OperRecebimento")',
+                        param = { 'dadosBusca': dadosBusca };
+
+                    if (dadosBusca == "") {
+
+                        $('#msg_mensagem_aviso').html("Atenção, informe o " + tipoBusca + " para realizar a consulta!");
+                        $('#msg_mensagem_aviso').show();
+
+                        setInterval(function () {
+                            $('#msg_mensagem_aviso').val('');
+                            $('#msg_mensagem_aviso').hide();
+                        }, 5000);
+                    }
+                    else {
+
+                        $.post(url, param, function (response) {
+
+                            if (response) {
+
+                                var table = $('#grid_cadastro').find('tbody');
+                                table.empty();
+
+                                if (response.length > 0) {
+
+                                    $('#grid_cadastro').removeClass('invisivel');
+                                    $('#mensagem_grid').addClass('invisivel');
+                                    $('#dados_cliente').removeClass('invisivel');
+
+                                    $('#txt_nome').val(response[0].Nome);
+                                    $('#txt_cnpjcpf').val(response[0].CnpjCpf);
+
+                                    for (var i = 0; i < response.length; i++) {
+
+                                        table.append(criar_linha_grid(response[i]));
+                                    }
+
+                                }
+                            }
+                        });
+                    }
+                })
+
+                .on('click', '#SelecionaParcelas', function () {
+
+                    var btn = $(this),
+                        idVenda = btn.closest('tr').attr('data-id'),
+                        url = '@Url.Action("BuscarVendaParcelas", "OperRecebimento")',
+                        param = { 'idVenda': idVenda };
+
+                    var modal_parcelas = $('#modal_parcelas');
+
+                    bootbox.dialog({
+                        title: 'Parcelas',
+                        message: modal_parcelas
+
+
+                    }).on('shown.bs.modal', function () {
+
+                        modal_parcelas.show();
+
+                    }).on('hidden.bs.modal', function () {
+
+                        modal_parcelas.hide().appendTo('tbody');
+
+                    })
+
+                });
+
+
+
+
+        </script>
+
+    }
+
 

@@ -35,12 +35,10 @@ namespace SystemIntegrated.Repositorio
                                                       "            VP.NumeroVenda, "+
                                                       "            VPP.NumeroParcela, "+
                                                       "            DataVencimento = ISNULL(CONVERT(VARCHAR(10), VPP.DataVencimento, 103), ''), " +
-                                                      "            VPP.ValorParcela, " +
-                                                      "            DataPagamento = ISNULL(CONVERT(VARCHAR(10), VPP.DataPagamento, 103), ''), " +
-                                                      "            StatusPagamento = SPP.Nome " +
+                                                      "            VPP.ValorParcela " +
+                                                  
                                                       "       FROM VendaProdutoParcela VPP " +
                                                       " INNER JOIN VendaProduto VP ON VP.Id = VPP.IdVendaProduto " +
-                                                      " INNER JOIN StatusPagamentoParcela SPP ON SPP.Id = VPP.IdStatusPagamentoParcela " +
                                                       " INNER JOIN Cliente CL ON CL.Id = VP.IdCliente "+
                                                       "      WHERE VP.NumeroVenda = @numeroVenda "+
                                                       " AND CL.CnpjCpf = @cnpjCpf ", con ))
@@ -66,9 +64,7 @@ namespace SystemIntegrated.Repositorio
                         NumeroVenda =(string) reader["NumeroVenda"],
                         NumeroParcela = (int)reader["NumeroParcela"],
                         DataVencimento = (string)reader["DataVencimento"],
-                        ValorParcela = (decimal)reader["ValorParcela"],
-                        DataPagamento = (string)reader["DataPagamento"],
-                        StatusPagamento = (string)reader["StatusPagamento"]
+                        ValorParcela = (decimal)reader["ValorParcela"]
                     });
                 };
             }

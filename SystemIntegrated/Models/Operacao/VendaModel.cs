@@ -34,7 +34,7 @@ namespace SystemIntegrated.Models.Operacao
         [Required(ErrorMessage = "Informe o valor do frete.")]
         public string ValorFrete { get; set; }
 
-        [Required(ErrorMessage = "Selecioner o responsável pelo frete.")]
+        [Required(ErrorMessage = "Selecione o responsável pelo frete.")]
         public int IdFretePorConta { get; set; }
 
         [Required(ErrorMessage = "Informe o valor dos produtos.")]
