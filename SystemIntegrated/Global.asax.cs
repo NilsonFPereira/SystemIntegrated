@@ -47,22 +47,24 @@ namespace SystemIntegrated
             if(cookie != null && cookie.Value != string.Empty)
             {
 
-                FormsAuthenticationTicket tiket;
+                FormsAuthenticationTicket ticket;
 
                 try
                 {
-                    tiket = FormsAuthentication.Decrypt(cookie.Value);
+                    ticket = FormsAuthentication.Decrypt(cookie.Value);
                 }
                 catch
                 {
                     return;
                 }
-                var perfis = tiket.UserData.Split(';');
+                var partes = ticket.UserData.Split('|');
+                var id = Convert.ToInt32(partes[0]);
+                var perfis = partes[1].Split(';');
 
                 if(Context.User != null)
                 {
 
-                    Context.User = new GenericPrincipal(Context.User.Identity, perfis);
+                    Context.User = new AplicacaoPrincipal(Context.User.Identity, perfis, id);
                 }
             }
         }

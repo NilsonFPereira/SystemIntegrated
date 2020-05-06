@@ -356,8 +356,8 @@
             <div class="col-md-12">
                 <div class="col-md-12" style="border:1px solid #ddd; border-radius:5px 5px 5px 5px">
                     <h3 style="color:#000">Parcelas</h3>
-                        <div id="detalhes_parcelas">
-                        </div>
+                    <div id="detalhes_parcelas">
+                    </div>
                 </div>
 
             </div>
@@ -396,6 +396,31 @@
         </div>
     </fieldset>
 </div>
+
+<!--M-->
+<div id="div_modalparcelas" class="form-horizontal invisivel" role="dialog">
+    <fieldset>
+        <div class="col-md-12">
+            <table id="grig_parcelas" class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr class="info">
+                        <th>Numero Parcela</th>
+                        <th>Data Vencimento</th>
+                        <th>Valor Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <div class="form-group" style="margin-top:15px">
+                <div class="modal-footer">
+                    <a id="btn_gravar" class="btn btn-info" role="button" data-dismiss="modal"><i class="glyphicon glyphicon-check"></i> Gravar</a>
+                </div>
+            </div>
+            </div>
+    </fieldset>
+</div>
+
 
 @section Scripts{
 
@@ -624,44 +649,6 @@
             $('#idformapagamento').val(dados.IdFormaPagamento);
             $('#idformapagamento').attr('disabled', true);
 
-       /*     
-
-            
-
-
-
-            $('#idnatureza').val(dados.IdNatureza);
-            $('#idnatureza').attr('disabled', true);
-
-            $('#chaveacesso').val(dados.ChaveAcesso);
-            $('#chaveacesso').attr('disabled', true);
-
-            $('#valortotalprodutos').val(dados.ValorTotalProdutos);
-            $('#valortotalprodutos').attr('disabled', true);
-
-
-
-
-
-            $('#valorfrete').val(dados.ValorFrete);
-            $('#valorfrete').attr('disabled', true);
-
-
-
-            $('#valoricms').val(dados.ValorIcms);
-            $('#valoricms').attr('disabled', true);
-
-            $('#valoripi').val(dados.ValorIpi);
-            $('#valoripi').attr('disabled', true);
-
-
-
-            $('#dataentrada').val(dados.DataEntrada);
-
-            $('#ehcancelada').prop('checked', dados.EhCancelada);
-
-
-            /*ABERTURA DO MODAL */
             var detalhamento_venda = $('#detalhamento_venda')
 
             bootbox.dialog({
@@ -1000,7 +987,6 @@
                 valorUnitarioProduto = $('#txt_valorunitarioproduto').val(),
                 valorDescontoProduto = $('#txt_valordescontoproduto').val(),
                 valorAcrescimoProduto = $('#txt_valoracrescimoproduto').val(),
-                valorTotalProduto = $('#txt_valortotalproduto').val(),
                 vl_unitarioProduto = parseFloat(valorUnitarioProduto.replace(",", ".")),
                 vl_descontoProduto = parseFloat(valorDescontoProduto.replace(",", ".")),
                 vl_acrescimoProduto = parseFloat(valorAcrescimoProduto.replace(",", "."));
@@ -1143,14 +1129,18 @@
 
         .on('click', '#btn_confirmar', function () {
 
-            var dataVenda = "";
+            var dataVenda = "",
+                quant = $('#grid_itens > tbody > tr').length,
+                idFormaPagamento = $('#ddl_idformapagamento').val(),
+                quantidadeParcelas = $('#txt_quantidadeparcela').val(),
+                quantParcelasGeradas = $('#grid_parcelas > tbody > tr').length;
 
             if ($('#txt_datavenda').val() != "") {
 
                 dataVenda = formatar_data($('#txt_datavenda').val());
             }
 
-            var quant = $('#grid_itens > tbody > tr').length;
+
 
             if (quant == 0) {
 
@@ -1166,6 +1156,37 @@
 
 
                 }, 5000);
+            }
+            else if (idFormaPagamento == 2 && (quantidadeParcelas == "" || quantidadeParcelas == 0)) {
+
+                    $('#msg_mensagem_aviso').html('Informe a quantidade de parcelas');
+                    $('#msg_aviso').show();
+                    $('#msg_mensagem_aviso').show();
+
+                setInterval(function () {
+
+                    $('#msg_mensagem_aviso').val('');
+                    $('#msg_mensagem_aviso').hide();
+                    $('#msg_aviso').hide();
+
+
+                }, 5000);
+            }
+
+            else if (idFormaPagamento == 2 && (quantidadeParcelas != "" || quantidadeParcelas != 0) && quantParcelasGeradas == 0) {
+                $('#msg_mensagem_aviso').html('Atenção, para finalizar é necessário gerar as parcelas.');
+                $('#msg_aviso').show();
+                $('#msg_mensagem_aviso').show();
+
+                setInterval(function () {
+
+                    $('#msg_mensagem_aviso').val('');
+                    $('#msg_mensagem_aviso').hide();
+                    $('#msg_aviso').hide();
+
+
+                }, 5000);
+
             }
             else {
 
@@ -1281,6 +1302,67 @@
                     }
                 });
             }
+        })
+
+        .on('click', '#btn_gerarparcelas', function () {
+
+            var btn = (this),
+                valorTotalNota = $('#txt_valortotalnota').val(),
+                quantParcelas = $('#txt_quantidadeparcela').val(),
+                vlTotalNota = parseFloat(valorTotalNota.replace(",", "."));
+
+            var hoje = new Date();
+
+            var valorParcelas = (vlTotalNota / quantParcelas);
+
+            var modal_parcelas = $('#div_modalparcelas');
+
+            bootbox.dialog({
+
+                title: 'Parcelas',
+                size: 'small',
+                message: modal_parcelas
+
+
+            }).on('shown.bs.modal', function () {
+
+                modal_parcelas.show(0, function () {
+
+                    var table = $('#grig_parcelas').find('tbody');
+                    table.empty();
+                    var dataVenda = $('#txt_datavenda').val();
+                    var ret = '';
+
+                    for (var i = 1; i <= quantParcelas; i++) {
+
+                        var dataVencimento = new Date();
+                        dataVencimento.setDate(hoje.getDate() + (30 * i ));
+
+                        ret += '<tr>' +
+                            '<td class="text-center">' + i + '</td>'+
+                            '<td><input type="text" class="form-control" id="txt_datavencimento" name="txt_datavencimento'+ i + '" value="' + formatar_data_atual(dataVencimento) + '"/></td>' +
+                            '<td><input type="text" class="form-control" id="txt_valorparcela" name="txt_valorparcela'+ i +'" value="' + valorParcelas.toFixed(2) + '"/></td>' +
+                            '</tr>'
+                            ;
+
+                    }
+
+
+
+
+
+                    table.append(ret);
+
+                })
+
+            }).on('hidden.bs.modal', function(){
+
+
+                modal_parcelas.hide().appendTo('tbody');
+
+            });
+
+
         })
 
         .on('click', '#detalhamento', function () {

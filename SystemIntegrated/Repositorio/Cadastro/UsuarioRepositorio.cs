@@ -122,7 +122,7 @@ namespace SystemIntegrated.Repositorio
 
                     ret = new UsuarioModel()
                     {
-                        Id = (int)reader["Id"],
+                        Id = (int) reader["Id"],
                         Nome = (string)reader["Nome"],
                         Usuario = (string)reader["Usuario"],
                         Email = (string)reader["Email"],
@@ -274,6 +274,7 @@ namespace SystemIntegrated.Repositorio
             }
             return ret;
         }
+
         public string RecuperarStringPerfil(int id)
         {
             var ret = string.Empty;
@@ -303,5 +304,42 @@ namespace SystemIntegrated.Repositorio
                 return ret;
         }
 
+        public bool AlterarSenha(string novaSenha, int id)
+        {
+            var ret = false;
+
+            Connection();
+
+            using(SqlCommand command = new SqlCommand(" UPDATE Usuario      " +
+                                                      "    SET Senha=@Senha " +
+                                                      "WHERE Id=@Id", con ) )
+            {
+
+                con.Open();
+
+                command.Parameters.AddWithValue("@Senha", SqlDbType.VarChar).Value = CriptoHelper.HashMD5(novaSenha);
+                command.Parameters.AddWithValue("@Id", SqlDbType.Int).Value = id;
+
+                ret = (command.ExecuteNonQuery() > 0);
+            }
+
+            return ret;
+        }
+
+        public bool ValidarSenhaAtual(string senhaAtual, int id)
+        {
+            var ret = false;
+            Connection();
+
+            using(SqlCommand command = new SqlCommand("SELECT COUNT(*) FROM Usuario WHERE Senha =@SenhaAtual AND Id=@Id", con))
+            {
+                con.Open();
+
+                command.Parameters.AddWithValue("@SenhaAtual", SqlDbType.VarChar).Value = CriptoHelper.HashMD5(senhaAtual);
+                command.Parameters.AddWithValue("@Id", SqlDbType.Int).Value = id;
+                ret = ((int)command.ExecuteScalar() > 0);
+            }
+            return ret;
+        }
     }
 }

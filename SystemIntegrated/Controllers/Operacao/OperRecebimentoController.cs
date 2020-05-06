@@ -7,6 +7,7 @@ using SystemIntegrated.Repositorio.Operacao;
 
 namespace SystemIntegrated.Controllers.Operacao
 {
+    [Authorize(Roles = "ADMINISTRADOR")]
     public class OperRecebimentoController : Controller
     {
 
@@ -16,6 +17,8 @@ namespace SystemIntegrated.Controllers.Operacao
             return View();
         }
 
+
+        [HttpPost]
         public JsonResult BuscarVendaCliente(string dadosBusca)
         {
             recebimentoRepositorio = new RecebimentoRepositorio();
