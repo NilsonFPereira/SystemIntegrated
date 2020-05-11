@@ -21,7 +21,10 @@
 .dl-horizontal dt {
     white-space: normal;
 }
-
+.container-esqueci-senha, .container-redefinir-senha {
+    width: 300px;
+    margin: 0 auto;
+}
 .required:after {
     content: " *";
     color: red;
@@ -69,3 +72,9 @@
     list-style: none;
 }
 
+#loginForm{
+
+    width:500px;
+    margin:0 auto;
+    
+}

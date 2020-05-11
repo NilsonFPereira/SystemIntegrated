@@ -67,5 +67,50 @@ namespace SystemIntegrated.Repositorio.Operacao
             }
             return ret;
         }
+
+        public List<VendaParcelaViewModel> RecuperarParcelasVendas(int idVenda)
+        {
+            var ret = new List<VendaParcelaViewModel>();
+
+            Connection();
+
+            using(SqlCommand command = new SqlCommand(" SELECT IdParcela = Id,                                                   " +
+                                                      "        IdVendaProduto,                                                   " +
+                                                      "        NumeroParcela,                                                    " +
+                                                      "        DataVencimento = CONVERT(VARCHAR(10), DataVencimento, 103),       " +
+                                                      "        ValorParcela = REPLACE(ValorParcela, '.',','),                    " +
+                                                      "        ValorAcrescimoParcela = REPLACE(ValorAcrescimoParcela, '.',','),  " +
+                                                      "        ValorDescontoParcela = REPLACE( ValorDescontoParcela, '.',','),   " +
+                                                      "        ValorTotalParcela = REPLACE(ValorTotalParcela, '.',',')           " +
+                                                      "   FROM VendaProdutoParcela                                               " +
+                                                      "  WHERE IdVendaProduto = @IdVenda                                         " +
+                                                      " ORDER BY NumeroParcela                                                   ", con))
+            {
+                con.Open();
+
+                command.Parameters.AddWithValue("@IdVenda", SqlDbType.Int).Value = idVenda;
+
+                var reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+
+                    ret.Add(new VendaParcelaViewModel()
+                    {
+                        IdParcela = (int)reader["IdParcela"],
+                        IdVendaProduto = (int)reader["IdVendaProduto"],
+                        NumeroParcela = (int) reader["NumeroParcela"],
+                        DataVencimento = (string) reader["DataVencimento"],
+                        ValorParcela = (string) reader["ValorParcela"],
+                        ValorAcrescimoParcela = (string) reader["ValorAcrescimoParcela"],
+                        ValorDescontoParcela = (string) reader["ValorDescontoParcela"],
+                        ValorTotalParcela = (string) reader["ValorTotalParcela"]
+                    });
+                }
+
+            }
+
+            return ret;
+        }
     }
 }

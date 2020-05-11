@@ -185,7 +185,8 @@
                 </div>
             </div>
             <div class="row">
-                <div id="msg_mensagem_aviso_produto" class="alert alert-danger invisivel"></div>
+                <div id="msg_mensagem_aviso_produto" class="alert alert-danger invisivel">
+                </div>
                 <div class="col-md-2">
                     @Html.Label("txt_idproduto", "Código Produto", new { @class = "control-label required" })
                     @Html.TextBox("txt_idproduto", null, new { @class = "form-control", tabindex = 1 })
@@ -207,7 +208,7 @@
             <div class="row">
                 <div class="col-md-2">
                     @Html.Label("txt_quantidadeproduto", "Quantidade", new { @class = "control-label required" })
-                    @Html.TextBox("txt_quantidadeproduto", null, new { @class = "form-control", tabindex = 5 })
+                    @Html.DropDownList("txt_quantidadeproduto", new SelectList(new[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" }), new { @class = "form-control", tabindex = 5 })
                 </div>
                 <div class="col-md-2">
                     @Html.Label("txt_valorunitarioproduto", "Valor Unitário", new { @class = "control-label required" })
@@ -233,11 +234,11 @@
             </div>
             <div class="row" style="margin-top:20px;">
                 <div class="col-md-12">
-                    <div class="panel panel-default">
+                    <div class="panel panel-default invisivel" id="panel-itens">
                         <div class="panel-heading">DADOS DO PRODUTO/ SERVIÇOS</div>
                         <div class="panel-body" style="height:auto">
                             <div class="col-md-12">
-                                <table id="grid_itens" class="table table-bordered table-striped table-hover invisivel">
+                                <table id="grid_itens" class="table table-bordered table-striped table-hover">
                                     <thead>
                                         <tr class="info">
                                             <th>CODIGO</th>
@@ -258,7 +259,7 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row invisivel" id="div_formapagamento">
                         <div class="col-md-3">
                             @Html.Label("ddl_idformapagamento", "Forma de Pagamento", new { @class = "control-label required" })
                             @Html.DropDownList("ddl_idformapagamento", new SelectList(ViewBag.FormasPagamento, "Id", "Nome"), new { @class = "form-control" })
@@ -399,9 +400,14 @@
 
 <!--M-->
 <div id="div_modalparcelas" class="form-horizontal invisivel" role="dialog">
+    <div id="mgs_mensagem_aviso_parcelas" class="alert alert-danger alert-dismissible fade show">
+        <button type="button" class="close" onclick="hide()">
+            &times;
+        </button>
+    </div>
     <fieldset>
         <div class="col-md-12">
-            <table id="grig_parcelas" class="table table-bordered table-striped table-hover">
+            <table id="grid_parcelas" class="table table-bordered table-striped table-hover">
                 <thead>
                     <tr class="info">
                         <th>Numero Parcela</th>
@@ -414,10 +420,11 @@
             </table>
             <div class="form-group" style="margin-top:15px">
                 <div class="modal-footer">
-                    <a id="btn_gravar" class="btn btn-info" role="button" data-dismiss="modal"><i class="glyphicon glyphicon-check"></i> Gravar</a>
+                    <a id="btn_gravar" class="btn btn-primary" role="button" data-dismiss="modal"><i class="glyphicon glyphicon-ok"></i> Gravar</a>
                 </div>
             </div>
-            </div>
+            <div id="msg_aviso_parcelas" class="alert alert-warning invisivel">Falta preencher os campos acima</div>
+        </div>
     </fieldset>
 </div>
 
@@ -438,7 +445,6 @@
             $('#divitens').addClass('invisivel');
             $('#botao_continuar').removeClass('invisivel');
             $('#id_cadastro').val(dados.Id);
-
 
             $('#txt_datavenda').val(dados.DataVenda);
             $('#txt_datavenda').mask('00/00/0000');
@@ -564,8 +570,8 @@
 
         function criar_linha_itens(dados) {
             var ret =
-                '<tr data_idproduto=' + dados.Id + '>' +
-                    '<td>'+ dados.IdProduto + '</td>' +
+                '<tr data_idItens=' + dados.Id + '>' +
+                '<td data-idProduto=' + dados.IdProduto + '>' + dados.IdProduto + '</td>' +
                     '<td>'+ dados.NomeProduto + '</td>' +
                     '<td>'+ dados.UnidadeMedida + '</td>' +
                     '<td>'+ dados.QuantidadeProduto + '</td>' +
@@ -686,400 +692,386 @@
             return ret;
         }
 
-    $(document)
-        .on('click', '#btn_incluir', function () {
+        function obter_lista_entradas() {
+            var ret = [];
 
-            var url = '@Url.Action("RecuperarUltimoNumero","OperVenda")',
-                hoje = new Date(),
-                dataCadastro = formatar_data_atual(hoje),
-                dataVenda = formatar_data_atual(hoje);
-            var ret = '';
+                $('#grid_parcelas tbody tr').each(function (index, item) {
 
-            $.post(url, function (response) {
+                    var dataVencimento = $(this).find('input[name=txt_datavencimento]').val(),
+                        valorParcela = $(this).find('input[name=txt_valorparcela]').val();
 
-                if (response.Resultado == "OK") {
+                    ret.push({ dataVencimento: dataVencimento, ValorParcela: valorParcela });
 
-                    for (var i = 0; i < 7; i++) {
+                });
 
-                        if (ret.length < (7 - response.NumeroNota.length)) {
+            return ret;
 
-                            ret = ret + 0;
+        }
 
-                        } else {
+        $(document)
+            .on('click', '#btn_incluir', function () {
 
-                            ret = ret + response.NumeroNota;
+                var url = '@Url.Action("RecuperarUltimoNumero","OperVenda")',
+                    hoje = new Date(),
+                    dataCadastro = formatar_data_atual(hoje),
+                    dataVenda = formatar_data_atual(hoje);
+                var ret = '';
+
+                $.post(url, function (response) {
+
+                    if (response.Resultado == "OK") {
+
+                        for (var i = 0; i < 7; i++) {
+
+                            if (ret.length < (7 - response.NumeroNota.length)) {
+
+                                ret = ret + 0;
+
+                            } else {
+
+                                ret = ret + response.NumeroNota;
+                            }
+
                         }
 
+                        abrir_form({
+                            Id: 0,
+                            DataVenda: dataVenda,
+                            IdCliente: '',
+                            NumeroVenda: ret,
+                            IdFretePorConta: 0,
+                            ValorFrete: '0,00',
+                            ValorProdutos: '0,00',
+                            ValorAcrescimo: '0,00',
+                            ValorTotalNota: '0,00',
+                            ValorDesconto: '0,00',
+                            ValorPago: '0,00',
+                            DataCadastro: dataCadastro
+                        });
+
+                        var modal_cadastro = $('#modal_cadastro')
+                        bootbox.dialog({
+                            title: '@ViewBag.Title',
+                            message: modal_cadastro
+
+                        }).on('shown.bs.modal', function () {
+
+                            modal_cadastro.show(0, function () {
+
+                                $('#txt_datavenda').focus();
+
+                            });
+                        }).on('hidden.bs.modal', function () {
+
+                            modal_cadastro.hide().appendTo('tbody');
+
+                        })
                     }
+                });
+            })
 
-                    abrir_form({
-                        Id: 0,
-                        DataVenda: dataVenda,
-                        IdCliente: '',
-                        NumeroVenda: ret,
-                        IdFretePorConta: 0,
-                        ValorFrete: '0,00',
-                        ValorProdutos: '0,00',
-                        ValorAcrescimo: '0,00',
-                        ValorTotalNota: '0,00',
-                        ValorDesconto: '0,00',
-                        ValorPago: '0,00',
-                        DataCadastro: dataCadastro
-                    });
+            .on('click', '#btn_continuar', function () {
 
-                    var modal_cadastro = $('#modal_cadastro')
-                    bootbox.dialog({
-                        title: '@ViewBag.Title',
-                        message: modal_cadastro
+                var btn = $(this),
+                    url = '@Url.Action("VerificarCampos", "OperVenda")',
+                    param = {
 
-                    }).on('shown.bs.modal', function () {
+                        Id: $('#id_cadastro').val(),
+                        IdCliente: $('#txt_idcliente').val(),
+                        DataVenda: $('#txt_datavenda').val(),
+                        NumeroVenda: $('#txt_numerovenda').val(),
+                        ValorTotalNota: $('#txt_valortotalnota').val(),
+                        ValorPago: $('#txt_valorpago').val(),
+                        ValorDesconto: $('#txt_valordesconto').val(),
+                        ValorFrete: $('#txt_valorfrete').val(),
+                        IdFretePorConta: $('#ddl_idfreteporconta').val(),
+                        DataCadastro: $('#txt_datacadastro').val(),
+                        ValorProduto: $('#txt_valorprodutos').val(),
+                        ValorAcrescimo: $('#txt_valoracrescimo').val()
 
-                        modal_cadastro.show(0, function () {
+                    };
 
-                            $('#txt_datavenda').focus();
+                $.post(url, param, function (response) {
+
+                    if (response.Resultado == "OK") {
+
+                        desabilitar_campos_nota();
+
+                        abrir_form_produtos({
+
+                            IdNotaItens: 0,
+                            IdProduto: '',
+                            NomeProduto: '',
+                            QuantEstoque: '',
+                            UnidadeMedida: '',
+                            QuantidadeProduto: '0',
+                            ValorUnitarioProduto: '0,00',
+                            ValorDescontoProduto: '0,00',
+                            ValorAcrescimoProduto: '0,00',
+                            ValorTotalProduto: '0,00',
+                            IdFormaPagamento: 0
 
                         });
-                    }).on('hidden.bs.modal', function () {
 
-                        modal_cadastro.hide().appendTo('tbody');
+                    } else if (response.Resultado == "AVISO") {
 
-                    })
+                        $('#msg_mensagem_aviso').html(formatar_mensagens_aviso(response.Mensagens));
+                        $('#msg_mensagem_aviso').show();
+                        $('#msg_aviso').show();
+                        $('#msg_erro').hide();
+
+                        setInterval(function () {
+
+                            $('#msg_mensagem_aviso').val('');
+                            $('#msg_mensagem_aviso').hide();
+                            $('#msg_aviso').hide();
+
+
+                        }, 5000);
+
+                    }
+                })
+            })
+
+            .on('keyup', '#suggest_cliente', function () {
+
+                var btn = $(this),
+                    query = btn.val();
+
+                $('#suggest_cliente').autocomplete({
+
+                    source: function (request, response) {
+                        $.ajax({
+                            method: "POST",
+                            url: "@Url.Action("RemoteData", "CadCliente")",
+                            dataType: "json",
+                            data: {
+                                query: query
+                            },
+                            success: function (data) {
+
+                                if (data) {
+
+                                    response($.map(data, function (item) {
+
+                                        return {
+                                            Id: item.Id,
+                                            Nome: item.Nome,
+                                            label: item.Nome, value: item.Nome
+
+                                        }
+                                    }));
+                                }
+                            }
+                        });
+                    },
+                    minLength: 0,
+                    select: function (event, ui) {
+
+                        $('#suggest_cliente').val(ui.item.Nome)
+                        $("#txt_idcliente").val(ui.item.Id);
+                    }
+                });
+            })
+
+            .on('change', '#ddl_idfreteporconta', function () {
+
+                $('#txt_valorfrete').val('0,00');
+                $('#txt_valortotalnota').val('0,00');
+
+            })
+
+            .on('blur', '#txt_valorfrete', function () {
+
+                var valorFrete = $('#txt_valorfrete').val(),
+                    valorTotalNota = $('#txt_valortotalnota').val(),
+                    vlfrete = parseFloat(valorFrete.replace(",", ".")),
+                    vlTotalNota = parseFloat(valorTotalNota.replace(",", "."))
+                somaValor = '';
+
+                somaValor = (vlTotalNota + vlfrete).toFixed(2);
+
+                if ($('#ddl_idfreteporconta').val() == 1) {
+
+                    $('#txt_valortotalnota').val(somaValor.replace(".", ","));
+
                 }
-            });
-        })
+                //$('#txt_valorfrete').attr('disabled', true);
 
-        .on('click', '#btn_continuar', function () {
+            })
 
-            var btn = $(this),
-                url = '@Url.Action("VerificarCampos", "OperVenda")',
-                param = {
+            .on('keyup', '#suggest_produto', function () {
 
-                    Id: $('#id_cadastro').val(),
-                    IdCliente: $('#txt_idcliente').val(),
-                    DataVenda: $('#txt_datavenda').val(),
-                    NumeroVenda: $('#txt_numerovenda').val(),
-                    ValorTotalNota: $('#txt_valortotalnota').val(),
-                    ValorPago: $('#txt_valorpago').val(),
-                    ValorDesconto: $('#txt_valordesconto').val(),
-                    ValorFrete: $('#txt_valorfrete').val(),
-                    IdFretePorConta: $('#ddl_idfreteporconta').val(),
-                    DataCadastro: $('#txt_datacadastro').val(),
-                    ValorProduto: $('#txt_valorprodutos').val(),
-                    ValorAcrescimo: $('#txt_valoracrescimo').val()
+                var btn = $(this),
+                    query = btn.val();
 
-                };
+                $('#suggest_produto').autocomplete({
 
-            $.post(url, param, function (response) {
+                    source: function (request, response) {
 
-                if (response.Resultado == "OK") {
+                        $.ajax({
+                            method: "POST",
+                            url: '@Url.Action("RemoteData", "CadProduto")',
+                            dataType: "json",
+                            data: {
 
-                    desabilitar_campos_nota();
+                                query: query
+                            },
+                            success: function (data) {
 
-                    abrir_form_produtos({
+                                if (data) {
 
-                        IdNotaItens: 0,
-                        IdProduto: '',
-                        NomeProduto: '',
-                        QuantEstoque: '',
-                        UnidadeMedida: '',
-                        QuantidadeProduto: '0',
-                        ValorUnitarioProduto: '0,00',
-                        ValorDescontoProduto: '0,00',
-                        ValorAcrescimoProduto: '0,00',
-                        ValorTotalProduto: '0,00',
-                        IdFormaPagamento: 0
+                                    response($.map(data, function (item) {
 
-                    });
+                                        return {
+                                            Id: item.Id,
+                                            Nome: item.Nome,
+                                            Sigla: item.Sigla,
+                                            QuantEstoque: item.QuantEstoque,
+                                            label: item.Nome, value: item.Nome
+                                        }
+                                    }));
+                                }
+                            }
+                        });
+                    }, minLength: 0,
+                    select: function (event, ui) {
 
-                } else if (response.Resultado == "AVISO") {
+                        $('#txt_idproduto').val(ui.item.Id);
+                        $('#suggest_produto').val(ui.item.Nome);
+                        $('#txt_unidademedida').val(ui.item.Sigla);
+                        $('#txt_estoqueatual').val(ui.item.QuantEstoque);
+                    }
+                });
+            })
 
-                    $('#msg_mensagem_aviso').html(formatar_mensagens_aviso(response.Mensagens));
-                    $('#msg_mensagem_aviso').show();
-                    $('#msg_aviso').show();
-                    $('#msg_erro').hide();
+            .on('blur', '#txt_quantidadeproduto', function () {
 
-                    setInterval(function () {
+                var quantidadeProduto = $('#txt_quantidadeproduto').val(),
+                    valorUnitarioProduto = $('#txt_valorunitarioproduto').val(),
+                    valorDescontoProduto = $('#txt_valordescontoproduto').val(),
+                    valorAcrescimoProduto = $('#txt_valoracrescimoproduto').val(),
+                    valorTotalProduto = $('#txt_valortotalproduto').val(),
+                    vl_unitarioProduto = parseFloat(valorUnitarioProduto.replace(",", ".")),
+                    vl_descontoProduto = parseFloat(valorDescontoProduto.replace(",", ".")),
+                    vl_acrescimoProduto = parseFloat(valorAcrescimoProduto.replace(",", "."));
 
-                        $('#msg_mensagem_aviso').val('');
-                        $('#msg_mensagem_aviso').hide();
-                        $('#msg_aviso').hide();
+                if ((quantidadeProduto > 0 || quantidadeProduto != "") && valorUnitarioProduto != "" && valorDescontoProduto != "" && valorAcrescimoProduto != "") {
 
+                    var somaValor = '';
 
-                    }, 5000);
+                    somaValor = ((quantidadeProduto * vl_unitarioProduto) - vl_descontoProduto + vl_acrescimoProduto).toFixed(2);
+
+                    $('#txt_valortotalproduto').val(somaValor.replace('.', ','));
+
 
                 }
             })
-        })
 
-        .on('keyup', '#suggest_cliente', function () {
+            .on('blur', '#txt_valorunitarioproduto', function () {
 
-            var btn = $(this),
-                query = btn.val();
+                var quantidadeProduto = $('#txt_quantidadeproduto').val(),
+                    valorUnitarioProduto = $('#txt_valorunitarioproduto').val(),
+                    valorDescontoProduto = $('#txt_valordescontoproduto').val(),
+                    valorAcrescimoProduto = $('#txt_valoracrescimoproduto').val(),
+                    valorTotalProduto = $('#txt_valortotalproduto').val(),
+                    vl_unitarioProduto = parseFloat(valorUnitarioProduto.replace(",", ".")),
+                    vl_descontoProduto = parseFloat(valorDescontoProduto.replace(",", ".")),
+                    vl_acrescimoProduto = parseFloat(valorAcrescimoProduto.replace(",", "."));
 
-            $('#suggest_cliente').autocomplete({
+                if ((quantidadeProduto > 0 || quantidadeProduto != "") && valorUnitarioProduto != "" && valorDescontoProduto != "" && valorAcrescimoProduto != "") {
 
-                source: function (request, response) {
-                    $.ajax({
-                        method: "POST",
-                        url: "@Url.Action("RemoteData", "CadCliente")",
-                        dataType: "json",
-                        data: {
-                            query: query
-                        },
-                        success: function (data) {
+                    var somaValor = '';
 
-                            if (data) {
+                    somaValor = ((quantidadeProduto * vl_unitarioProduto) - vl_descontoProduto + vl_acrescimoProduto).toFixed(2);
 
-                                response($.map(data, function (item) {
+                    $('#txt_valortotalproduto').val(somaValor.replace('.', ','));
 
-                                    return {
-                                        Id: item.Id,
-                                        Nome: item.Nome,
-                                        label: item.Nome, value: item.Nome
 
-                                    }
-                                }));
-                            }
+                }
+            })
+
+            .on('blur', '#txt_valordescontoproduto', function () {
+
+                var quantidadeProduto = $('#txt_quantidadeproduto').val(),
+                    valorUnitarioProduto = $('#txt_valorunitarioproduto').val(),
+                    valorDescontoProduto = $('#txt_valordescontoproduto').val(),
+                    valorAcrescimoProduto = $('#txt_valoracrescimoproduto').val(),
+                    valorTotalProduto = $('#txt_valortotalproduto').val(),
+                    vl_unitarioProduto = parseFloat(valorUnitarioProduto.replace(",", ".")),
+                    vl_descontoProduto = parseFloat(valorDescontoProduto.replace(",", ".")),
+                    vl_acrescimoProduto = parseFloat(valorAcrescimoProduto.replace(",", "."));
+
+                if ((quantidadeProduto > 0 || quantidadeProduto != "") && valorUnitarioProduto != "" && valorDescontoProduto != "" && valorAcrescimoProduto != "") {
+
+                    var somaValor = '';
+
+                    somaValor = ((quantidadeProduto * vl_unitarioProduto) - vl_descontoProduto + vl_acrescimoProduto).toFixed(2);
+
+                    $('#txt_valortotalproduto').val(somaValor.replace('.', ','));
+
+
+                }
+            })
+
+            .on('blur', '#txt_valoracrescimoproduto', function () {
+
+                var quantidadeProduto = $('#txt_quantidadeproduto').val(),
+                    valorUnitarioProduto = $('#txt_valorunitarioproduto').val(),
+                    valorDescontoProduto = $('#txt_valordescontoproduto').val(),
+                    valorAcrescimoProduto = $('#txt_valoracrescimoproduto').val(),
+                    vl_unitarioProduto = parseFloat(valorUnitarioProduto.replace(",", ".")),
+                    vl_descontoProduto = parseFloat(valorDescontoProduto.replace(",", ".")),
+                    vl_acrescimoProduto = parseFloat(valorAcrescimoProduto.replace(",", "."));
+
+                if ((quantidadeProduto > 0 || quantidadeProduto != "") && valorUnitarioProduto != "" && valorDescontoProduto != "" && valorAcrescimoProduto != "") {
+
+                    var somaValor = '';
+
+                    somaValor = ((quantidadeProduto * vl_unitarioProduto) - vl_descontoProduto + vl_acrescimoProduto).toFixed(2);
+
+                    $('#txt_valortotalproduto').val(somaValor.replace('.', ','));
+
+
+                }
+            })
+
+            .on('click', '#btn_incluirproduto', function () {
+
+                var quantEstoque         = $('#txt_estoqueatual').val();
+                var quantProduto         = $('#txt_quantidadeproduto').val();
+                var valorUnitarioProduto = $('#txt_valorunitarioproduto').val().replace(",", ".");
+                var idProduto            = $('#txt_idproduto').val();
+                var linha_grid           = $('#grid_itens >tbody > tr').length;
+                var contarErros = 0;
+
+                //VERIFICANDO SE O PRODUTO JÁ FOI INSERIDO NA GRADE
+                if(linha_grid > 0 && idProduto != ""){
+
+                    $('#grid_itens > tbody > tr').each(function (index, item) {
+
+                        if ($(this).find('td').attr('data-idproduto') == idProduto) {
+
+                            $('#msg_mensagem_aviso_produto').html("Atenção, o produto informado já foi inserido");
+                            $('#msg_mensagem_aviso_produto').show();
+
+                            setTimeout(function () {
+
+                                $('#msg_mensagem_aviso_produto').val('');
+                                $('#msg_mensagem_aviso_produto').hide();
+                                $('#msg_aviso').hide();
+
+                            }, 5000);
+
+                            contarErros++;
                         }
                     });
-                },
-                minLength: 0,
-                select: function (event, ui) {
-
-                    $('#suggest_cliente').val(ui.item.Nome)
-                    $("#txt_idcliente").val(ui.item.Id);
                 }
-            });
-        })
+                //VERIFICANDO SE A QUANTIDADE INFORMADA POSSUI EM ESTOQUE
+                if ( quantProduto > quantEstoque ) {
 
-        .on('blur', '#txt_valorfrete', function () {
-
-            var valorFrete = $('#txt_valorfrete').val(),
-                valorTotalNota = $('#txt_valortotalnota').val(),
-                vlfrete = parseFloat(valorFrete.replace(",", ".")),
-                vlTotalNota = parseFloat(valorTotalNota.replace(",", "."))
-            somaValor = '';
-
-            somaValor = (vlTotalNota + vlfrete).toFixed(2);
-
-            $('#txt_valortotalnota').val(somaValor.replace(".", ","));
-            $('#txt_valorfrete').attr('disabled', true);
-
-        })
-
-        .on('keyup', '#suggest_produto', function () {
-
-            var btn = $(this),
-                query = btn.val();
-
-            $('#suggest_produto').autocomplete({
-
-                source: function (request, response) {
-
-                    $.ajax({
-                        method: "POST",
-                        url: '@Url.Action("RemoteData", "CadProduto")',
-                        dataType: "json",
-                        data: {
-
-                            query: query
-                        },
-                        success: function (data) {
-
-                            if (data) {
-
-                                response($.map(data, function (item) {
-
-                                    return {
-                                        Id: item.Id,
-                                        Nome: item.Nome,
-                                        Sigla: item.Sigla,
-                                        QuantEstoque: item.QuantEstoque,
-                                        label: item.Nome, value: item.Nome
-                                    }
-                                }));
-                            }
-                        }
-                    });
-                }, minLength: 0,
-                select: function (event, ui) {
-
-                    $('#txt_idproduto').val(ui.item.Id);
-                    $('#suggest_produto').val(ui.item.Nome);
-                    $('#txt_unidademedida').val(ui.item.Sigla);
-                    $('#txt_estoqueatual').val(ui.item.QuantEstoque);
-                }
-            });
-        })
-
-        .on('blur', '#txt_quantidadeproduto', function () {
-
-            var quantidadeProduto = $('#txt_quantidadeproduto').val(),
-                valorUnitarioProduto = $('#txt_valorunitarioproduto').val(),
-                valorDescontoProduto = $('#txt_valordescontoproduto').val(),
-                valorAcrescimoProduto = $('#txt_valoracrescimoproduto').val(),
-                valorTotalProduto = $('#txt_valortotalproduto').val(),
-                vl_unitarioProduto = parseFloat(valorUnitarioProduto.replace(",", ".")),
-                vl_descontoProduto = parseFloat(valorDescontoProduto.replace(",", ".")),
-                vl_acrescimoProduto = parseFloat(valorAcrescimoProduto.replace(",", "."));
-
-            if ((quantidadeProduto > 0 || quantidadeProduto != "") && valorUnitarioProduto != "" && valorDescontoProduto != "" && valorAcrescimoProduto != "") {
-
-                var somaValor = '';
-
-                somaValor = ((quantidadeProduto * vl_unitarioProduto) - vl_descontoProduto + vl_acrescimoProduto).toFixed(2);
-
-                $('#txt_valortotalproduto').val(somaValor.replace('.', ','));
-
-
-            }
-        })
-
-        .on('blur', '#txt_valorunitarioproduto', function () {
-
-            var quantidadeProduto = $('#txt_quantidadeproduto').val(),
-                valorUnitarioProduto = $('#txt_valorunitarioproduto').val(),
-                valorDescontoProduto = $('#txt_valordescontoproduto').val(),
-                valorAcrescimoProduto = $('#txt_valoracrescimoproduto').val(),
-                valorTotalProduto = $('#txt_valortotalproduto').val(),
-                vl_unitarioProduto = parseFloat(valorUnitarioProduto.replace(",", ".")),
-                vl_descontoProduto = parseFloat(valorDescontoProduto.replace(",", ".")),
-                vl_acrescimoProduto = parseFloat(valorAcrescimoProduto.replace(",", "."));
-
-            if ((quantidadeProduto > 0 || quantidadeProduto != "") && valorUnitarioProduto != "" && valorDescontoProduto != "" && valorAcrescimoProduto != "") {
-
-                var somaValor = '';
-
-                somaValor = ((quantidadeProduto * vl_unitarioProduto) - vl_descontoProduto + vl_acrescimoProduto).toFixed(2);
-
-                $('#txt_valortotalproduto').val(somaValor.replace('.', ','));
-
-
-            }
-        })
-
-        .on('blur', '#txt_valordescontoproduto', function () {
-
-            var quantidadeProduto = $('#txt_quantidadeproduto').val(),
-                valorUnitarioProduto = $('#txt_valorunitarioproduto').val(),
-                valorDescontoProduto = $('#txt_valordescontoproduto').val(),
-                valorAcrescimoProduto = $('#txt_valoracrescimoproduto').val(),
-                valorTotalProduto = $('#txt_valortotalproduto').val(),
-                vl_unitarioProduto = parseFloat(valorUnitarioProduto.replace(",", ".")),
-                vl_descontoProduto = parseFloat(valorDescontoProduto.replace(",", ".")),
-                vl_acrescimoProduto = parseFloat(valorAcrescimoProduto.replace(",", "."));
-
-            if ((quantidadeProduto > 0 || quantidadeProduto != "") && valorUnitarioProduto != "" && valorDescontoProduto != "" && valorAcrescimoProduto != "") {
-
-                var somaValor = '';
-
-                somaValor = ((quantidadeProduto * vl_unitarioProduto) - vl_descontoProduto + vl_acrescimoProduto).toFixed(2);
-
-                $('#txt_valortotalproduto').val(somaValor.replace('.', ','));
-
-
-            }
-        })
-
-        .on('blur', '#txt_valoracrescimoproduto', function () {
-
-            var quantidadeProduto = $('#txt_quantidadeproduto').val(),
-                valorUnitarioProduto = $('#txt_valorunitarioproduto').val(),
-                valorDescontoProduto = $('#txt_valordescontoproduto').val(),
-                valorAcrescimoProduto = $('#txt_valoracrescimoproduto').val(),
-                vl_unitarioProduto = parseFloat(valorUnitarioProduto.replace(",", ".")),
-                vl_descontoProduto = parseFloat(valorDescontoProduto.replace(",", ".")),
-                vl_acrescimoProduto = parseFloat(valorAcrescimoProduto.replace(",", "."));
-
-            if ((quantidadeProduto > 0 || quantidadeProduto != "") && valorUnitarioProduto != "" && valorDescontoProduto != "" && valorAcrescimoProduto != "") {
-
-                var somaValor = '';
-
-                somaValor = ((quantidadeProduto * vl_unitarioProduto) - vl_descontoProduto + vl_acrescimoProduto).toFixed(2);
-
-                $('#txt_valortotalproduto').val(somaValor.replace('.', ','));
-
-
-            }
-        })
-
-        .on('click', '#btn_incluirproduto', function () {
-
-            var id = 1;
-
-            var quant = $('#grid_itens >tbody > tr').length;
-
-            var quant = quant + id;
-
-            var btn = $(this),
-                url = '@Url.Action("InsertItemSession", "OperVendaItem")',
-                param = {
-                    Id: quant,
-                    IdProduto: $('#txt_idproduto').val(),
-                    NomeProduto: $('#suggest_produto').val(),
-                    EstoqueAtual: $('#txt_estoqueatual').val(),
-                    UnidadeMedida: $('#txt_unidademedida').val(),
-                    QuantidadeProduto: $('#txt_quantidadeproduto').val(),
-                    ValorUnitarioProduto: formatar_decimal($('#txt_valorunitarioproduto').val()),
-                    ValorTotalProduto: formatar_decimal($('#txt_valortotalproduto').val()),
-                    ValorDescontoProduto: formatar_decimal($('#txt_valordescontoproduto').val()),
-                    ValorAcrescimoProduto: formatar_decimal($('#txt_valoracrescimoproduto').val())
-                }
-
-            $.post(url, param, function (response) {
-
-                if (response.Resultado == "OK") {
-
-
-                    var valorProdutos = parseFloat($('#txt_valorprodutos').val()),
-                        valorDesconto = parseFloat($('#txt_valordesconto').val()),
-                        valorAcrescimo = parseFloat($('#txt_valoracrescimo').val()),
-                        valorTotalNota = parseFloat($('#txt_valortotalnota').val()),
-                        quantidadeProduto = $('#txt_quantidadeproduto').val(),
-                        valorUnitarioProduto = parseFloat($('#txt_valorunitarioproduto').val()),
-                        valorDescontoProduto = parseFloat($('#txt_valordescontoproduto').val()),
-                        valorAcrescimoProduto = parseFloat($('#txt_valoracrescimoproduto').val()),
-                        valorTotalProduto = parseFloat($('#txt_valortotalproduto').val());
-
-                    var sumValorProdutos = (valorProdutos + (quantidadeProduto * valorUnitarioProduto)).toFixed(2),
-                        sumValorDesconto = (valorDesconto + valorDescontoProduto).toFixed(2),
-                        sumValorAcrescimo = (valorAcrescimo + valorAcrescimoProduto).toFixed(2),
-                        sumValorTotalNota = (valorTotalNota + valorTotalProduto).toFixed(2);
-
-
-                    $('#txt_valorprodutos').val(sumValorProdutos.replace('.', ','));
-                    $('#txt_valordesconto').val(sumValorDesconto.replace('.', ','));
-                    $('#txt_valoracrescimo').val(sumValorAcrescimo.replace('.', ','));
-                    $('#txt_valortotalnota').val(sumValorTotalNota.replace('.', ','));
-
-
-                    param.ValorUnitarioProduto = $('#txt_valorunitarioproduto').val();
-                    param.ValorTotalProduto = $('#txt_valortotalproduto').val();
-                    param.ValorDescontoProduto = $('#txt_valordescontoproduto').val();
-                    param.ValorAcrescimoProduto = $('#txt_valoracrescimoproduto').val();
-
-                    var table = $('#grid_itens').find('tbody');
-
-                    table.append(criar_linha_itens(param));
-
-                    $('#grid_itens').removeClass('invisivel');
-
-                    limpar_campos_produtos();
-
-                }
-                else if (response.Resultado == "ERRO") {
-
-                    $('#msg_erro').show();
-                    $('#msg_mensagem_aviso_produto').val('');
-                    $('#msg_mensagem_aviso_produto').hide();
-                    $('#msg_aviso').hide();
-
-                } else if (response.Resultado == "AVISO") {
-
-                    $('#msg_mensagem_aviso_produto').html(formatar_mensagens_aviso(response.Mensagens));
+                    $('#msg_mensagem_aviso_produto').html("Atenção a quantidade informada não contém em estoque");
                     $('#msg_mensagem_aviso_produto').show();
-                    $('#msg_aviso').show();
-                    $('#msg_erro').hide();
 
                     setInterval(function () {
 
@@ -1088,60 +1080,196 @@
                         $('#msg_aviso').hide();
 
                     }, 5000);
+
+                    contarErros++;
+
                 }
-            });
+                //VERIFICANDO SE A QUANTIDADE DE PRODUTOS INFORMADO É IGUAL A ZERO
+                if (quantProduto == 0) {
 
-        })
+                    $('#msg_mensagem_aviso_produto').html("Atenção, informe a quantidade de produto");
+                    $('#msg_mensagem_aviso_produto').show();
 
-        .on('change', '#ddl_idformapagamento', function () {
-            var ddl = $(this),
-                id = parseInt(ddl.val())
+                    setInterval(function () {
 
-            if (id == 1) {
+                        $('#msg_mensagem_aviso_produto').val('');
+                        $('#msg_mensagem_aviso_produto').hide();
+                        $('#msg_aviso').hide();
 
-                $('#div_quantidadeparcela').addClass('invisivel');
-                $('#txt_quantidadeparcela').val('');
+                    }, 5000);
 
-            } else if (id == 2) {
+                    contarErros ++;
 
-                $('#div_quantidadeparcela').removeClass('invisivel');
+                }
+                 //VERIFICANDO SE O VALOR UNITÁRIO É IGUAL A ZERO
+                if (valorUnitarioProduto == 0.00) {
+
+                    $('#msg_mensagem_aviso_produto').html("Atenção, informe o valor unitário do produto");
+                    $('#msg_mensagem_aviso_produto').show();
+
+                    setInterval(function () {
+
+                        $('#msg_mensagem_aviso_produto').val('');
+                        $('#msg_mensagem_aviso_produto').hide();
+                        $('#msg_aviso').hide();
+
+                    }, 5000);
+
+                    contarErros++;
+                }
+
+
+                if (contarErros == 0 ) {
+
+                    var id = 1;
+
+                    var quant = $('#grid_itens >tbody > tr').length;
+
+                    var quant = quant + id;
+
+                    var btn = $(this),
+                        url = '@Url.Action("InsertItemSession", "OperVendaItem")',
+                        param = {
+                            Id: quant,
+                            IdProduto: $('#txt_idproduto').val(),
+                            NomeProduto: $('#suggest_produto').val(),
+                            EstoqueAtual: $('#txt_estoqueatual').val(),
+                            UnidadeMedida: $('#txt_unidademedida').val(),
+                            QuantidadeProduto: $('#txt_quantidadeproduto').val(),
+                            ValorUnitarioProduto: formatar_decimal($('#txt_valorunitarioproduto').val()),
+                            ValorTotalProduto: formatar_decimal($('#txt_valortotalproduto').val()),
+                            ValorDescontoProduto: formatar_decimal($('#txt_valordescontoproduto').val()),
+                            ValorAcrescimoProduto: formatar_decimal($('#txt_valoracrescimoproduto').val())
+                        }
+
+                        $.post(url, param, function (response) {
+
+                            if (response.Resultado == "OK") {
+
+
+                                var valorProdutos = parseFloat($('#txt_valorprodutos').val()),
+                                    valorDesconto = parseFloat($('#txt_valordesconto').val()),
+                                    valorAcrescimo = parseFloat($('#txt_valoracrescimo').val()),
+                                    valorTotalNota = parseFloat($('#txt_valortotalnota').val()),
+                                    quantidadeProduto = $('#txt_quantidadeproduto').val(),
+                                    valorUnitarioProduto = parseFloat($('#txt_valorunitarioproduto').val()),
+                                    valorDescontoProduto = parseFloat($('#txt_valordescontoproduto').val()),
+                                    valorAcrescimoProduto = parseFloat($('#txt_valoracrescimoproduto').val()),
+                                    valorTotalProduto = parseFloat($('#txt_valortotalproduto').val());
+
+                                var sumValorProdutos = (valorProdutos + (quantidadeProduto * valorUnitarioProduto)).toFixed(2),
+                                    sumValorDesconto = (valorDesconto + valorDescontoProduto).toFixed(2),
+                                    sumValorAcrescimo = (valorAcrescimo + valorAcrescimoProduto).toFixed(2),
+                                    sumValorTotalNota = (valorTotalNota + valorTotalProduto).toFixed(2);
+
+
+                                $('#txt_valorprodutos').val(sumValorProdutos.replace('.', ','));
+                                $('#txt_valordesconto').val(sumValorDesconto.replace('.', ','));
+                                $('#txt_valoracrescimo').val(sumValorAcrescimo.replace('.', ','));
+                                $('#txt_valortotalnota').val(sumValorTotalNota.replace('.', ','));
+
+
+                                param.ValorUnitarioProduto = $('#txt_valorunitarioproduto').val();
+                                param.ValorTotalProduto = $('#txt_valortotalproduto').val();
+                                param.ValorDescontoProduto = $('#txt_valordescontoproduto').val();
+                                param.ValorAcrescimoProduto = $('#txt_valoracrescimoproduto').val();
+
+                                var table = $('#grid_itens').find('tbody');
+
+                                table.append(criar_linha_itens(param));
+
+                                $('#panel-itens').removeClass('invisivel');
+                                $('#div_formapagamento').removeClass('invisivel');
+
+
+                                limpar_campos_produtos();
+
+                            }
+                            else if (response.Resultado == "ERRO") {
+
+                                $('#msg_erro').show();
+                                $('#msg_mensagem_aviso_produto').val('');
+                                $('#msg_mensagem_aviso_produto').hide();
+                                $('#msg_aviso').hide();
+
+                            } else if (response.Resultado == "AVISO") {
+
+                                $('#msg_mensagem_aviso_produto').html(formatar_mensagens_aviso(response.Mensagens));
+                                $('#msg_mensagem_aviso_produto').show();
+                                $('#msg_aviso').show();
+                                $('#msg_erro').hide();
+
+                                setInterval(function () {
+
+                                    $('#msg_mensagem_aviso_produto').val('');
+                                    $('#msg_mensagem_aviso_produto').hide();
+                                    $('#msg_aviso').hide();
+
+                                }, 5000);
+                            }
+                        });
+                }
+            })
+
+            .on('change', '#ddl_idformapagamento', function () {
+                var ddl = $(this),
+                    id = parseInt(ddl.val())
+
+                if (id == 1) {
+
+                    $('#div_quantidadeparcela').addClass('invisivel');
+                    $('#txt_quantidadeparcela').val('');
+                    $('#btn_gerarparcelas').addClass('invisivel');
+
+                    $('#txt_valorpago').val($('#txt_valortotalnota').val());
+
+                } else if (id == 2) {
+
+                    $('#div_quantidadeparcela').removeClass('invisivel');
+                    $('#btn_gerarparcelas').removeClass('invisivel');
+                    $('#txt_valorpago').val('0,00');
+                }
+
+            })
+
+            .on('blur', '#txt_quantidadeparcela', function () {
+                var btn = $(this),
+                    quantParcela = btn.val(),
+                    idFormaPagamento = $('#ddl_idformapagamento').val();
+
+                if (idFormaPagamento == 2 && quantParcela > 0) {
+
+                    $('#div_gerarparcela').removeClass('invisivel');
+                }
+                else {
+
+                    $('#div_gerarparcela').removeClass('invisivel');
+
+                }
+
+
+            })
+
+            .on('click', '#btn_confirmar', function () {
+
+                 var dataVenda            = "",
+                    quant                = $('#grid_itens > tbody > tr').length,
+                    idFormaPagamento     = $('#ddl_idformapagamento').val(),
+                    quantidadeParcelas   = $('#txt_quantidadeparcela').val(),
+                    quantParcelasGeradas = $('#grid_parcelas > tbody > tr').length,
+                    contarErros = 0;
+
+
+            //FORMATANDO DATA DA VENDA PARA SER INSERIDA
+            if ( $('#txt_datavenda').val() != "") {
+
+                //CONVERTENDO DATA NO FORMATO  dd/MM/yyyy PARA yyyy-MM-dd
+                dataVenda = formatar_data( $('#txt_datavenda').val() );
+
             }
 
-        })
 
-        .on('blur', '#txt_quantidadeparcela', function () {
-            var btn = $(this),
-                quantParcela = btn.val(),
-                idFormaPagamento = $('#ddl_idformapagamento').val();
-
-            if (idFormaPagamento == 2 && quantParcela > 0) {
-
-                $('#div_gerarparcela').removeClass('invisivel');
-            }
-            else {
-
-                $('#div_gerarparcela').removeClass('invisivel');
-
-            }
-
-
-        })
-
-        .on('click', '#btn_confirmar', function () {
-
-            var dataVenda = "",
-                quant = $('#grid_itens > tbody > tr').length,
-                idFormaPagamento = $('#ddl_idformapagamento').val(),
-                quantidadeParcelas = $('#txt_quantidadeparcela').val(),
-                quantParcelasGeradas = $('#grid_parcelas > tbody > tr').length;
-
-            if ($('#txt_datavenda').val() != "") {
-
-                dataVenda = formatar_data($('#txt_datavenda').val());
-            }
-
-
-
+            //VERIFICANDO SE EXISTE ALGUM REGISTRO NA GRADE
             if (quant == 0) {
 
                 $('#msg_mensagem_aviso').html('Nenhum produto foi informado');
@@ -1149,46 +1277,44 @@
                 $('#msg_mensagem_aviso').show();
 
                 setInterval(function () {
-
                     $('#msg_mensagem_aviso').val('');
                     $('#msg_mensagem_aviso').hide();
                     $('#msg_aviso').hide();
-
-
                 }, 5000);
+
+                contarErros++;
             }
             else if (idFormaPagamento == 2 && (quantidadeParcelas == "" || quantidadeParcelas == 0)) {
 
-                    $('#msg_mensagem_aviso').html('Informe a quantidade de parcelas');
-                    $('#msg_aviso').show();
-                    $('#msg_mensagem_aviso').show();
+                $('#msg_mensagem_aviso').html('Informe a quantidade de parcelas');
+                $('#msg_aviso').show();
+                $('#msg_mensagem_aviso').show();
 
                 setInterval(function () {
-
                     $('#msg_mensagem_aviso').val('');
                     $('#msg_mensagem_aviso').hide();
                     $('#msg_aviso').hide();
-
-
                 }, 5000);
+
+                contarErros++;
             }
 
             else if (idFormaPagamento == 2 && (quantidadeParcelas != "" || quantidadeParcelas != 0) && quantParcelasGeradas == 0) {
+
                 $('#msg_mensagem_aviso').html('Atenção, para finalizar é necessário gerar as parcelas.');
                 $('#msg_aviso').show();
                 $('#msg_mensagem_aviso').show();
 
                 setInterval(function () {
-
                     $('#msg_mensagem_aviso').val('');
                     $('#msg_mensagem_aviso').hide();
                     $('#msg_aviso').hide();
-
-
                 }, 5000);
-
+                contarErros++;
             }
-            else {
+
+
+                if (contarErros == 0) {
 
                 var btn = $(this),
                     url = '@Url.Action("SalvarVendaProduto", "OperVenda")',
@@ -1238,21 +1364,67 @@
 
                                 if (responseItem.Resultado == "OK") {
 
-                                    var table = $('#grid_cadastro').find('tbody'),
-                                        linha = '';
+                                    if (idFormaPagamento == 2) {
 
-                                    setTimeout(function () {
-                                        loading.modal('hide'),
+                                        var url = '@Url.Action("InserirParcela", "OperVendaParcela")',
+                                            paramParcelas = { 'idVenda': param.Id };
 
-                                            $('#grid_cadastro').removeClass('invisivel');
-                                        $('#mensagem_grid').addClass('invisivel');
-                                        linha = criar_linha_grid(param);
-                                        table.append(linha)
+                                        $.post(url, paramParcelas, function (responseParcelas) {
 
-                                    }, 3000);
+                                            if (responseParcelas.Resultado == "OK") {
 
-                                    $('#modal_cadastro').parents('.bootbox').modal('hide');
+                                                var table = $('#grid_cadastro').find('tbody'),
+                                                    linha = '';
 
+                                                setTimeout(function () {
+                                                    loading.modal('hide'),
+
+                                                        $('#grid_cadastro').removeClass('invisivel');
+                                                    $('#mensagem_grid').addClass('invisivel');
+                                                    linha = criar_linha_grid(param);
+                                                    table.append(linha)
+
+                                                }, 3000);
+                                                $('#modal_cadastro').parents('.bootbox').modal('hide');
+
+
+                                            }
+                                            else if (responseParcelas.Resultado == "AVISO") {
+
+                                                $('#msg_mensagem_aviso').html(formatar_mensagens_aviso(response.Mensagens));
+                                                $('#msg_mensagem_aviso').show();
+                                                $('#msg_aviso').show();
+                                                $('#msg_erro').hide();
+
+                                                setInterval(function () {
+
+                                                    $('#msg_mensagem_aviso').val('');
+                                                    $('#msg_mensagem_aviso').hide();
+                                                    $('#msg_aviso').hide();
+
+
+                                                }, 5000);
+
+                                            }
+
+                                        })
+                                    } else {
+
+
+                                        var table = $('#grid_cadastro').find('tbody'),
+                                            linha = '';
+
+                                        setTimeout(function () {
+                                            loading.modal('hide'),
+
+                                                $('#grid_cadastro').removeClass('invisivel');
+                                            $('#mensagem_grid').addClass('invisivel');
+                                            linha = criar_linha_grid(param);
+                                            table.append(linha)
+
+                                        }, 3000);
+                                        $('#modal_cadastro').parents('.bootbox').modal('hide');
+                                    }
                                 }
                                 else if (responseItem.Resultado == "AVISO") {
 
@@ -1304,132 +1476,192 @@
             }
         })
 
-        .on('click', '#btn_gerarparcelas', function () {
-
-            var btn = (this),
-                valorTotalNota = $('#txt_valortotalnota').val(),
-                quantParcelas = $('#txt_quantidadeparcela').val(),
-                vlTotalNota = parseFloat(valorTotalNota.replace(",", "."));
-
-            var hoje = new Date();
-
-            var valorParcelas = (vlTotalNota / quantParcelas);
-
-            var modal_parcelas = $('#div_modalparcelas');
-
-            bootbox.dialog({
-
-                title: 'Parcelas',
-                size: 'small',
-                message: modal_parcelas
+            .on('click', '#btn_gerarparcelas', function () {
 
 
-            }).on('shown.bs.modal', function () {
+                var btn = (this),
+                    valorTotalNota = $('#txt_valortotalnota').val(),
+                    quantParcelas = $('#txt_quantidadeparcela').val(),
+                    vlTotalNota = parseFloat(valorTotalNota.replace(",", "."));
 
-                modal_parcelas.show(0, function () {
+                var hoje = new Date();
 
-                    var table = $('#grig_parcelas').find('tbody');
-                    table.empty();
-                    var dataVenda = $('#txt_datavenda').val();
-                    var ret = '';
+                var valorParcelas = (vlTotalNota / quantParcelas);
 
-                    for (var i = 1; i <= quantParcelas; i++) {
+                var modal_parcelas = $('#div_modalparcelas');
 
-                        var dataVencimento = new Date();
-                        dataVencimento.setDate(hoje.getDate() + (30 * i ));
+                bootbox.dialog({
 
-                        ret += '<tr>' +
-                            '<td class="text-center">' + i + '</td>'+
-                            '<td><input type="text" class="form-control" id="txt_datavencimento" name="txt_datavencimento'+ i + '" value="' + formatar_data_atual(dataVencimento) + '"/></td>' +
-                            '<td><input type="text" class="form-control" id="txt_valorparcela" name="txt_valorparcela'+ i +'" value="' + valorParcelas.toFixed(2) + '"/></td>' +
-                            '</tr>'
-                            ;
-
-                    }
+                    title: 'Parcelas',
+                    size: 'small',
+                    message: modal_parcelas
 
 
+                }).on('shown.bs.modal', function () {
+
+                    modal_parcelas.show(0, function () {
+
+                        var table = $('#grid_parcelas').find('tbody');
+
+                        table.empty();
+
+                        var ret = '';
+
+                        for (var i = 1; i <= quantParcelas; i++) {
+
+                            var dataVencimento = new Date(formatar_data($('#txt_datavenda').val()));
+                            dataVencimento.setDate(dataVencimento.getDate() + (30 * i));
+
+                            ret += '<tr>' +
+                                '<td class="text-center">'+
+                                '<label id="txt_numeroparcela" name="txt_numeroparcela">'+ i + '</label></td>' +
+                                '<td><input type="text" class="form-control" id="txt_datavencimento'+i+'" name="txt_datavencimento" value="' + formatar_data_atual(dataVencimento) + '"/></td>' +
+                                '<td><input type="text" class="form-control" id="txt_valorparcela'+i+'" name="txt_valorparcela" value="' + valorParcelas.toFixed(2).replace(".",",") + '"/></td>' +
+                                '</tr>';
 
 
-
-                    table.append(ret);
-
-                })
-
-            }).on('hidden.bs.modal', function(){
+                        }
+                        table.append(ret);
 
 
-                modal_parcelas.hide().appendTo('tbody');
+                        for (var j = 1; j <= quantParcelas; j++) {
 
-            });
+                            $('#txt_valorparcela' + j).mask('###0,00', { reverse: true });
+                            $('#txt_datavencimento' + j).mask('00/00/0000');
+                        }
 
+                    })
 
-        })
-
-        .on('click', '#detalhamento', function () {
-
-            var btn = $(this),
-                id = btn.closest('tr').attr('data-id'),
-                url = '@Url.Action("RecuperarVendaProduto", "OperVenda")',
-                urlParcelas = '@Url.Action("RecuperarVendaProdutoParcela", "OperVendaParcela")',
-                urlItens = '@Url.Action("RecuperarVendaItem", "OperVendaItem")',
-                param = { 'id': id };
+                }).on('hidden.bs.modal', function () {
 
 
-            $('#detalhes_parcelas').val('');
-            $('#div_detalhamentoparcelas').addClass('invisivel');
-            $.post(url, param, function (response) {
-
-                var loading = bootbox.dialog({
-                    message: '<div class="text-center" style="color:#0000FF; font-size:14px"><i class= "fa fa-spinner fa-spin fa-2x fa-fw" ></i> Aguarde, as informações estão sendo carregadas...</div>',
-                    closeButton: false
+                    modal_parcelas.hide().appendTo('tbody');
 
                 });
 
-                if (response) {
 
-                    setTimeout(function () { loading.modal('hide'), abrir_detalhamento(response) }, 3000);
-
-                }
             })
 
-            $.post(urlParcelas, param, function (response) {
+            .on('click', '#detalhamento', function () {
 
-                if (response.length > 0) {
+                var btn = $(this),
+                    id = btn.closest('tr').attr('data-id'),
+                    url = '@Url.Action("RecuperarVendaProduto", "OperVenda")',
+                    urlParcelas = '@Url.Action("RecuperarVendaProdutoParcela", "OperVendaParcela")',
+                    urlItens = '@Url.Action("RecuperarVendaItem", "OperVendaItem")',
+                    param = { 'id': id };
 
-                    $('#div_detalhamentoparcelas').removeClass('invisivel');
 
-                    var ret = '';
+                $('#detalhes_parcelas').val('');
+                $('#div_detalhamentoparcelas').addClass('invisivel');
+                $.post(url, param, function (response) {
 
-                    for (var i = 0; i < response.length; i++) {
+                    var loading = bootbox.dialog({
+                        message: '<div class="text-center" style="color:#0000FF; font-size:14px"><i class= "fa fa-spinner fa-spin fa-2x fa-fw" ></i> Aguarde, as informações estão sendo carregadas...</div>',
+                        closeButton: false
+
+                    });
+
+                    if (response) {
+
+                        setTimeout(function () { loading.modal('hide'), abrir_detalhamento(response) }, 3000);
+
+                    }
+                })
+
+                $.post(urlParcelas, param, function (response) {
+
+                    if (response.length > 0) {
+
+                        $('#div_detalhamentoparcelas').removeClass('invisivel');
+
+                        var ret = '';
+
+                        for (var i = 0; i < response.length; i++) {
 
 
-                        ret += '<div class="col-md-3" style="margin-top:5px; margin-bottom:15px"><input class="form-control" disabled="disabled" type="text" value="'+ response[i].Parcela +'"/></div>';
+                            ret += '<div class="col-md-3" style="margin-top:5px; margin-bottom:15px"><input class="form-control" disabled="disabled" type="text" value="' + response[i].Parcela + '"/></div>';
+                        }
+
+                        $('#detalhes_parcelas').html(ret);
                     }
 
-                    $('#detalhes_parcelas').html(ret);
-                }
-
-            });
+                });
 
 
-            $.post(urlItens, param, function (responseItem) {
-                if (responseItem) {
+                $.post(urlItens, param, function (responseItem) {
+                    if (responseItem) {
 
-                    if (responseItem.length > 0) {
+                        if (responseItem.length > 0) {
 
-                        var table = $('#grid_itens_venda').find('tbody');
+                            var table = $('#grid_itens_venda').find('tbody');
 
-                        table.empty()
+                            table.empty()
 
-                        for (var i = 0; i < responseItem.length; i++) {
+                            for (var i = 0; i < responseItem.length; i++) {
 
-                            table.append(criar_linha_grid_itens(responseItem[i]));
+                                table.append(criar_linha_grid_itens(responseItem[i]));
 
+                            }
                         }
                     }
+                });
+            })
+
+            .on('click', '#btn_gravar', function () {
+
+                var quant = $('#grid_parcelas > tbody > tr').length,
+                    url = '@Url.Action("InsertSessionParcelas", "OperVendaParcela")';
+
+                if (quant > 0) {
+
+                    $('#grid_parcelas tbody tr').each(function (index, item) {
+
+                        var dataVencimento = '';
+
+                        if ($(this).find('input[name=txt_datavencimento]').val() != "") {
+
+                            dataVencimento = formatar_data($(this).find('input[name=txt_datavencimento]').val());
+                        }
+
+                        var param = {
+
+                            NumeroParcela: $(this).find('label[name=txt_numeroparcela]').text(),
+                            DataVencimento: dataVencimento,
+                            ValorParcela: formatar_decimal($(this).find('input[name=txt_valorparcela]').val()),
+                            ValorAcrescimoParcela: '0.00',
+                            ValorDescontoParcela: '0.00',
+                            ValorTotalParcela: formatar_decimal($(this).find('input[name=txt_valorparcela]').val())
+                        };
+ 
+                        $.post(url, param, function (response) {
+
+                            if (response.Resultado == "OK") {
+
+                                $('#div_modalparcelas').parents('.bootbox').modal('hide');
+                                $('#div_formapagamento').addClass('invisivel');
+                            }
+                            else if (response.Resultado == "ERRO") {
+
+                                $('#msg_erro').show();
+                                $('#msg_mensagem_aviso_parcelas').val('');
+                                $('#msg_mensagem_aviso_parcelas').hide();
+                                $('#msg_aviso_parcelas').hide();
+
+                            } else if (response.Resultado == "AVISO") {
+
+                                $('#msg_mensagem_aviso_parcelas').html(formatar_mensagens_aviso(response.Mensagens));
+                                $('#msg_mensagem_aviso_parcelas').show();
+
+                                setInterval(function () {
+                                    $('#msg_mensagem_aviso_parcelas').val('');
+                                    $('#msg_mensagem_aviso_parcelas').hide();
+                                }, 5000);
+                            }
+                        })
+                    });
                 }
             });
-        });
 
     </script>
 

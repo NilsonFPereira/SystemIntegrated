@@ -137,6 +137,31 @@ namespace SystemIntegrated.Repositorio
             return ret;
         }
 
+        public int RecuperarNovoCodigo()
+        {
+            var ret = 1;
+
+            Connection();
+
+            using (SqlCommand command = new SqlCommand("   SELECT TOP 1 Codigo = Codigo + 1  " +
+                                                       "     FROM Produto                    " +
+                                                       " ORDER BY Codigo DESC                ", con ) ) 
+            {
+                con.Open();
+
+                var reader = command.ExecuteReader();
+
+                if (reader.Read())
+                {
+
+                    ret = (int)reader["Codigo"];
+                }
+
+            }
+            return ret;
+
+        }
+
         public bool ExcluirPeloId(int id)
         {
             var ret = false;

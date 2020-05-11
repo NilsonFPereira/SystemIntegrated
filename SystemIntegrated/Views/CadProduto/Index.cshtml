@@ -201,6 +201,7 @@
 
             $('#id_cadastro').val(dados.Id);
             $('#txt_codigo').val(dados.Codigo);
+            $('#txt_codigo').attr('disabled', true);
             $('#txt_nome').val(dados.Nome);
             $('#txt_preco_custo').val(dados.PrecoCusto);
             $('#txt_preco_venda').val(dados.PrecoVenda);
@@ -237,7 +238,7 @@
 
                     }
 
-                    $('#txt_codigo').focus();
+                    $('#txt_nome').focus();
 
                 });
 
@@ -288,9 +289,27 @@
 
             .on('click', '#btn_incluir', function () {
 
+                var url = '@Url.Action("RecuperarUltimoCodigo", "CadProduto")',
+                    codigo = '';
+
+                $.post(url, function (response) {
+
+                    for (var i = 0; i < 6; i++) {
+
+                        if (codigo.length < (6 - response.Codigo.length)) {
+
+                            codigo = codigo + 0;
+
+                        } else {
+
+                            codigo = codigo + response.Codigo;
+                        }
+                    }
+
+
                 abrir_form({
                     Id: 0,
-                    Codigo: '',
+                    Codigo: codigo,
                     Nome: '',
                     PrecoCusto: 0,
                     PrecoVenda: 0,
@@ -306,6 +325,8 @@
                     Ativo: 1
 
                 })
+
+                });
 
             })
 

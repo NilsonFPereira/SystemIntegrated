@@ -19,7 +19,6 @@ namespace SystemIntegrated.Repositorio.Operacao
             string constr = ConfigurationManager.ConnectionStrings["stringConexao"].ToString();
             con = new SqlConnection(constr);
         }
-
         public List<VendaViewModel> RecuperarLista()
         {
             var ret = new List<VendaViewModel>();
@@ -85,8 +84,6 @@ namespace SystemIntegrated.Repositorio.Operacao
 
             return ret;
         }
-
-
         public int RecuperarNovoNumero()
         {
             var ret = 1;
@@ -166,8 +163,6 @@ namespace SystemIntegrated.Repositorio.Operacao
             }
             return ret;
         }
-
-
         public int Salvar(VendaModel vendaModel)
         {
             var ret = 0;

@@ -21,14 +21,17 @@
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-md-7">
+                <div class="col-md-6">
                     @Html.Label("txt_dadosbusca", "Dados da Busca", new { @class = "control-label" })
                     @Html.TextBox("txt_dadosbusca", null, new { @class = "form-control" })
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-md-1" style="margin-top:25px">
+                <div id="div_busca" class="col-md-1" style="margin-top:25px">
                     <a id="btn_buscar" class="btn btn-success"><i class="glyphicon glyphicon-arrow-right"></i> Buscar</a>
+                    </div>
+                <div id="div_novabusca" class="col-md-2 invisivel" style="margin-top:25px">
+                    <a id="btn_novabusca" class="btn btn-primary"><i class="glyphicon glyphicon-arrow-left"></i> Nova Busca</a>
                 </div>
             </div>
         </div>
@@ -78,72 +81,19 @@
                 <h3 class="page-header" style="color:#000">Parcelas</h3>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-3">
-                @Html.Label("txt_dataemissao", "Data Emissão", new { @class = "control-label required" })
-                @Html.TextBox("txt_dataemissao", null, new { @class = "form-control", tabindex = 1 })
-            </div>
-            <div class="col-md-3">
-                @Html.Label("txt_numeronota", "Número Nota", new { @class = "control-label required" })
-                @Html.TextBox("txt_numeronota", null, new { @class = "form-control", tabindex = 2 })
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-8">
-                @Html.Label("txt_chaveacesso", "Chave de Acesso", new { @class = "control-label required" })
-                @Html.TextBox("txt_chaveacesso", null, new { @class = "form-control", tabindex = 4 })
-            </div>
-            <div class="col-md-4">
-                @Html.Label("txt_valortotalprodutos", "Valor Total Produtos", new { @class = "control-label required" })
-                @Html.TextBox("txt_valortotalprodutos", null, new { @class = "form-control", tabindex = 5 })
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2">
-                @Html.Label("txt_idfornecedor", "Código", new { @class = "control-label required" })
-                @Html.TextBox("txt_idfornecedor", null, new { @class = "form-control" })
-            </div>
-            <div class="col-md-10">
-                @Html.Label("suggest_fornecedor", "Fornecedor", new { @class = "control-label required" })
-                @Html.TextBox("suggest_fornecedor", null, new { @class = "form-control", type = "text", tabindex = 6 })
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                @Html.Label("txt_valorfrete", "Valor Frete", new { @class = "control-label required" })
-                @Html.TextBox("txt_valorfrete", null, new { @class = "form-control", tabindex = 8 })
-            </div>
-            <div class="col-md-4">
-                @Html.Label("txt_valordesconto", "Valor Desconto", new { @class = "control-label required" })
-                @Html.TextBox("txt_valordesconto", null, new { @class = "form-control", tabindex = 9 })
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                @Html.Label("txt_valoricms", "Valor ICMS", new { @class = "control-label required" })
-                @Html.TextBox("txt_valoricms", null, new { @class = "form-control", tabindex = 10 })
-            </div>
-            <div class="col-md-4">
-                @Html.Label("txt_valoripi", "Valor IPI", new { @class = "control-label required" })
-                @Html.TextBox("txt_valoripi", null, new { @class = "form-control", tabindex = 11 })
-            </div>
-            <div class="col-md-4">
-                @Html.Label("txt_valortotalnota", "Valor Total Nota", new { @class = "control-label required" })
-                @Html.TextBox("txt_valortotalnota", null, new { @class = "form-control", tabindex = 12 })
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4 invisivel">
-                @Html.Label("txt_dataentrada", "Data Entrada", new { @class = "control-label required" })
-                @Html.TextBox("txt_dataentrada", null, new { @class = "form-control" })
-            </div>
-            <div class="col-md-2 invisivel">
-                <div class="form-group" style="margin-top:20px">
-                    @Html.Label("cbx_ehcancelada", "Cancelada", new { @class = "control-label required" })
-                    @Html.CheckBox("cbx_ehcancelada")
-                </div>
-            </div>
-        </div>
+        <table id="grid_parcelas" class="table table-bordered table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Parcela</th>
+                    <th>Vencimento</th>
+                    <th>Total Parcela</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
         <div id="botao_continuar" class="form-group" style="margin-top:15px">
             <div class="modal-footer">
                 <a id="btn-voltar" class="btn btn-primary" tabindex="13" role="button" data-dismiss="modal"><i class="glyphicon glyphicon-arrow-left"></i> Voltar</a>
@@ -153,7 +103,8 @@
 </div>
     @section Scripts{
         <script>
-    function criar_linha_grid(dados) {
+
+            function criar_linha_grid(dados) {
 
         var ret = '<tr data-id='+ dados.Id +'>' +
             '<td class="text-right">'+ dados.NumeroVenda +'</td>'+
@@ -166,7 +117,20 @@
             '</tr>';
 
         return ret;
-    }
+            }
+
+            function criar_linha_gridparcelas(dados) {
+
+                var ret = '<tr data-parcela='+dados.IdParcela+'>' +
+                              '<td><label class="control-label">' + dados.NumeroParcela + '</label></td>' +
+                                '<td>' + dados.DataVencimento + '</td>' +
+                                '<td>' + dados.ValorTotalParcela + '</td>' +
+                                '<td><a id="btn_receberparcela" class="btn btn-primary"><i class="fa fa-money"></i> Receber</a></td>' +
+                          '</tr>';
+
+                return ret;
+
+            }
 
 
             $(document)
@@ -230,14 +194,19 @@
 
                             if (response) {
 
+
                                 var table = $('#grid_cadastro').find('tbody');
                                 table.empty();
 
                                 if (response.length > 0) {
 
+                                    $('#ddl_busca').attr('disabled', true);
+                                    $('#txt_dadosbusca').attr('disabled', true);
                                     $('#grid_cadastro').removeClass('invisivel');
                                     $('#mensagem_grid').addClass('invisivel');
                                     $('#dados_cliente').removeClass('invisivel');
+                                    $('#div_novabusca').removeClass('invisivel');
+                                    $('#div_busca').addClass('invisivel');
 
                                     $('#txt_nome').val(response[0].Nome);
                                     $('#txt_cnpjcpf').val(response[0].CnpjCpf);
@@ -269,18 +238,66 @@
 
                     }).on('shown.bs.modal', function () {
 
-                        modal_parcelas.show();
+                        var table = $('#grid_parcelas').find('tbody');
+
+                        table.empty();
+
+                        modal_parcelas.show(0, function () {
+
+                            $.post(url, param, function (response) {
+
+                                if (response) {
+
+                                    if (response.length > 0) {
+
+                                        for (var i = 0; i <= response.length; i++) {
+
+                                            table.append(criar_linha_gridparcelas(response[i]));
+
+                                        }
+                                    }
+                                }
+                            })
+
+                        });
 
                     }).on('hidden.bs.modal', function () {
 
                         modal_parcelas.hide().appendTo('tbody');
 
+
                     })
 
+                })
+
+                .on('click', '#btn_receberparcela', function(){
+
+                    var btn = $(this),
+                        id = btn.closest('tr').attr('data-idparcela');
+
+                    alert(id);
+
+                })
+
+                .on('click', '#btn_novabusca', function () {
+
+                    var table = $('#grid_cadastro').find('tbody');
+
+                    table.empty();
+
+                    $('#ddl_busca').removeAttr('disabled');
+                    $('#txt_dadosbusca').removeAttr('disabled');
+                    $('#txt_dadosbusca').val('');
+                    $('#txt_nome').val('');
+                    $('#txt_cnpjcpf').val('');
+                    $('#txt_dadosbusca').focus();
+                    $('#div_novabusca').addClass('invisivel');
+                    $('#div_busca').removeClass('invisivel');
+                    $('#dados_cliente').addClass('invisivel');
+                    $('#grid_cadastro').addClass('invisivel');
+                    $('#mensagem_grid').removeClass('invisivel');
+
                 });
-
-
-
 
         </script>
 

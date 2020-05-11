@@ -188,6 +188,7 @@
     <Compile Include="Models\Cadastro\ProdutoModel.cs" />
     <Compile Include="Models\Cadastro\UnidadeMedidaModel.cs" />
     <Compile Include="Models\Cadastro\UsuarioModel.cs" />
+    <Compile Include="Models\EsqueciMinhaSenhaViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\Cadastro\MarcaProdutoViewModel.cs" />
     <Compile Include="Models\Cadastro\NaturezaViewModel.cs" />
@@ -201,6 +202,7 @@
     <Compile Include="Models\Cadastro\TipoPessoaViewModel.cs" />
     <Compile Include="Models\Cadastro\UnidadeMedidaViewModel.cs" />
     <Compile Include="Models\Cadastro\UsuarioViewModel.cs" />
+    <Compile Include="Models\NovaSenhaViewModel.cs" />
     <Compile Include="Models\Operacao\EntradaNotaItemModel.cs" />
     <Compile Include="Models\Operacao\EntradaNotaItemViewModel.cs" />
     <Compile Include="Models\Operacao\EntradaNotaModel.cs" />
@@ -209,6 +211,7 @@
     <Compile Include="Models\Operacao\VendaItemModel.cs" />
     <Compile Include="Models\Operacao\VendaItemViewModel.cs" />
     <Compile Include="Models\Operacao\VendaModel.cs" />
+    <Compile Include="Models\Operacao\VendaParcelaModel.cs" />
     <Compile Include="Models\Operacao\VendaParcelaViewModel.cs" />
     <Compile Include="Models\Operacao\VendaViewModel.cs" />
     <Compile Include="Models\VendasPorClienteModel.cs" />
@@ -371,6 +374,8 @@
     <Content Include="scss\_variables.scss" />
     <Content Include="Views\CadFormaPagamento\Index.cshtml" />
     <Content Include="Views\Conta\AlterarSenhaUsuario.cshtml" />
+    <Content Include="Views\Conta\EsqueciMinhaSenha.cshtml" />
+    <Content Include="Views\Conta\RedefinirSenha.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

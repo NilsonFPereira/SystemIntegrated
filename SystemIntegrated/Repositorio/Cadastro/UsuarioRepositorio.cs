@@ -310,16 +310,15 @@ namespace SystemIntegrated.Repositorio
 
             Connection();
 
-            using(SqlCommand command = new SqlCommand(" UPDATE Usuario      " +
-                                                      "    SET Senha=@Senha " +
-                                                      "WHERE Id=@Id", con ) )
+            using(SqlCommand command = new SqlCommand("  UPDATE Usuario      " +
+                                                      "     SET Senha=@Senha " +
+                                                      " WHERE Id=@Id         ", con ) )
             {
 
                 con.Open();
 
                 command.Parameters.AddWithValue("@Senha", SqlDbType.VarChar).Value = CriptoHelper.HashMD5(novaSenha);
                 command.Parameters.AddWithValue("@Id", SqlDbType.Int).Value = id;
-
                 ret = (command.ExecuteNonQuery() > 0);
             }
 
@@ -340,6 +339,47 @@ namespace SystemIntegrated.Repositorio
                 ret = ((int)command.ExecuteScalar() > 0);
             }
             return ret;
+        }
+
+        public UsuarioModel RecuperarPeloLogin(string login)
+        {
+            UsuarioModel ret = null;
+
+            Connection();
+
+            using (SqlCommand command = new SqlCommand(" SELECT Id,                                                        " +
+                                                      "        Nome,                                                       " +
+                                                      "        Usuario,                                                    " +
+                                                      "        Email,                                                      " +
+                                                      "        Cpf                                                         " +                                                
+                                                      "   FROM Usuario                                                     " +
+                                                      " WHERE (    Nome=@Login                                             " +
+                                                      "         OR Usuario=@Login                                          " +
+                                                      "         OR Cpf=@Login                                              " +
+                                                      "         OR Email=@Login                                            " +
+                                                      "       )                                                            ", con ) )
+            {
+
+                con.Open();
+
+                command.Parameters.AddWithValue("@Login", SqlDbType.VarChar).Value = login;
+
+                var reader = command.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    ret = new UsuarioModel()
+                    {
+                        Id = (int)reader["Id"],
+                        Nome = (string)reader["Nome"],
+                        Usuario = (string)reader["Usuario"],
+                        Email = (string)reader["Email"],
+                        Cpf = (string)reader["Cpf"]
+                       
+                    };
+                }
+                return ret;
+            }
         }
     }
 }

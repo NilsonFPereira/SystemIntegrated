@@ -6,7 +6,6 @@ using System.Web.Mvc;
 using SystemIntegrated.Models.Operacao;
 using SystemIntegrated.Repositorio;
 using SystemIntegrated.Repositorio.Cadastro;
-//using SystemIntegrated.Repositorio.Cadastro;
 using SystemIntegrated.Repositorio.Operacao;
 
 namespace SystemIntegrated.Controllers.Operacao
@@ -23,6 +22,17 @@ namespace SystemIntegrated.Controllers.Operacao
         [Authorize]
         public ActionResult Index()
         {
+            if (Session["itensSession"] != null)
+            {
+                Session.Remove("itensSession");
+
+            }
+
+            if(Session["parcelas"] != null)
+            {
+                Session.Remove("parcelas");
+            }
+
             vendaRepositorio = new VendaRepositorio();
             fretePorContaRepositorio = new FretePorContaRepositorio();
             formaPagamentoRepositorio = new FormaPagamentoRepositorio();

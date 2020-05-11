@@ -28,7 +28,8 @@ namespace SystemIntegrated.Repositorio.Operacao
             Connection();
 
             using(SqlCommand command = new SqlCommand(" SELECT Parcela = CAST(NumeroParcela AS VARCHAR) +' - '+ CONVERT(VARCHAR(10), DataVencimento, 103) +' - '+ REPLACE(ValorTotalParcela, '.',',')  " +
-                                                      "   FROM VendaProdutoParcela WHERE IdVendaProduto = @Id", con))
+                                                      "   FROM VendaProdutoParcela WHERE IdVendaProduto = @Id " +
+                                                      " ORDER BY NumeroParcela", con))
             {
                 con.Open();
                 command.Parameters.AddWithValue("@Id", SqlDbType.Int).Value = id;
@@ -47,6 +48,47 @@ namespace SystemIntegrated.Repositorio.Operacao
 
             return ret;
 
+        }
+
+        public void SalvarParcelas(VendaParcelaModel vendaParcelaModel)
+        {
+
+            Connection();
+
+
+            using (SqlCommand command = new SqlCommand("INSERT INTO VendaProdutoParcela ( IdVendaProduto,         " +
+                                                      "                                   NumeroParcela,          " +
+                                                      "                                   DataVencimento,         " +
+                                                      "                                   ValorParcela,           " +
+                                                      "                                   ValorAcrescimoParcela,  " +
+                                                      "                                   ValorDescontoParcela,   " +
+                                                      "                                   ValorTotalParcela       " +
+                                                      "                                )                          " +
+                                                      "                         VALUES( @IdVendaProduto,          " +
+                                                      "                                 @NumeroParcela,           " +
+                                                      "                                 @DataVencimento,          " +
+                                                      "                                 @ValorParcela,            " +
+                                                      "                                 @ValorAcrescimoParcela,   " +
+                                                      "                                 @ValorDescontoParcela,    " +
+                                                      "                                 @ValorTotalParcela        " +
+                                                      "                               )                           ", con ) )
+            {
+                con.Open();
+
+
+                command.Parameters.AddWithValue("@IdVendaProduto", SqlDbType.Int).Value = vendaParcelaModel.IdVendaProduto;
+                command.Parameters.AddWithValue("@NumeroParcela", SqlDbType.Int).Value = vendaParcelaModel.NumeroParcela;
+                command.Parameters.AddWithValue("@DataVencimento", SqlDbType.VarChar).Value = vendaParcelaModel.DataVencimento;
+                command.Parameters.AddWithValue("@ValorParcela", SqlDbType.VarChar).Value = vendaParcelaModel.ValorParcela;
+                command.Parameters.AddWithValue("@ValorAcrescimoParcela", SqlDbType.VarChar).Value = vendaParcelaModel.ValorAcrescimoParcela;
+                command.Parameters.AddWithValue("@ValorDescontoParcela", SqlDbType.VarChar).Value = vendaParcelaModel.ValorDescontoParcela;
+                command.Parameters.AddWithValue("@ValorTotalParcela", SqlDbType.VarChar).Value = vendaParcelaModel.ValorTotalParcela;
+
+
+
+                command.ExecuteScalar();
+
+            }
         }
 
     }

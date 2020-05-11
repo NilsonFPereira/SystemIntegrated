@@ -152,5 +152,18 @@ namespace SystemIntegrated.Controllers.Cadastro
 
             return Json(listData);
         }
+
+        public JsonResult RecuperarUltimoCodigo()
+        {
+            var resultado = "OK";
+            var codigo = string.Empty;
+
+            produtoRepositorio = new ProdutoRepositorio();
+            codigo = produtoRepositorio.RecuperarNovoCodigo().ToString();
+
+            return Json(new { Resultado = resultado, Codigo = codigo });
+
+
+        }
     }
 }

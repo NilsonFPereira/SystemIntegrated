@@ -72,12 +72,22 @@
         @if (ViewBag.QuantPaginas > 1)
         {
             <div id="col-md-12">
-                <nav>
+                <nav id="paginacao_grid">
                     <ul class="pagination">
                         <li class="page-item active"><a class="page-link">1</a></li>
-                        @for (int i = 2; i <= ViewBag.QuantPaginas; i++)
-                        {
-                            <li class="page-item"><a class="page-link">@i</a></li>
+
+                        @{
+                            var count = 0;
+
+                            for (int i = 2; i <= ViewBag.QuantPaginas; i++)
+                            {
+                                if (count < 2)
+                                {
+                                    <li class="page-item"><a class="page-link">@i</a></li>
+                                }
+
+                                count++;
+                            }
                         }
                     </ul>
                 </nav>
@@ -260,7 +270,7 @@
                                 if (response) {
 
                                     tr.remove();
-                                    
+
                                     var quant = $('#grid_cadastro > tbody > tr').length;
 
                                     if (quant == 0) {
@@ -369,6 +379,154 @@
                                 table.append(criar_linha_grid(response[i]));
 
                             }
+
+                            var paginacao_grid = $('#paginacao_grid > ul');
+
+                            var quantPaginas = @ViewBag.QuantPaginas;
+
+                            if ( parseInt(pagina) == 1 ) {
+
+                                var paginaInicio = (parseInt(pagina));
+
+                                var ret = '';
+
+                                if (quantPaginas >= 3) {
+
+                                    var count = 0;
+
+                                    for (var i = 1; i < 3; i++) {
+
+                                        count++;
+
+                                    }
+
+                                    var paginaFinal = (parseInt(pagina) + count);
+
+                                }
+                                else if(quantPaginas == 2 ) {
+
+                                    var paginaFinal = (parseInt(pagina) + 1);
+
+                                }
+                                else {
+
+                                    var paginaFinal = (parseInt(pagina));
+
+                                }
+
+                                paginacao_grid.remove();
+
+                                ret = '<ul class="pagination">';
+
+                                var active = 1;
+
+                                for (var j = paginaInicio; j <= paginaFinal; j++) {
+
+                                    if (active == 1) {
+
+                                        ret += '<li class="page-item active"><a class="page-link">' + j + '</a></li>';
+
+                                    } else {
+
+                                        ret += '<li class="page-item"><a class="page-link">' + j + '</a></li>';
+
+                                    }
+                                    active++;
+                                }
+                                ret += '</ul>';
+
+                                $('#paginacao_grid').html(ret);
+
+                            }
+                            else if ( parseInt(pagina) == 2 ) {
+
+                                var paginaInicio = (parseInt(pagina - 1 ) );
+
+                                var ret = '';
+
+                                    if ( quantPaginas >= 3 ) {
+
+                                        var count = 0;
+
+                                        for (var i = 1; i < 3; i++) {
+
+                                            count++;
+
+                                        }
+
+                                        var paginaFinal = (paginaInicio + count);
+
+                                    }
+                                    else {
+
+                                        var paginaFinal = (paginaInicio + 1);
+
+                                    }
+
+                                paginacao_grid.remove();
+
+                                ret = '<ul class="pagination">';
+
+                                var active = 1;
+
+                                for (var j = paginaInicio; j <= paginaFinal; j++) {
+
+                                    if (active == 2) {
+
+                                        ret += '<li class="page-item active"><a class="page-link">' + j + '</a></li>';
+
+                                    } else {
+
+                                        ret += '<li class="page-item"><a class="page-link">' + j + '</a></li>';
+
+                                    }
+                                    active++;
+                                }
+                                ret += '</ul>';
+
+                                $('#paginacao_grid').html(ret);
+
+                            }
+                            else if( parseInt(pagina)  >= 3 ) {
+
+                                var paginaInicio = ( parseInt(pagina) - 1);
+
+                                if ( quantPaginas >= 3 ) {
+
+                                    var paginaFinal = (paginaInicio + 2);
+
+                                }
+                                else {
+
+                                    var paginaFinal = (paginaInicio + 1 );
+
+                                }
+
+                                paginacao_grid.remove();
+
+                                    ret = '<ul class="pagination">';
+
+                                    var active = 0;
+
+                                    for (var j = paginaInicio; j <= paginaFinal; j++) {
+
+                                        if (active == 1) {
+
+                                            ret += '<li class="page-item active"><a class="page-link">' + j + '</a></li>';
+
+                                        } else {
+
+                                            ret += '<li class="page-item"><a class="page-link">' + j + '</a></li>';
+
+                                        }
+                                        active++;
+                                    }
+                                    ret += '</ul>';
+
+                                    $('#paginacao_grid').html(ret);
+
+                                }
+
                         }
                         else {
 

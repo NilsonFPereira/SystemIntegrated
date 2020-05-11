@@ -27,5 +27,15 @@ namespace SystemIntegrated.Controllers.Operacao
             return Json(lista);
 
         }
+
+        [HttpPost]
+        public JsonResult BuscarVendaParcelas(int idVenda)
+        {
+            recebimentoRepositorio = new RecebimentoRepositorio();
+            var lista = recebimentoRepositorio.RecuperarParcelasVendas(idVenda);
+
+            return Json(lista);
+
+        }
     }
 }
